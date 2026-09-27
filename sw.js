@@ -1,5 +1,5 @@
 /* Acak Siswa — Service Worker v2 */
-const CACHE = 'acak-siswa-v4';
+const CACHE = 'acak-siswa-v6';
 const ASSETS = [
   './',
   './index.html',

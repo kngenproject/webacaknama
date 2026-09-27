@@ -1014,7 +1014,7 @@
   }
 
   /* ===== DESKTOP (≥ 1024px) ===== */
-  @media (min-width: 1024px){
+  @media (min-width: 1024px) and (hover: hover) and (pointer: fine){
     body {
       padding: 16px 16px 16px 396px;
     }
@@ -1094,8 +1094,92 @@
     ::-webkit-scrollbar-thumb:hover { background: var(--border); }
   }
 
+  /* ===== TABLET LANDSCAPE (≥ 1024px, touch, no hover) =====
+     Layout desktop tapi berskala lebih kecil agar tidak kegedean
+     di tablet 10-11 inch. ===================================== */
+  @media (min-width: 1024px) and (hover: none) and (pointer: coarse){
+    body { padding: 10px 10px 10px 344px; }
+    .app {
+      max-width: none;
+      height: calc(100vh - 20px);
+      height: calc(100dvh - 20px);
+      padding: 10px;
+      gap: 8px;
+      border-radius: var(--r-lg);
+    }
+
+    /* Sidebar lebih ramping */
+    .sheet {
+      left: 10px;
+      top: 10px;
+      bottom: 10px;
+      width: 320px;
+      max-width: 320px;
+      padding: 12px 14px 14px;
+      border-radius: var(--r-lg);
+    }
+    .sheet-head h3 { font-size: .95rem; }
+    .sheet-head .sub { font-size: .68rem; padding: 3px 8px; }
+    .sheet textarea { font-size: .92rem; min-height: 140px; padding: 11px 13px; }
+    .sheet-tip { font-size: .68rem; padding: 8px 10px; }
+    .sheet-actions .btn { font-size: .82rem; padding: 10px; min-height: 42px; }
+
+    /* Top bar & tab lebih compact */
+    .topbar { padding: 6px 12px; }
+    .brand h1 { font-size: 1rem; }
+    .brand .sub { font-size: .68rem; }
+    .brand .logo { width: 32px; height: 32px; font-size: 17px; border-radius: 9px; }
+    .rng-chip { font-size: .64rem; padding: 4px 10px; }
+    .tabbar { padding: 6px 12px; }
+    .tab { padding: 7px 12px; font-size: .78rem; min-height: 34px; }
+    .tab-add { width: 34px; height: 34px; font-size: 17px; }
+
+    /* Hero & hasil lebih kecil */
+    .hero { padding: 14px 18px; gap: 8px; }
+    .hero-badges { top: 10px; left: 14px; right: 14px; }
+    .hero-badges .b { font-size: .62rem; padding: 3px 8px; }
+    .result-name { font-size: clamp(2.4rem, 5vw, 3.6rem); }
+    .result-name.empty { font-size: clamp(1.05rem, 2vw, 1.35rem); }
+    .hero-preview { font-size: .7rem; padding: 5px 10px; }
+    .timer { font-size: .92rem; padding: 5px 12px; top: 42px; }
+
+    /* Tombol utama jauh lebih compact */
+    .action-area { padding: 0 12px 8px; gap: 6px; }
+    .btn-acak {
+      font-size: 1.15rem;
+      padding: 16px;
+      min-height: 56px;
+      letter-spacing: .08em;
+    }
+    .btn-acak .emoji { font-size: 1.3rem; }
+    .actions { gap: 6px; grid-template-columns: repeat(4, 1fr); }
+    .act {
+      min-height: 58px;
+      font-size: .7rem;
+      padding: 8px 4px;
+      border-radius: var(--r-md);
+    }
+    .act .ico { font-size: 1.2rem; }
+
+    /* Riwayat & footer */
+    .hist-wrap { padding: 0 12px 6px; }
+    .hist-chip { font-size: .68rem; padding: 5px 11px; min-height: 28px; }
+    .foot { padding: 6px 12px 8px; font-size: .68rem; }
+    .foot .stat { padding: 6px 12px; font-size: .68rem; }
+    .copy-btn { padding: 6px 12px; font-size: .68rem; min-height: 32px; }
+
+    /* Menu tetap compact */
+    .menu { min-width: 260px; right: 14px; bottom: 130px; }
+    .menu-item { padding: 10px 13px; min-height: 42px; font-size: .84rem; }
+    .menu-item .ico { font-size: 1rem; width: 20px; }
+
+    /* Toast lebih kecil */
+    #toastWrap { left: calc(50% + 170px); width: min(340px, calc(100vw - 380px)); }
+    .toast { font-size: .82rem; padding: 10px 14px; }
+  }
+
   /* ===== WIDE (≥ 1440px) ===== */
-  @media (min-width: 1440px){
+  @media (min-width: 1440px) and (hover: hover) and (pointer: fine){
     .app { max-width: 1080px; padding: 20px; }
     .result-name { font-size: clamp(3.6rem, 4.5vw, 5.5rem); }
     .btn-acak { padding: 32px; min-height: 96px; font-size: 1.6rem; }
