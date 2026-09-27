@@ -2041,17 +2041,72 @@
   }
 
   /* ============ SOUND ============ */
-  /* ============ SOUND ENGINE (Web Audio API) ============ */
+  /* ============ SOUND ENGINE v3 (studio quality) ============ */
   const Sound = {
     ctx: null,
     enabled: false,
+    unlocked: false,
+    masterGain: null,
+    reverb: null,
+    _reverbIR: null,
 
+    /* --- Init audio graph: master gain + reverb bus --- */
     init: function(){
       if (this.ctx) return;
       try {
         const AC = window.AudioContext || window.webkitAudioContext;
-        if (AC) this.ctx = new AC();
-      } catch(e){}
+        if (!AC) return;
+        this.ctx = new AC();
+
+        // Master gain (headroom, no clipping)
+        this.masterGain = this.ctx.createGain();
+        this.masterGain.gain.value = 0.85;
+        this.masterGain.connect(this.ctx.destination);
+
+        // Reverb — ConvolverNode dengan impulse response yang di-generate
+        this.reverb = this.ctx.createConvolver();
+        this.reverb.buffer = this._makeReverbIR(1.6, 2.4);
+        const reverbSend = this.ctx.createGain();
+        reverbSend.gain.value = 0.22;
+        this.reverb.connect(reverbSend);
+        reverbSend.connect(this.masterGain);
+        this._reverbSend = reverbSend;
+      } catch(e){ console.warn('[Sound] init:', e); }
+    },
+
+    /* Generate impulse response untuk reverb (decay eksponensial + noise) */
+    _makeReverbIR: function(duration, decay){
+      const sr = this.ctx.sampleRate;
+      const len = Math.floor(sr * duration);
+      const buf = this.ctx.createBuffer(2, len, sr);
+      for (let ch = 0; ch < 2; ch++){
+        const data = buf.getChannelData(ch);
+        for (let i = 0; i < len; i++){
+          data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, decay);
+        }
+      }
+      return buf;
+    },
+
+    /* --- Unlock audio pipeline Android --- */
+    unlock: function(){
+      if (this.unlocked) return;
+      try {
+        this.init();
+        if (!this.ctx) return;
+        if (this.ctx.state === 'suspended'){
+          this.ctx.resume().catch(function(){});
+        }
+        // Trik unlock: play buffer kosong
+        const buf = this.ctx.createBuffer(1, 1, 22050);
+        const src = this.ctx.createBufferSource();
+        src.buffer = buf;
+        src.connect(this.ctx.destination);
+        if (src.start) src.start(0);
+        else if (src.noteOn) src.noteOn(0);
+        this.unlocked = true;
+        console.log('[Sound] unlocked, state=', this.ctx.state);
+      } catch(e){ console.warn('[Sound] unlock:', e); }
     },
 
     resume: function(){
@@ -2065,100 +2120,300 @@
       if (on){ this.init(); this.resume(); }
     },
 
-    /* Basic tone with attack+release envelope */
-    tone: function(freq, dur, type, vol, delay){
-      if (!this.enabled || !this.ctx) return;
-      try {
-        const t = this.ctx.currentTime + (delay || 0);
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = type || 'sine';
-        osc.frequency.setValueAtTime(freq, t);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        gain.gain.setValueAtTime(0.0001, t);
-        gain.gain.exponentialRampToValueAtTime(vol || 0.2, t + 0.008);
-        gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-        osc.start(t);
-        osc.stop(t + dur + 0.03);
-      } catch(e){}
+    /* ============================================================
+       CORE: ADSR tone dengan filter & reverb send
+       ============================================================ */
+    tone: function(opts){
+      if (!this.enabled) return;
+      if (!this.ctx) this.init();
+      if (!this.ctx) return;
+
+      const self = this;
+      const play = function(){
+        try {
+          if (self.ctx.state === 'suspended') self.ctx.resume().catch(function(){});
+
+          const now = self.ctx.currentTime + (opts.delay || 0);
+          const freq = opts.freq || 440;
+          const dur = opts.dur || 0.2;
+          const type = opts.type || 'sine';
+          const vol = opts.vol || 0.15;
+
+          // ADSR
+          const a = opts.attack || 0.005;
+          const d = opts.decay || 0.05;
+          const s = opts.sustain || 0.7;
+          const r = opts.release || dur * 0.6;
+          const totalDur = a + d + (dur * s) + r;
+
+          // Osc utama
+          const osc = self.ctx.createOscillator();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, now);
+
+          // Pitch bend opsional (untuk whoosh/tick)
+          if (opts.pitchTo){
+            osc.frequency.exponentialRampToValueAtTime(
+              Math.max(1, opts.pitchTo), now + totalDur
+            );
+          }
+
+          // Filter lowpass untuk kehangatan
+          const filter = self.ctx.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.value = opts.filterFreq || Math.min(8000, freq * 6);
+          filter.Q.value = opts.q || 0.7;
+
+          // Envelope
+          const gain = self.ctx.createGain();
+          gain.gain.setValueAtTime(0.0001, now);
+          gain.gain.exponentialRampToValueAtTime(vol, now + a);
+          gain.gain.exponentialRampToValueAtTime(
+            Math.max(0.0001, vol * s), now + a + d
+          );
+          gain.gain.setValueAtTime(Math.max(0.0001, vol * s), now + a + d + (dur * s * 0.5));
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + totalDur);
+
+          // Chain: osc -> filter -> gain -> master (+ reverb send)
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(self.masterGain);
+          if (self.reverb && opts.reverb !== false){
+            const send = self.ctx.createGain();
+            send.gain.value = opts.reverbAmt !== undefined ? opts.reverbAmt : 0.35;
+            gain.connect(send);
+            send.connect(self.reverb);
+          }
+
+          osc.start(now);
+          osc.stop(now + totalDur + 0.05);
+        } catch(e){ console.warn('[Sound] tone:', e); }
+      };
+
+      if (this.unlocked) play();
+      else { this.unlock(); play(); }
     },
 
-    /* --- Predefined sounds --- */
+    /* ============================================================
+       NOISE: untuk whoosh, tick natural
+       ============================================================ */
+    noise: function(opts){
+      if (!this.enabled) return;
+      if (!this.ctx) this.init();
+      if (!this.ctx) return;
 
-    // Tick selama spin (random pitch, biar seru)
+      const self = this;
+      const play = function(){
+        try {
+          if (self.ctx.state === 'suspended') self.ctx.resume().catch(function(){});
+          const now = self.ctx.currentTime + (opts.delay || 0);
+          const dur = opts.dur || 0.3;
+
+          // White noise buffer
+          const len = Math.floor(self.ctx.sampleRate * dur);
+          const buf = self.ctx.createBuffer(1, len, self.ctx.sampleRate);
+          const data = buf.getChannelData(0);
+          for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+
+          const src = self.ctx.createBufferSource();
+          src.buffer = buf;
+
+          // Bandpass filter — sweep untuk whoosh
+          const filter = self.ctx.createBiquadFilter();
+          filter.type = opts.filterType || 'bandpass';
+          filter.Q.value = opts.q || 1.2;
+          if (opts.freqTo){
+            filter.frequency.setValueAtTime(opts.freq || 400, now);
+            filter.frequency.exponentialRampToValueAtTime(opts.freqTo, now + dur);
+          } else {
+            filter.frequency.value = opts.freq || 800;
+          }
+
+          const gain = self.ctx.createGain();
+          const vol = opts.vol || 0.12;
+          gain.gain.setValueAtTime(0.0001, now);
+          gain.gain.exponentialRampToValueAtTime(vol, now + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+
+          src.connect(filter);
+          filter.connect(gain);
+          gain.connect(self.masterGain);
+          if (self.reverb && opts.reverb !== false){
+            const send = self.ctx.createGain();
+            send.gain.value = opts.reverbAmt !== undefined ? opts.reverbAmt : 0.2;
+            gain.connect(send);
+            send.connect(self.reverb);
+          }
+
+          src.start(now);
+          src.stop(now + dur + 0.02);
+        } catch(e){}
+      };
+      if (this.unlocked) play();
+      else { this.unlock(); play(); }
+    },
+
+    /* ============================================================
+       PRESET SUARA
+       ============================================================ */
+
+    /* Tick spin — noise click lembut, bukan beep tajam */
     tick: function(){
-      const f = 1200 + ((Math.random() * 500) | 0);
-      this.tone(f, 0.025, 'square', 0.045);
+      this.noise({
+        freq: 2400, q: 4, dur: 0.03, vol: 0.05,
+        filterType: 'bandpass', reverbAmt: 0.1
+      });
     },
 
-    // Klik kecil untuk tombol
+    /* Klik tombol — sangat halus */
     click: function(){
-      this.tone(900, 0.03, 'triangle', 0.06);
+      this.tone({
+        freq: 1200, dur: 0.04, vol: 0.05, type: 'triangle',
+        attack: 0.001, decay: 0.01, sustain: 0.4, release: 0.03,
+        filterFreq: 3000, reverbAmt: 0.15
+      });
     },
 
-    // Switch ON: 2 nada naik
+    /* Toggle ON/OFF — 2 nada bersih dengan reverb */
     toggle: function(){
-      this.tone(880, 0.05, 'sine', 0.12);
-      this.tone(1320, 0.08, 'sine', 0.12, 0.06);
+      this.tone({
+        freq: 1046.5, dur: 0.1, vol: 0.12, type: 'sine',
+        attack: 0.008, decay: 0.05, sustain: 0.5, release: 0.2,
+        filterFreq: 4000, reverbAmt: 0.4
+      });
+      this.tone({
+        freq: 1568, dur: 0.14, vol: 0.12, type: 'sine',
+        attack: 0.008, decay: 0.05, sustain: 0.5, release: 0.3,
+        delay: 0.075, filterFreq: 4500, reverbAmt: 0.5
+      });
     },
 
-    // Sukses singkat
+    /* Sukses singkat — bell chime 2 nada */
     success: function(){
-      this.tone(587.33, 0.12, 'triangle', 0.16);
-      this.tone(880, 0.18, 'triangle', 0.16, 0.08);
+      this.tone({
+        freq: 880, dur: 0.14, vol: 0.14, type: 'sine',
+        attack: 0.004, decay: 0.06, sustain: 0.4, release: 0.3,
+        filterFreq: 3500, reverbAmt: 0.5
+      });
+      this.tone({
+        freq: 1318.5, dur: 0.22, vol: 0.12, type: 'sine',
+        attack: 0.005, decay: 0.08, sustain: 0.4, release: 0.4,
+        delay: 0.09, filterFreq: 4000, reverbAmt: 0.55
+      });
     },
 
-    // Error: buzz turun
+    /* Error — low thud hangat, bukan buzz kasar */
     error: function(){
-      this.tone(220, 0.15, 'sawtooth', 0.12);
-      this.tone(165, 0.22, 'sawtooth', 0.12, 0.12);
+      this.tone({
+        freq: 196, dur: 0.16, vol: 0.14, type: 'triangle',
+        attack: 0.006, decay: 0.08, sustain: 0.5, release: 0.2,
+        filterFreq: 900, reverbAmt: 0.3
+      });
+      this.tone({
+        freq: 146.83, dur: 0.24, vol: 0.13, type: 'triangle',
+        attack: 0.008, decay: 0.1, sustain: 0.5, release: 0.35,
+        delay: 0.1, filterFreq: 800, reverbAmt: 0.35
+      });
     },
 
-    // Fanfare nama terpilih: C5-E5-G5-C6 (do-mi-sol-do)
+    /* Pick nama terpilih — FANFARE 4 nada dengan harmonic overtone
+       (C5 - E5 - G5 - C6) — sinar + harmonic + reverb ekor panjang */
     pick: function(){
       const notes = [523.25, 659.25, 783.99, 1046.5];
-      for (let i = 0; i < notes.length; i++){
-        this.tone(notes[i], 0.38, 'triangle', 0.24, i * 0.075);
-        this.tone(notes[i] * 2, 0.18, 'sine', 0.06, i * 0.075);
-      }
+      const self = this;
+      notes.forEach(function(f, i){
+        const d = i * 0.085;
+        // Nada utama (triangle — lebih hangat dari sine)
+        self.tone({
+          freq: f, dur: 0.28, vol: 0.16, type: 'triangle',
+          attack: 0.006, decay: 0.08, sustain: 0.6, release: 0.5,
+          delay: d, filterFreq: 4000, reverbAmt: 0.5
+        });
+        // Overtone harmonic kedua (2x freq, lebih pelan)
+        self.tone({
+          freq: f * 2, dur: 0.2, vol: 0.05, type: 'sine',
+          attack: 0.004, decay: 0.06, sustain: 0.4, release: 0.35,
+          delay: d + 0.002, filterFreq: 6000, reverbAmt: 0.6
+        });
+        // Nada ketiga (3x freq, sangat pelan — shimmer)
+        self.tone({
+          freq: f * 3, dur: 0.12, vol: 0.02, type: 'sine',
+          attack: 0.003, decay: 0.04, sustain: 0.3, release: 0.25,
+          delay: d + 0.004, filterFreq: 8000, reverbAmt: 0.7
+        });
+      });
     },
 
-    // Bagi kelompok: arpeggio naik 5 nada
+    /* Bagi kelompok — arpeggio 5 nada hangat */
     groups: function(){
       const notes = [523.25, 659.25, 783.99, 1046.5, 1318.5];
-      for (let i = 0; i < notes.length; i++){
-        this.tone(notes[i], 0.22, 'sine', 0.15, i * 0.05);
-      }
+      const self = this;
+      notes.forEach(function(f, i){
+        self.tone({
+          freq: f, dur: 0.22, vol: 0.13, type: 'triangle',
+          attack: 0.006, decay: 0.07, sustain: 0.5, release: 0.35,
+          delay: i * 0.055, filterFreq: 4000, reverbAmt: 0.45
+        });
+        self.tone({
+          freq: f * 2, dur: 0.12, vol: 0.03, type: 'sine',
+          attack: 0.004, decay: 0.05, sustain: 0.3, release: 0.25,
+          delay: i * 0.055 + 0.002, filterFreq: 7000, reverbAmt: 0.5
+        });
+      });
     },
 
-    // Timer habis: bel alarm 3x
+    /* Timer habis — bell alarm 3x, hangat & jelas */
     timerEnd: function(){
+      const self = this;
       for (let i = 0; i < 3; i++){
-        this.tone(880, 0.18, 'sine', 0.28, i * 0.28);
-        this.tone(1318.5, 0.18, 'sine', 0.2, i * 0.28);
-        this.tone(440, 0.28, 'triangle', 0.12, i * 0.28);
+        const d = i * 0.42;
+        self.tone({
+          freq: 880, dur: 0.2, vol: 0.18, type: 'sine',
+          attack: 0.004, decay: 0.06, sustain: 0.5, release: 0.4,
+          delay: d, filterFreq: 3500, reverbAmt: 0.5
+        });
+        self.tone({
+          freq: 1174.66, dur: 0.18, vol: 0.12, type: 'sine',
+          attack: 0.004, decay: 0.06, sustain: 0.4, release: 0.35,
+          delay: d + 0.004, filterFreq: 4000, reverbAmt: 0.55
+        });
+        self.tone({
+          freq: 440, dur: 0.28, vol: 0.08, type: 'triangle',
+          attack: 0.008, decay: 0.1, sustain: 0.4, release: 0.5,
+          delay: d, filterFreq: 1500, reverbAmt: 0.3
+        });
       }
     },
 
-    // Kocok: sweep naik cepat
+    /* Whoosh — noise sweep dengan pitch & filter bend */
     whoosh: function(){
-      if (!this.enabled || !this.ctx) return;
-      try {
-        const t = this.ctx.currentTime;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(280, t);
-        osc.frequency.exponentialRampToValueAtTime(1400, t + 0.22);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        gain.gain.setValueAtTime(0.0001, t);
-        gain.gain.exponentialRampToValueAtTime(0.16, t + 0.02);
-        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.24);
-        osc.start(t);
-        osc.stop(t + 0.27);
-      } catch(e){}
+      this.noise({
+        freq: 300, freqTo: 2800, q: 2.5, dur: 0.32, vol: 0.14,
+        filterType: 'bandpass', reverbAmt: 0.4
+      });
+      // Layer kedua: sine sweep untuk body
+      this.tone({
+        freq: 220, pitchTo: 880, dur: 0.26, vol: 0.07, type: 'sine',
+        attack: 0.01, decay: 0.08, sustain: 0.5, release: 0.2,
+        filterFreq: 3000, reverbAmt: 0.35
+      });
+    },
+
+    /* Test — mainkan semua berurutan */
+    test: function(){
+      if (!this.enabled){
+        console.log('[Sound] test: enabled = false');
+        return;
+      }
+      console.log('[Sound] test — state:', this.ctx ? this.ctx.state : 'NO_CTX',
+                  'unlocked:', this.unlocked);
+      const self = this;
+      this.tick();
+      setTimeout(function(){ self.success(); }, 350);
+      setTimeout(function(){ self.pick(); }, 1000);
+      setTimeout(function(){ self.groups(); }, 2200);
+      setTimeout(function(){ self.whoosh(); }, 3200);
+      setTimeout(function(){ self.timerEnd(); }, 4000);
     }
   };
   function toggleSound(){
