@@ -1,0 +1,13 @@
+# backup & file dev
+*.bak
+patch.py
+AcakSiswa.html
+serve.py
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+
+# termux
+.bash_history
