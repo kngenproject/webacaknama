@@ -705,408 +705,6 @@
   html.lowend .group-card{animation:none;}
   html.lowend .timer{animation:none;}
   html.lowend .timer.ending{animation:none;color:#ff8a8a;}
-
-  /* ANIMATION UPGRADE V2 */
-  :root{
-    --ease-out-back:cubic-bezier(.34,1.56,.64,1);
-    --ease-spring:cubic-bezier(.32,.72,0,1);
-    --ease-smooth:cubic-bezier(.4,0,.2,1);
-    --ease-bounce:cubic-bezier(.68,-.55,.27,1.55);
-  }
-
-  /* ---------- Entrance stagger pada load ---------- */
-  @keyframes fadeUpIn{
-    from{opacity:0;transform:translate3d(0,14px,0);}
-    to{opacity:1;transform:translate3d(0,0,0);}
-  }
-  @keyframes fadeIn{
-    from{opacity:0;}
-    to{opacity:1;}
-  }
-  .anim-in{
-    opacity:0;
-    animation:fadeUpIn .5s var(--ease-out-back) forwards;
-  }
-  .app > .topbar.anim-in{animation-delay:0s;}
-  .app > .tabbar.anim-in{animation-delay:.05s;}
-  .app > .hero.anim-in{animation-delay:.1s;}
-  .app > .action-area.anim-in{animation-delay:.15s;}
-  .app > .hist-wrap.anim-in{animation-delay:.2s;}
-  .app > .foot.anim-in{animation-delay:.25s;}
-
-  /* ---------- Hero glow pulse (idle) ---------- */
-  @keyframes glowPulse{
-    0%,100%{opacity:.55;transform:scale(1);}
-    50%{opacity:.85;transform:scale(1.06);}
-  }
-  .hero.has-result .hero-glow{
-    animation:glowPulse 3s ease-in-out infinite;
-    will-change:opacity,transform;
-  }
-
-  /* ---------- Result reveal: bounce scale + glow flash ---------- */
-  @keyframes resultReveal{
-    0%{transform:scale(.4) rotate(-4deg);opacity:0;}
-    45%{transform:scale(1.14) rotate(1deg);opacity:1;}
-    70%{transform:scale(.96) rotate(-.5deg);}
-    100%{transform:scale(1) rotate(0);opacity:1;}
-  }
-  .result-wrap.reveal{
-    animation:resultReveal .68s var(--ease-out-back);
-    will-change:transform,opacity;
-  }
-
-  /* ---------- Spin pulse (per tick) ---------- */
-  @keyframes tickPulse{
-    0%{transform:scale(1);}
-    50%{transform:scale(1.06);}
-    100%{transform:scale(1);}
-  }
-  .result-wrap.tick{animation:tickPulse .09s ease-out;}
-
-  /* ---------- Button ripple ---------- */
-  .btn-acak, .act, .copy-btn, .tab, .tab-add, .menu-item, .sheet-actions .btn{
-    position:relative;
-    overflow:hidden;
-  }
-  .ripple{
-    position:absolute;
-    border-radius:50%;
-    background:rgba(255,255,255,.35);
-    transform:scale(0);
-    animation:rippleAnim .55s ease-out forwards;
-    pointer-events:none;
-    will-change:transform,opacity;
-  }
-  html[data-theme="light"] .ripple{background:rgba(0,0,0,.2);}
-  @keyframes rippleAnim{
-    to{transform:scale(2.4);opacity:0;}
-  }
-
-  /* ---------- Pick button pulse glow (idle attention) ---------- */
-  @keyframes pickPulse{
-    0%,100%{box-shadow:0 10px 28px rgba(255,179,64,.35);}
-    50%{box-shadow:0 14px 38px rgba(255,179,64,.55);}
-  }
-  .btn-acak:not(:disabled){animation:pickPulse 2.6s ease-in-out infinite;}
-  .btn-acak:active:not(:disabled){animation:none;}
-
-  /* ---------- Toast masuk lebih springy ---------- */
-  @keyframes toastIn{
-    0%{opacity:0;transform:translate3d(0,22px,0) scale(.94);}
-    60%{opacity:1;transform:translate3d(0,-2px,0) scale(1.02);}
-    100%{transform:translate3d(0,0,0) scale(1);}
-  }
-  .toast{animation:toastIn .42s var(--ease-out-back);}
-
-  /* ---------- Sheet spring masuk ---------- */
-  .sheet{transition:transform .42s var(--ease-spring);}
-  .sheet-bd{transition:opacity .28s var(--ease-smooth);}
-
-  /* ---------- Menu items stagger ---------- */
-  @keyframes menuItemIn{
-    from{opacity:0;transform:translate3d(12px,0,0);}
-    to{opacity:1;transform:translate3d(0,0,0);}
-  }
-  .menu.show .menu-item{
-    opacity:0;
-    animation:menuItemIn .26s var(--ease-out-back) forwards;
-  }
-  .menu.show .menu-item:nth-child(1){animation-delay:.02s;}
-  .menu.show .menu-item:nth-child(2){animation-delay:.04s;}
-  .menu.show .menu-item:nth-child(3){animation-delay:.06s;}
-  .menu.show .menu-item:nth-child(4){animation-delay:.08s;}
-  .menu.show .menu-item:nth-child(5){animation-delay:.1s;}
-  .menu.show .menu-item:nth-child(6){animation-delay:.12s;}
-  .menu.show .menu-item:nth-child(7){animation-delay:.14s;}
-  .menu.show .menu-item:nth-child(8){animation-delay:.16s;}
-  .menu.show .menu-item:nth-child(9){animation-delay:.18s;}
-  .menu.show .menu-item:nth-child(10){animation-delay:.2s;}
-  .menu.show .menu-item:nth-child(11){animation-delay:.22s;}
-  .menu.show .menu-item:nth-child(12){animation-delay:.24s;}
-  .menu.show .menu-item:nth-child(13){animation-delay:.26s;}
-  .menu.show .menu-item:nth-child(14){animation-delay:.28s;}
-  .menu.show .menu-item:nth-child(15){animation-delay:.3s;}
-  .menu.show .menu-item:nth-child(16){animation-delay:.32s;}
-  .menu.show .menu-sep{
-    opacity:0;
-    animation:fadeIn .2s ease-out forwards;
-  }
-  .menu.show .menu-sep:nth-child(1){animation-delay:.03s;}
-  .menu.show .menu-sep:nth-child(2){animation-delay:.13s;}
-  .menu.show .menu-sep:nth-child(3){animation-delay:.23s;}
-  .menu.show .menu-sep:nth-child(4){animation-delay:.33s;}
-
-  /* ---------- History chip entrance ---------- */
-  @keyframes chipIn{
-    from{opacity:0;transform:translate3d(14px,0,0) scale(.9);}
-    to{opacity:1;transform:translate3d(0,0,0) scale(1);}
-  }
-  .hist-chip.new{animation:chipIn .32s var(--ease-out-back);}
-
-  /* ---------- Tab switch pulse ---------- */
-  @keyframes tabPulse{
-    0%{transform:scale(1);}
-    45%{transform:scale(.94);}
-    100%{transform:scale(1);}
-  }
-  .tab:active{animation:tabPulse .2s ease-out;}
-
-  /* ---------- Confetti canvas overlay ---------- */
-  #confettiCanvas{
-    position:fixed;
-    inset:0;
-    pointer-events:none;
-    z-index:1099;
-    opacity:0;
-    transition:opacity .2s;
-  }
-  #confettiCanvas.active{opacity:1;}
-
-  /* ---------- Mode badge pulse saat ganti ---------- */
-  @keyframes badgePop{
-    0%{transform:scale(1);}
-    50%{transform:scale(1.15);}
-    100%{transform:scale(1);}
-  }
-  .hero-badges .b.changed{animation:badgePop .38s var(--ease-out-back);}
-
-  /* ---------- Shake error ---------- */
-  @keyframes shake{
-    0%,100%{transform:translate3d(0,0,0);}
-    20%{transform:translate3d(-6px,0,0);}
-    40%{transform:translate3d(6px,0,0);}
-    60%{transform:translate3d(-4px,0,0);}
-    80%{transform:translate3d(4px,0,0);}
-  }
-  .shake{animation:shake .4s ease-out;}
-
-  /* ---------- Modal spring entrance ---------- */
-  @keyframes modalSpring{
-    0%{opacity:0;transform:scale(.8) translate3d(0,10px,0);}
-    55%{opacity:1;transform:scale(1.03) translate3d(0,-2px,0);}
-    100%{opacity:1;transform:scale(1) translate3d(0,0,0);}
-  }
-  .modal{animation:modalSpring .44s var(--ease-out-back);}
-
-  /* ---------- Stat bar fill animation ---------- */
-  @keyframes statFill{
-    from{transform:scaleX(0);transform-origin:left;}
-    to{transform:scaleX(1);transform-origin:left;}
-  }
-  .stat-fill{animation:statFill .7s var(--ease-smooth);transform-origin:left;}
-
-  /* ---------- Group card reveal ---------- */
-  @keyframes groupCardIn{
-    0%{opacity:0;transform:translate3d(0,16px,0) scale(.94);}
-    100%{opacity:1;transform:translate3d(0,0,0) scale(1);}
-  }
-  .group-card{animation:groupCardIn .5s var(--ease-out-back) backwards;}
-  .group-card:nth-child(1){animation-delay:0s;}
-  .group-card:nth-child(2){animation-delay:.06s;}
-  .group-card:nth-child(3){animation-delay:.12s;}
-  .group-card:nth-child(4){animation-delay:.18s;}
-  .group-card:nth-child(5){animation-delay:.24s;}
-  .group-card:nth-child(6){animation-delay:.3s;}
-  .group-card:nth-child(7){animation-delay:.36s;}
-  .group-card:nth-child(8){animation-delay:.42s;}
-
-  /* ---------- Timer tick pulse ---------- */
-  @keyframes timerTick{
-    0%,100%{transform:translateX(-50%) scale(1);}
-    50%{transform:translateX(-50%) scale(1.06);}
-  }
-  .timer.ending{
-    animation:timerTick .8s ease-in-out infinite;
-    color:#ff8a8a;
-  }
-
-  /* ---------- Reduced motion / lowend ---------- */
-  html.lowend .app > *{animation:none !important;opacity:1 !important;}
-  html.lowend .hero.has-result .hero-glow{animation:none;opacity:.7;}
-  html.lowend .result-wrap.reveal{animation:none;}
-  html.lowend .result-wrap.tick{animation:none;}
-  html.lowend .btn-acak:not(:disabled){animation:none;}
-  html.lowend .toast{animation:none;}
-  html.lowend .menu.show .menu-item{animation:none;opacity:1;}
-  html.lowend .menu.show .menu-sep{animation:none;opacity:1;}
-  html.lowend .hist-chip.new{animation:none;}
-  html.lowend .modal{animation:none;}
-  html.lowend .group-card{animation:none;}
-  html.lowend .stat-fill{animation:none;}
-  html.lowend .tab:active{animation:none;}
-  html.lowend .hero-badges .b.changed{animation:none;}
-  html.lowend .shake{animation:none;}
-  html.lowend .ripple{animation:none;display:none;}
-  html.lowend .timer.ending{animation:none;}
-
-  @media (prefers-reduced-motion: reduce){
-    .app > *, .result-wrap, .btn-acak, .toast, .menu-item, .hist-chip.new,
-    .modal, .group-card, .stat-fill, .hero-glow, .timer.ending{
-      animation:none !important;
-      transition:none !important;
-    }
-  }
-
-  /* RESPONSIVE V2 — tablet & desktop */
-
-  /* ===== TABLET (≥ 720px) ===== */
-  @media (min-width: 720px){
-    body { padding: 14px; }
-    .app {
-      max-width: 720px;
-      padding: 14px;
-      gap: 10px;
-    }
-    .topbar { padding: 12px 18px; }
-    .brand h1 { font-size: 1.15rem; }
-    .brand .logo { width: 38px; height: 38px; font-size: 20px; border-radius: 12px; }
-    .brand .sub { font-size: .72rem; }
-    .rng-chip { font-size: .68rem; padding: 6px 11px; }
-
-    .tabbar { padding: 10px 18px; }
-    .tab { padding: 10px 16px; font-size: .85rem; min-height: 42px; }
-    .tab .x { width: 20px; height: 20px; font-size: .85rem; }
-    .tab-add { width: 42px; height: 42px; font-size: 20px; }
-
-    .hero { padding: 24px 32px; gap: 16px; }
-    .hero-badges { top: 18px; left: 20px; right: 20px; }
-    .hero-badges .b { font-size: .72rem; padding: 6px 13px; }
-    .result-name { font-size: clamp(2.8rem, 8vw, 4.2rem); }
-    .result-name.empty { font-size: clamp(1.2rem, 3.5vw, 1.6rem); }
-    .hero-preview { font-size: .84rem; padding: 10px 16px; }
-
-    .action-area { padding: 0 16px 14px; gap: 10px; }
-    .btn-acak { font-size: 1.35rem; padding: 22px; min-height: 74px; letter-spacing: .12em; }
-    .btn-acak .emoji { font-size: 1.6rem; }
-    .actions { gap: 8px; }
-    .act { min-height: 68px; font-size: .78rem; padding: 12px 6px; border-radius: var(--r-lg); }
-    .act .ico { font-size: 1.35rem; }
-
-    .hist-wrap { padding: 0 16px 12px; }
-    .hist-chip { font-size: .78rem; padding: 7px 14px; min-height: 34px; }
-
-    .foot { padding: 12px 18px calc(var(--safe-bottom) + 14px); font-size: .8rem; }
-    .foot .stat { padding: 9px 16px; }
-    .copy-btn { padding: 10px 18px; font-size: .78rem; min-height: 40px; }
-
-    .sheet {
-      max-width: 720px;
-      padding: 12px 20px calc(var(--safe-bottom) + 20px);
-    }
-    .sheet-head h3 { font-size: 1.1rem; }
-    .sheet textarea { font-size: 1.05rem; min-height: 220px; }
-    .sheet-actions .btn { font-size: 1rem; padding: 16px; min-height: 58px; }
-
-    .menu { min-width: 320px; right: 20px; }
-    .menu-item { padding: 14px 16px; min-height: 52px; font-size: .95rem; }
-    .menu-item .ico { font-size: 1.2rem; width: 26px; }
-
-    .modal { max-width: 420px; padding: 24px; }
-    .modal h3 { font-size: 1.15rem; }
-    .modal input { padding: 16px; font-size: 1.05rem; }
-    .modal-acts .btn { font-size: 1rem; padding: 15px; min-height: 54px; }
-
-    #toastWrap { width: min(400px, calc(100vw - 40px)); }
-    .toast { font-size: .92rem; padding: 14px 20px; }
-  }
-
-  /* ===== DESKTOP (≥ 1024px) ===== */
-  @media (min-width: 1024px){
-    body {
-      padding: 16px 16px 16px 396px;
-    }
-
-    .app {
-      max-width: 960px;
-      margin: 0 auto;
-      height: calc(100dvh - 32px);
-      padding: 16px;
-      gap: 12px;
-      border-radius: var(--r-xl);
-    }
-
-    /* --- Sheet jadi sidebar kiri tetap --- */
-    .sheet {
-      display: flex !important;
-      position: fixed;
-      left: 16px;
-      top: 16px;
-      bottom: 16px;
-      right: auto;
-      width: 364px;
-      max-width: 364px;
-      max-height: none;
-      margin: 0;
-      transform: none !important;
-      opacity: 1 !important;
-      pointer-events: auto;
-      border: 1px solid var(--border);
-      border-radius: var(--r-xl);
-      box-shadow: 0 12px 40px rgba(0,0,0,.5);
-      padding: 16px 20px 20px;
-    }
-    .sheet-bd { display: none !important; }
-    .sheet-handle { display: none; }
-    .sheet-actions .btn-primary { display: none; }
-
-    /* --- Tombol Daftar tidak perlu (list selalu kelihatan) --- */
-    #openListBtn { display: none !important; }
-    .actions { grid-template-columns: repeat(4, 1fr); }
-
-    /* --- Ukuran skala lebih besar untuk layar lebar --- */
-    .result-name { font-size: clamp(3.2rem, 5vw, 5rem); }
-    .result-name.empty { font-size: clamp(1.4rem, 2.2vw, 1.8rem); }
-    .btn-acak { font-size: 1.5rem; padding: 28px; min-height: 88px; letter-spacing: .14em; }
-    .btn-acak .emoji { font-size: 1.8rem; }
-    .act { min-height: 76px; font-size: .86rem; }
-    .act .ico { font-size: 1.5rem; }
-
-    /* --- Toast pindah ke tengah area app --- */
-    #toastWrap { left: calc(50% + 198px); }
-
-    /* --- Tabs lebih lega --- */
-    .tab { padding: 11px 18px; font-size: .9rem; }
-    .tab-add { width: 44px; height: 44px; }
-
-    /* --- Override max-height:660px yang mungkin nyala di laptop --- */
-    .btn { padding: 12px 20px; font-size: .9rem; }
-
-    /* --- Cursor pointer untuk semua interaktif --- */
-    .tab, .act, .btn-acak, .copy-btn, .tab-add, .menu-item,
-    .sheet-actions .btn, .modal-acts .btn { cursor: pointer; }
-
-    /* --- Hover states (khusus desktop) --- */
-    .act:hover { background: var(--surface-3); border-color: var(--border-2); }
-    .tab:hover { color: var(--text-1); border-color: var(--border-2); }
-    .menu-item:hover { background: rgba(255,255,255,.06); }
-    .copy-btn:hover { color: var(--text-1); border-color: var(--border-2); }
-    .sheet-actions .btn-clear:hover { background: var(--red); color: #fff; }
-    html[data-theme="light"] .menu-item:hover { background: rgba(0,0,0,.05); }
-
-    /* --- Scrollbar halus --- */
-    ::-webkit-scrollbar { width: 8px; height: 8px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--border); }
-  }
-
-  /* ===== WIDE (≥ 1440px) ===== */
-  @media (min-width: 1440px){
-    .app { max-width: 1080px; padding: 20px; }
-    .result-name { font-size: clamp(3.6rem, 4.5vw, 5.5rem); }
-    .btn-acak { padding: 32px; min-height: 96px; font-size: 1.6rem; }
-    .act { min-height: 82px; font-size: .9rem; }
-    .act .ico { font-size: 1.6rem; }
-  }
-
-  /* ===== Landscape phone (sudah ada, biar konsisten) ===== */
-  @media (max-height: 500px) and (max-width: 1023px){
-    .hero { padding: 8px 16px; gap: 6px; }
-    .result-name { font-size: clamp(1.6rem, 6vh, 2.2rem); }
-    .btn-acak { padding: 12px; min-height: 46px; font-size: .95rem; }
-    .act { min-height: 44px; padding: 6px 3px; font-size: .62rem; }
-  }
 </style>
 <link rel="manifest" href="./manifest.json" />
 <link rel="apple-touch-icon" href="./icon-192.png" />
@@ -1542,13 +1140,14 @@
     resultDisplay.classList.remove('empty');
     resultDisplay.textContent = name;
     if (opts.picked !== false) resultDisplay.classList.add('picked');
-    if (opts.pop){
-      Anim.reveal();
-      Anim.confetti(80);
+    if (opts.pop && !isLowEnd){
+      // restart animation tanpa baca layout setiap kali — pakai class toggle
+      resultWrap.classList.remove('pop');
+      void resultWrap.offsetWidth;   // 1 forced reflow, hanya saat pop
+      resultWrap.classList.add('pop');
     }
     hero.classList.add('has-result');
     currentResult = name;
-    Anim.badge();
   }
 
   function renderTabs(){
@@ -1701,7 +1300,6 @@
         resultDisplay.textContent = pool[(Math.random() * pool.length) | 0];
         hero.classList.remove('has-result');
         Sound.tick();
-        Anim.tick();
         step++;
       }
 
@@ -1744,7 +1342,6 @@
     if (!p.present.length){
       showResult('', {empty:true, text:'❌ Tidak ada nama'});
       Sound.error();
-      Anim.shake(hero);
       tab.orderMode = false;
       updateModeBadge(); updateRepeatIndicator();
       return;
@@ -1777,7 +1374,6 @@
     if (!p.present.length){
       showResult('', {empty:true, text:'❌ Tidak ada nama'});
       Sound.error();
-      Anim.shake(hero);
       tab.orderMode = false;
       updateModeBadge();
       return;
@@ -2005,27 +1601,8 @@
     }
   }
 
-
-  /* --- Posisi menu: di desktop, tempel ke sisi kanan app --- */
-  function positionMenuDesktop(){
-    if (window.innerWidth < 1024) {
-      menu.style.right = '';
-      menu.style.bottom = '';
-      return;
-    }
-    const appEl = document.querySelector('.app');
-    if (!appEl) return;
-    const r = appEl.getBoundingClientRect();
-    const right = Math.max(16, window.innerWidth - r.right + 16);
-    menu.style.right = right + 'px';
-  }
-
   /* ---------- Menu ---------- */
-  function openMenu(){
-    positionMenuDesktop();
-    menu.classList.add('show');
-    menuBackdrop.classList.add('show');
-  }
+  function openMenu(){ menu.classList.add('show'); menuBackdrop.classList.add('show'); }
   function closeMenu(){ menu.classList.remove('show'); menuBackdrop.classList.remove('show'); }
 
   /* ============ THEME ============ */
@@ -2456,162 +2033,6 @@
     reader.readAsText(file);
   }
 
-  /* ============ ANIMATION V2 ============ */
-
-  /* --- Ripple effect pada tombol --- */
-  function attachRipples(){
-    if (isLowEnd) return;
-    document.addEventListener('pointerdown', function(e){
-      const t = e.target.closest('.btn-acak, .act, .copy-btn, .tab, .tab-add, .menu-item, .sheet-actions .btn, .modal-acts .btn');
-      if (!t) return;
-      const rect = t.getBoundingClientRect();
-      const size = Math.max(rect.width, rect.height) * 1.2;
-      const x = e.clientX - rect.left - size / 2;
-      const y = e.clientY - rect.top - size / 2;
-      const r = document.createElement('span');
-      r.className = 'ripple';
-      r.style.cssText = 'width:' + size + 'px;height:' + size + 'px;left:' + x + 'px;top:' + y + 'px;';
-      t.appendChild(r);
-      setTimeout(function(){ r.remove(); }, 600);
-    }, { passive: true });
-  }
-
-  /* --- Entrance stagger di load --- */
-  function playEntrance(){
-    if (isLowEnd) return;
-    const targets = document.querySelectorAll('.app > .topbar, .app > .tabbar, .app > .hero, .app > .action-area, .app > .hist-wrap, .app > .foot');
-    targets.forEach(function(el){ el.classList.add('anim-in'); });
-  }
-
-  /* --- Result reveal (bounce + glow flash) --- */
-  function playResultReveal(){
-    if (isLowEnd) return;
-    resultWrap.classList.remove('reveal');
-    void resultWrap.offsetWidth;
-    resultWrap.classList.add('reveal');
-    setTimeout(function(){ resultWrap.classList.remove('reveal'); }, 750);
-  }
-
-  /* --- Tick pulse selama spin --- */
-  function playTickPulse(){
-    if (isLowEnd) return;
-    resultWrap.classList.remove('tick');
-    void resultWrap.offsetWidth;
-    resultWrap.classList.add('tick');
-  }
-
-  /* --- Mode badge pulse --- */
-  function playBadgePulse(){
-    if (isLowEnd) return;
-    modeBadge.classList.remove('changed');
-    void modeBadge.offsetWidth;
-    modeBadge.classList.add('changed');
-    setTimeout(function(){ modeBadge.classList.remove('changed'); }, 420);
-  }
-
-  /* --- Shake elemen (error) --- */
-  function playShake(el){
-    if (!el || isLowEnd) return;
-    el.classList.remove('shake');
-    void el.offsetWidth;
-    el.classList.add('shake');
-    setTimeout(function(){ el.classList.remove('shake'); }, 450);
-  }
-
-  /* --- Confetti canvas --- */
-  const Confetti = (function(){
-    const canvas = document.getElementById('confettiCanvas');
-    if (!canvas) return { fire: function(){} };
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-    let raf = null;
-    let running = false;
-
-    function resize(){
-      const dpr = Math.min(window.devicePixelRatio || 1, isLowEnd ? 1 : 2);
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
-      canvas.style.width = window.innerWidth + 'px';
-      canvas.style.height = window.innerHeight + 'px';
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-    resize();
-    let resizeTimer = null;
-    window.addEventListener('resize', function(){
-      if (resizeTimer) clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(resize, 200);
-    });
-
-    const COLORS = ['#ffb340','#ff8a3d','#6aa9ff','#4cd9a0','#ff6b7e','#ffd166'];
-
-    function fire(opts){
-      if (isLowEnd) return;
-      opts = opts || {};
-      const count = opts.count || 70;
-      const cx = window.innerWidth / 2;
-      const cy = window.innerHeight * 0.42;
-      for (let i = 0; i < count; i++){
-        const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.6;
-        const speed = 4 + Math.random() * 7;
-        particles.push({
-          x: cx, y: cy,
-          vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed - 3,
-          size: 4 + Math.random() * 5,
-          color: COLORS[(Math.random() * COLORS.length) | 0],
-          rot: Math.random() * Math.PI,
-          vr: (Math.random() - 0.5) * 0.4,
-          life: 1,
-          gravity: 0.22 + Math.random() * 0.1
-        });
-      }
-      if (!running){ running = true; canvas.classList.add('active'); loop(); }
-    }
-
-    function loop(){
-      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-      for (let i = particles.length - 1; i >= 0; i--){
-        const p = particles[i];
-        p.vy += p.gravity;
-        p.vx *= 0.99;
-        p.x += p.vx;
-        p.y += p.vy;
-        p.rot += p.vr;
-        p.life -= 0.012;
-        if (p.life <= 0 || p.y > window.innerHeight + 20){
-          particles.splice(i, 1);
-          continue;
-        }
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.rot);
-        ctx.globalAlpha = Math.min(1, p.life * 1.3);
-        ctx.fillStyle = p.color;
-        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.65);
-        ctx.restore();
-      }
-      if (particles.length > 0){
-        raf = requestAnimationFrame(loop);
-      } else {
-        running = false;
-        canvas.classList.remove('active');
-        raf = null;
-      }
-    }
-
-    return { fire: fire };
-  })();
-
-  /* --- Wrapper publik --- */
-  const Anim = {
-    entrance: playEntrance,
-    reveal: playResultReveal,
-    tick: playTickPulse,
-    badge: playBadgePulse,
-    shake: playShake,
-    confetti: function(count){ Confetti.fire({ count: count || 70 }); }
-  };
-
   /* Auto-unlock AudioContext saat interaksi pertama (kebijakan autoplay) */
   document.addEventListener('pointerdown', function(){ Sound.resume(); }, { passive: true });
 
@@ -2729,10 +2150,6 @@
   });
 
   /* Pause rAF saat tab tidak aktif — hemat baterai & CPU */
-  window.addEventListener('resize', function(){
-    if (menu.classList.contains('show')) positionMenuDesktop();
-  });
-
   document.addEventListener('visibilitychange', () => {
     if (document.hidden && spinRAF){
       cancelAnimationFrame(spinRAF);
@@ -2753,9 +2170,6 @@
     }
     renderTabs();
     loadTabData(currentTabId);
-    if (typeof Anim !== 'undefined' && typeof attachRipples === 'function'){
-      setTimeout(function(){ Anim.entrance(); attachRipples(); }, 40);
-    }
   })();
 
 

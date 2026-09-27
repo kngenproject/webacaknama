@@ -947,166 +947,6 @@
       transition:none !important;
     }
   }
-
-  /* RESPONSIVE V2 — tablet & desktop */
-
-  /* ===== TABLET (≥ 720px) ===== */
-  @media (min-width: 720px){
-    body { padding: 14px; }
-    .app {
-      max-width: 720px;
-      padding: 14px;
-      gap: 10px;
-    }
-    .topbar { padding: 12px 18px; }
-    .brand h1 { font-size: 1.15rem; }
-    .brand .logo { width: 38px; height: 38px; font-size: 20px; border-radius: 12px; }
-    .brand .sub { font-size: .72rem; }
-    .rng-chip { font-size: .68rem; padding: 6px 11px; }
-
-    .tabbar { padding: 10px 18px; }
-    .tab { padding: 10px 16px; font-size: .85rem; min-height: 42px; }
-    .tab .x { width: 20px; height: 20px; font-size: .85rem; }
-    .tab-add { width: 42px; height: 42px; font-size: 20px; }
-
-    .hero { padding: 24px 32px; gap: 16px; }
-    .hero-badges { top: 18px; left: 20px; right: 20px; }
-    .hero-badges .b { font-size: .72rem; padding: 6px 13px; }
-    .result-name { font-size: clamp(2.8rem, 8vw, 4.2rem); }
-    .result-name.empty { font-size: clamp(1.2rem, 3.5vw, 1.6rem); }
-    .hero-preview { font-size: .84rem; padding: 10px 16px; }
-
-    .action-area { padding: 0 16px 14px; gap: 10px; }
-    .btn-acak { font-size: 1.35rem; padding: 22px; min-height: 74px; letter-spacing: .12em; }
-    .btn-acak .emoji { font-size: 1.6rem; }
-    .actions { gap: 8px; }
-    .act { min-height: 68px; font-size: .78rem; padding: 12px 6px; border-radius: var(--r-lg); }
-    .act .ico { font-size: 1.35rem; }
-
-    .hist-wrap { padding: 0 16px 12px; }
-    .hist-chip { font-size: .78rem; padding: 7px 14px; min-height: 34px; }
-
-    .foot { padding: 12px 18px calc(var(--safe-bottom) + 14px); font-size: .8rem; }
-    .foot .stat { padding: 9px 16px; }
-    .copy-btn { padding: 10px 18px; font-size: .78rem; min-height: 40px; }
-
-    .sheet {
-      max-width: 720px;
-      padding: 12px 20px calc(var(--safe-bottom) + 20px);
-    }
-    .sheet-head h3 { font-size: 1.1rem; }
-    .sheet textarea { font-size: 1.05rem; min-height: 220px; }
-    .sheet-actions .btn { font-size: 1rem; padding: 16px; min-height: 58px; }
-
-    .menu { min-width: 320px; right: 20px; }
-    .menu-item { padding: 14px 16px; min-height: 52px; font-size: .95rem; }
-    .menu-item .ico { font-size: 1.2rem; width: 26px; }
-
-    .modal { max-width: 420px; padding: 24px; }
-    .modal h3 { font-size: 1.15rem; }
-    .modal input { padding: 16px; font-size: 1.05rem; }
-    .modal-acts .btn { font-size: 1rem; padding: 15px; min-height: 54px; }
-
-    #toastWrap { width: min(400px, calc(100vw - 40px)); }
-    .toast { font-size: .92rem; padding: 14px 20px; }
-  }
-
-  /* ===== DESKTOP (≥ 1024px) ===== */
-  @media (min-width: 1024px){
-    body {
-      padding: 16px 16px 16px 396px;
-    }
-
-    .app {
-      max-width: 960px;
-      margin: 0 auto;
-      height: calc(100dvh - 32px);
-      padding: 16px;
-      gap: 12px;
-      border-radius: var(--r-xl);
-    }
-
-    /* --- Sheet jadi sidebar kiri tetap --- */
-    .sheet {
-      display: flex !important;
-      position: fixed;
-      left: 16px;
-      top: 16px;
-      bottom: 16px;
-      right: auto;
-      width: 364px;
-      max-width: 364px;
-      max-height: none;
-      margin: 0;
-      transform: none !important;
-      opacity: 1 !important;
-      pointer-events: auto;
-      border: 1px solid var(--border);
-      border-radius: var(--r-xl);
-      box-shadow: 0 12px 40px rgba(0,0,0,.5);
-      padding: 16px 20px 20px;
-    }
-    .sheet-bd { display: none !important; }
-    .sheet-handle { display: none; }
-    .sheet-actions .btn-primary { display: none; }
-
-    /* --- Tombol Daftar tidak perlu (list selalu kelihatan) --- */
-    #openListBtn { display: none !important; }
-    .actions { grid-template-columns: repeat(4, 1fr); }
-
-    /* --- Ukuran skala lebih besar untuk layar lebar --- */
-    .result-name { font-size: clamp(3.2rem, 5vw, 5rem); }
-    .result-name.empty { font-size: clamp(1.4rem, 2.2vw, 1.8rem); }
-    .btn-acak { font-size: 1.5rem; padding: 28px; min-height: 88px; letter-spacing: .14em; }
-    .btn-acak .emoji { font-size: 1.8rem; }
-    .act { min-height: 76px; font-size: .86rem; }
-    .act .ico { font-size: 1.5rem; }
-
-    /* --- Toast pindah ke tengah area app --- */
-    #toastWrap { left: calc(50% + 198px); }
-
-    /* --- Tabs lebih lega --- */
-    .tab { padding: 11px 18px; font-size: .9rem; }
-    .tab-add { width: 44px; height: 44px; }
-
-    /* --- Override max-height:660px yang mungkin nyala di laptop --- */
-    .btn { padding: 12px 20px; font-size: .9rem; }
-
-    /* --- Cursor pointer untuk semua interaktif --- */
-    .tab, .act, .btn-acak, .copy-btn, .tab-add, .menu-item,
-    .sheet-actions .btn, .modal-acts .btn { cursor: pointer; }
-
-    /* --- Hover states (khusus desktop) --- */
-    .act:hover { background: var(--surface-3); border-color: var(--border-2); }
-    .tab:hover { color: var(--text-1); border-color: var(--border-2); }
-    .menu-item:hover { background: rgba(255,255,255,.06); }
-    .copy-btn:hover { color: var(--text-1); border-color: var(--border-2); }
-    .sheet-actions .btn-clear:hover { background: var(--red); color: #fff; }
-    html[data-theme="light"] .menu-item:hover { background: rgba(0,0,0,.05); }
-
-    /* --- Scrollbar halus --- */
-    ::-webkit-scrollbar { width: 8px; height: 8px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--border); }
-  }
-
-  /* ===== WIDE (≥ 1440px) ===== */
-  @media (min-width: 1440px){
-    .app { max-width: 1080px; padding: 20px; }
-    .result-name { font-size: clamp(3.6rem, 4.5vw, 5.5rem); }
-    .btn-acak { padding: 32px; min-height: 96px; font-size: 1.6rem; }
-    .act { min-height: 82px; font-size: .9rem; }
-    .act .ico { font-size: 1.6rem; }
-  }
-
-  /* ===== Landscape phone (sudah ada, biar konsisten) ===== */
-  @media (max-height: 500px) and (max-width: 1023px){
-    .hero { padding: 8px 16px; gap: 6px; }
-    .result-name { font-size: clamp(1.6rem, 6vh, 2.2rem); }
-    .btn-acak { padding: 12px; min-height: 46px; font-size: .95rem; }
-    .act { min-height: 44px; padding: 6px 3px; font-size: .62rem; }
-  }
 </style>
 <link rel="manifest" href="./manifest.json" />
 <link rel="apple-touch-icon" href="./icon-192.png" />
@@ -2005,27 +1845,8 @@
     }
   }
 
-
-  /* --- Posisi menu: di desktop, tempel ke sisi kanan app --- */
-  function positionMenuDesktop(){
-    if (window.innerWidth < 1024) {
-      menu.style.right = '';
-      menu.style.bottom = '';
-      return;
-    }
-    const appEl = document.querySelector('.app');
-    if (!appEl) return;
-    const r = appEl.getBoundingClientRect();
-    const right = Math.max(16, window.innerWidth - r.right + 16);
-    menu.style.right = right + 'px';
-  }
-
   /* ---------- Menu ---------- */
-  function openMenu(){
-    positionMenuDesktop();
-    menu.classList.add('show');
-    menuBackdrop.classList.add('show');
-  }
+  function openMenu(){ menu.classList.add('show'); menuBackdrop.classList.add('show'); }
   function closeMenu(){ menu.classList.remove('show'); menuBackdrop.classList.remove('show'); }
 
   /* ============ THEME ============ */
@@ -2729,10 +2550,6 @@
   });
 
   /* Pause rAF saat tab tidak aktif — hemat baterai & CPU */
-  window.addEventListener('resize', function(){
-    if (menu.classList.contains('show')) positionMenuDesktop();
-  });
-
   document.addEventListener('visibilitychange', () => {
     if (document.hidden && spinRAF){
       cancelAnimationFrame(spinRAF);
