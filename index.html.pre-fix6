@@ -1030,48 +1030,15 @@
       border-radius: var(--r-lg);
     }
 
-    /* Sidebar utama (Daftar Siswa) — aktif di tablet juga */
-    #sheet {
-      display: flex !important;
-      position: fixed;
+    /* Sidebar lebih ramping */
+    .sheet {
       left: 10px;
       top: 10px;
       bottom: 10px;
-      right: auto;
       width: 320px;
       max-width: 320px;
-      max-height: none;
-      margin: 0;
-      transform: none !important;
-      opacity: 1 !important;
-      pointer-events: auto;
-      border: 1px solid var(--border);
-      border-radius: var(--r-lg);
-      box-shadow: 0 12px 40px rgba(0,0,0,.5);
       padding: 12px 14px 14px;
-      flex-direction: column;
-      gap: 10px;
-    }
-    #sheetBackdrop { display: none !important; }
-    #sheet .sheet-handle { display: none; }
-    #sheet .sheet-actions .btn-primary { display: none; }
-
-    /* Sheet modal (Statistik, Bagi Kelompok) tetap muncul dari bawah */
-    #groupsSheet,
-    #statsSheet {
-      left: 10px;
-      right: 10px;
-      bottom: 10px;
-      top: auto;
-      width: auto;
-      max-width: none;
-      max-height: 70vh;
       border-radius: var(--r-lg);
-      transform: translate3d(0, 100%, 0);
-    }
-    #groupsSheet.show,
-    #statsSheet.show {
-      transform: translate3d(0, 0, 0);
     }
     .sheet-head h3 { font-size: .95rem; }
     .sheet-head .sub { font-size: .68rem; padding: 3px 8px; }
