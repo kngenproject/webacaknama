@@ -1014,90 +1014,12 @@
   }
 
   /* ===== DESKTOP (≥ 1024px) ===== */
-  @media (min-width: 1024px) and (hover: hover) and (pointer: fine){
-    body {
-      padding: 16px 16px 16px 396px;
-    }
-
-    .app {
-      max-width: 960px;
-      margin: 0 auto;
-      height: calc(100vh - 32px);
-      height: calc(100dvh - 32px);
-      padding: 16px;
-      gap: 12px;
-      border-radius: var(--r-xl);
-    }
-
-    /* --- Sheet jadi sidebar kiri tetap --- */
-    #sheet {
-      display: flex !important;
-      position: fixed;
-      left: 16px;
-      top: 16px;
-      bottom: 16px;
-      right: auto;
-      width: 364px;
-      max-width: 364px;
-      max-height: none;
-      margin: 0;
-      transform: none !important;
-      opacity: 1 !important;
-      pointer-events: auto;
-      border: 1px solid var(--border);
-      border-radius: var(--r-xl);
-      box-shadow: 0 12px 40px rgba(0,0,0,.5);
-      padding: 16px 20px 20px;
-    }
-    #sheetBackdrop { display: none !important; }
-    #sheet .sheet-handle { display: none; }
-    #sheet .sheet-actions .btn-primary { display: none; }
-
-    /* --- Tombol Daftar tidak perlu (list selalu kelihatan) --- */
-    #openListBtn { display: none !important; }
-    .actions { grid-template-columns: repeat(4, 1fr); }
-
-    /* --- Ukuran skala lebih besar untuk layar lebar --- */
-    .result-name { font-size: clamp(3.2rem, 5vw, 5rem); }
-    .result-name.empty { font-size: clamp(1.4rem, 2.2vw, 1.8rem); }
-    .btn-acak { font-size: 1.5rem; padding: 28px; min-height: 88px; letter-spacing: .14em; }
-    .btn-acak .emoji { font-size: 1.8rem; }
-    .act { min-height: 76px; font-size: .86rem; }
-    .act .ico { font-size: 1.5rem; }
-
-    /* --- Toast pindah ke tengah area app --- */
-    #toastWrap { left: calc(50% + 198px); }
-
-    /* --- Tabs lebih lega --- */
-    .tab { padding: 11px 18px; font-size: .9rem; }
-    .tab-add { width: 44px; height: 44px; }
-
-    /* --- Override max-height:660px yang mungkin nyala di laptop --- */
-    .btn { padding: 12px 20px; font-size: .9rem; }
-
-    /* --- Cursor pointer untuk semua interaktif --- */
-    .tab, .act, .btn-acak, .copy-btn, .tab-add, .menu-item,
-    .sheet-actions .btn, .modal-acts .btn { cursor: pointer; }
-
-    /* --- Hover states (khusus desktop) --- */
-    .act:hover { background: var(--surface-3); border-color: var(--border-2); }
-    .tab:hover { color: var(--text-1); border-color: var(--border-2); }
-    .menu-item:hover { background: rgba(255,255,255,.06); }
-    .copy-btn:hover { color: var(--text-1); border-color: var(--border-2); }
-    .sheet-actions .btn-clear:hover { background: var(--red); color: #fff; }
-    html[data-theme="light"] .menu-item:hover { background: rgba(0,0,0,.05); }
-
-    /* --- Scrollbar halus --- */
-    ::-webkit-scrollbar { width: 8px; height: 8px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--border); }
-  }
+  
 
   /* ===== TABLET LANDSCAPE (≥ 1024px, touch, no hover) =====
      Layout desktop tapi berskala lebih kecil agar tidak kegedean
      di tablet 10-11 inch. ===================================== */
-  @media (min-width: 1024px) and (hover: none) and (pointer: coarse){
+  @media (min-width: 1024px){
     body { padding: 10px 10px 10px 344px; }
     .app {
       max-width: none;
@@ -1179,13 +1101,7 @@
   }
 
   /* ===== WIDE (≥ 1440px) ===== */
-  @media (min-width: 1440px) and (hover: hover) and (pointer: fine){
-    .app { max-width: 1080px; padding: 20px; }
-    .result-name { font-size: clamp(3.6rem, 4.5vw, 5.5rem); }
-    .btn-acak { padding: 32px; min-height: 96px; font-size: 1.6rem; }
-    .act { min-height: 82px; font-size: .9rem; }
-    .act .ico { font-size: 1.6rem; }
-  }
+  
 
   /* ===== Landscape phone (sudah ada, biar konsisten) ===== */
   @media (max-height: 500px) and (max-width: 1023px){
@@ -1193,6 +1109,86 @@
     .result-name { font-size: clamp(1.6rem, 6vh, 2.2rem); }
     .btn-acak { padding: 12px; min-height: 46px; font-size: .95rem; }
     .act { min-height: 44px; padding: 6px 3px; font-size: .62rem; }
+  }
+/* DESKTOP override — hanya mouse. Diterapkan setelah compact, jadi menang cascade. */
+  @media (min-width: 1024px) and (hover: hover) and (pointer: fine){
+    body {
+      padding: 16px 16px 16px 396px;
+    }
+
+    .app {
+      max-width: 960px;
+      margin: 0 auto;
+      height: calc(100vh - 32px);
+      height: calc(100dvh - 32px);
+      padding: 16px;
+      gap: 12px;
+      border-radius: var(--r-xl);
+    }
+
+    /* --- Sheet jadi sidebar kiri tetap --- */
+    #sheet {
+      display: flex !important;
+      position: fixed;
+      left: 16px;
+      top: 16px;
+      bottom: 16px;
+      right: auto;
+      width: 364px;
+      max-width: 364px;
+      max-height: none;
+      margin: 0;
+      transform: none !important;
+      opacity: 1 !important;
+      pointer-events: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      box-shadow: 0 12px 40px rgba(0,0,0,.5);
+      padding: 16px 20px 20px;
+    }
+    #sheetBackdrop { display: none !important; }
+    #sheet .sheet-handle { display: none; }
+    #sheet .sheet-actions .btn-primary { display: none; }
+
+    /* --- Tombol Daftar tidak perlu (list selalu kelihatan) --- */
+    #openListBtn { display: none !important; }
+    .actions { grid-template-columns: repeat(4, 1fr); }
+
+    /* --- Ukuran skala lebih besar untuk layar lebar --- */
+    .result-name { font-size: clamp(3.2rem, 5vw, 5rem); }
+    .result-name.empty { font-size: clamp(1.4rem, 2.2vw, 1.8rem); }
+    .btn-acak { font-size: 1.5rem; padding: 28px; min-height: 88px; letter-spacing: .14em; }
+    .btn-acak .emoji { font-size: 1.8rem; }
+    .act { min-height: 76px; font-size: .86rem; }
+    .act .ico { font-size: 1.5rem; }
+
+    /* --- Toast pindah ke tengah area app --- */
+    #toastWrap { left: calc(50% + 198px); }
+
+    /* --- Tabs lebih lega --- */
+    .tab { padding: 11px 18px; font-size: .9rem; }
+    .tab-add { width: 44px; height: 44px; }
+
+    /* --- Override max-height:660px yang mungkin nyala di laptop --- */
+    .btn { padding: 12px 20px; font-size: .9rem; }
+
+    /* --- Cursor pointer untuk semua interaktif --- */
+    .tab, .act, .btn-acak, .copy-btn, .tab-add, .menu-item,
+    .sheet-actions .btn, .modal-acts .btn { cursor: pointer; }
+
+    /* --- Hover states (khusus desktop) --- */
+    .act:hover { background: var(--surface-3); border-color: var(--border-2); }
+    .tab:hover { color: var(--text-1); border-color: var(--border-2); }
+    .menu-item:hover { background: rgba(255,255,255,.06); }
+    .copy-btn:hover { color: var(--text-1); border-color: var(--border-2); }
+    .sheet-actions .btn-clear:hover { background: var(--red); color: #fff; }
+    html[data-theme="light"] .menu-item:hover { background: rgba(0,0,0,.05); }
+
+    /* --- Scrollbar halus --- */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--border); }
   }
 </style>
 <link rel="manifest" href="./manifest.json" />
