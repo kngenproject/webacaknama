@@ -1030,7 +1030,7 @@
     }
 
     /* --- Sheet jadi sidebar kiri tetap --- */
-    #sheet {
+    .sheet {
       display: flex !important;
       position: fixed;
       left: 16px;
@@ -1049,9 +1049,9 @@
       box-shadow: 0 12px 40px rgba(0,0,0,.5);
       padding: 16px 20px 20px;
     }
-    #sheetBackdrop { display: none !important; }
-    #sheet .sheet-handle { display: none; }
-    #sheet .sheet-actions .btn-primary { display: none; }
+    .sheet-bd { display: none !important; }
+    .sheet-handle { display: none; }
+    .sheet-actions .btn-primary { display: none; }
 
     /* --- Tombol Daftar tidak perlu (list selalu kelihatan) --- */
     #openListBtn { display: none !important; }
