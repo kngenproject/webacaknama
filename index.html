@@ -1228,6 +1228,7 @@
 <link rel="apple-touch-icon" href="./icon-192.png" />
 <link rel="icon" type="image/png" href="./icon-192.png" />
 <meta name="application-name" content="Acak Siswa" />
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
 
@@ -2982,6 +2983,78 @@ function updateCountdownText(seconds) {
   const formattedTime = ;
   const display = document.getElementById('countdownDisplay');
   if (display) display.textContent = ;
+}
+
+
+function triggerConfetti() {
+  if (typeof confetti === 'function') {
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 }
+    });
+  }
+}
+
+
+// Fungsi Generator Daftar Universal
+function generateUniversalItems() {
+  const start = parseInt(document.getElementById('genStart').value, 10);
+  const end = parseInt(document.getElementById('genEnd').value, 10);
+  const prefix = document.getElementById('genPrefix').value.trim();
+
+  if (isNaN(start) || isNaN(end) || start > end) {
+    alert('Masukkan rentang angka yang valid!');
+    return;
+  }
+
+  let items = [];
+  const padLength = end.toString().length;
+
+  for (let i = start; i <= end; i++) {
+    let numStr = i.toString().padStart(padLength, '0');
+    items.push(prefix ?  : numStr);
+  }
+
+  // Masukkan ke textarea utama
+  const textarea = document.querySelector('textarea');
+  if (textarea) {
+    textarea.value = items.join('
+');
+    textarea.dispatchEvent(new Event('input'));
+  } else {
+    alert('Textarea input tidak ditemukan.');
+  }
+}
+
+
+// Fungsi Generator Kode Undian Advanced
+function generateKodeUndian() {
+  const prefix = document.getElementById('kodPrefix').value.trim();
+  const suffix = document.getElementById('kodSuffix').value.trim();
+  const start = parseInt(document.getElementById('kodStart').value, 10);
+  const end = parseInt(document.getElementById('kodEnd').value, 10);
+  const padLength = parseInt(document.getElementById('kodPad').value, 10) || 1;
+
+  if (isNaN(start) || isNaN(end) || start > end) {
+    alert('Masukkan rentang angka yang benar!');
+    return;
+  }
+
+  let listKode = [];
+  for (let i = start; i <= end; i++) {
+    let numStr = i.toString().padStart(padLength, '0');
+    listKode.push();
+  }
+
+  const textarea = document.querySelector('textarea');
+  if (textarea) {
+    textarea.value = listKode.join('
+');
+    textarea.dispatchEvent(new Event('input'));
+  } else {
+    alert('Area teks input tidak ditemukan.');
+  }
 }
 
 </script>
