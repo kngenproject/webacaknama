@@ -2905,6 +2905,111 @@
     });
   }
 })();
+
+// Fitur Auto Spin Durasi
+let autoSpinTimer = null;
+let countdownTimer = null;
+let isAutoSpinning = false;
+
+function toggleAutoSpin() {
+  if (isAutoSpinning) {
+    stopAutoSpin();
+  } else {
+    startAutoSpin();
+  }
+}
+
+function startAutoSpin() {
+  const totalDuration = parseInt(document.getElementById('timerDuration').value, 10);
+  const intervalTime = parseInt(document.getElementById('spinInterval').value, 10);
+  const btn = document.getElementById('btnAutoSpin');
+
+  let remainingTime = totalDuration;
+  isAutoSpinning = true;
+
+  btn.textContent = '⏹️ Hentikan';
+  btn.style.backgroundColor = '#dc3545';
+  
+  updateCountdownText(remainingTime);
+
+  // Trigger pengacak bawaan
+  const triggerAcak = () => {
+    const btnAcak = document.getElementById('btnAcak') || document.querySelector('button[onclick*="acak"]');
+    if (btnAcak) {
+      btnAcak.click();
+    } else if (typeof acakNama === 'function') {
+      acakNama();
+    } else if (typeof acak === 'function') {
+      acak();
+    }
+  };
+
+  triggerAcak();
+
+  autoSpinTimer = setInterval(triggerAcak, intervalTime);
+
+  countdownTimer = setInterval(() => {
+    remainingTime--;
+    updateCountdownText(remainingTime);
+
+    if (remainingTime <= 0) {
+      stopAutoSpin();
+      alert('Waktu acak otomatis selesai!');
+    }
+  }, 1000);
+}
+
+function stopAutoSpin() {
+  clearInterval(autoSpinTimer);
+  clearInterval(countdownTimer);
+  autoSpinTimer = null;
+  countdownTimer = null;
+  isAutoSpinning = false;
+
+  const btn = document.getElementById('btnAutoSpin');
+  const countdownDisplay = document.getElementById('countdownDisplay');
+
+  if (btn) {
+    btn.textContent = '▶️ Mulai Acak Otomatis';
+    btn.style.backgroundColor = '#28a745';
+  }
+  if (countdownDisplay) countdownDisplay.textContent = '';
+}
+
+function updateCountdownText(seconds) {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  const formattedTime = ;
+  const display = document.getElementById('countdownDisplay');
+  if (display) display.textContent = ;
+}
+
 </script>
+
+<div class="auto-spin-container" style="margin: 15px 0; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; background: rgba(0,0,0,0.05); padding: 12px; border-radius: 8px;">
+  <label for="timerDuration"><b>Durasi Total:</b></label>
+  <select id="timerDuration" style="padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
+    <option value="10">10 Detik</option>
+    <option value="30">30 Detik</option>
+    <option value="60" selected>1 Menit</option>
+    <option value="120">2 Menit</option>
+    <option value="300">5 Menit</option>
+  </select>
+
+  <label for="spinInterval"><b>Jeda Per Nama:</b></label>
+  <select id="spinInterval" style="padding: 8px; border-radius: 6px; border: 1px solid #ccc;">
+    <option value="1000">1 Detik</option>
+    <option value="2000" selected>2 Detik</option>
+    <option value="3000">3 Detik</option>
+    <option value="5000">5 Detik</option>
+  </select>
+
+  <button id="btnAutoSpin" type="button" onclick="toggleAutoSpin()" style="padding: 8px 16px; background-color: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">
+    ▶️ Mulai Acak Otomatis
+  </button>
+  
+  <span id="countdownDisplay" style="font-size: 1.1em; font-weight: bold; color: #d9534f;"></span>
+</div>
+
 </body>
 </html>
