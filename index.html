@@ -1,6 +1,35 @@
 <!DOCTYPE html>
 <html lang="id" data-theme="light">
 <head>
+  <script>
+  /* Auto lite mode — deteksi HP kelas menengah/bawah */
+  (function () {
+    try {
+      var nav = navigator;
+      var isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(nav.userAgent);
+      var isLowEnd =
+        isMobile && (
+          (nav.deviceMemory && nav.deviceMemory <= 4) ||
+          (nav.hardwareConcurrency && nav.hardwareConcurrency <= 4) ||
+          (nav.connection && (nav.connection.saveData ||
+            /(^|-)2g|slow-2g|3g/.test(nav.connection.effectiveType || ''))) ||
+          (window.innerWidth <= 480)
+        );
+
+      var savedLite = localStorage.getItem('randomizer_lite');
+      var useLite = savedLite === '1' ? true : (savedLite === '0' ? false : isLowEnd);
+
+      if (useLite) {
+        document.documentElement.classList.add('lite-mode');
+        window.__LITE_MODE = true;
+        /* Tandai di console biar debug gampang */
+        if (window.console && console.info) console.info('[Randomizer] Lite mode aktif');
+      } else {
+        window.__LITE_MODE = false;
+      }
+    } catch (e) { window.__LITE_MODE = false; }
+  })();
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#2BA8A2">
@@ -1546,6 +1575,114 @@ button, .opt, .tab, .icon-btn, .list-item { user-select: none; -webkit-user-sele
   .options { padding-top: 16px; margin-top: 16px; }
   .quick-actions { margin-top: 12px; }
 }
+
+/* ============================================================
+   LITE MODE — otomatis di HP kelas menengah/bawah
+   Aktif via .lite-mode class pada <html>
+   ============================================================ */
+
+html.lite-mode {
+  /* Bayangan tajam, bukan blur — jauh lebih ringan di GPU */
+  --shadow-sm: 0 1px 0 rgba(0,0,0,0.08);
+  --shadow-md: 0 2px 0 rgba(0,0,0,0.10);
+  --shadow-lg: 0 3px 0 rgba(0,0,0,0.12);
+  --shadow-card: 0 2px 0 rgba(43,168,162,0.15);
+  --shadow-coral-glow: 0 2px 0 rgba(239,108,74,0.35);
+  --shadow-teal-glow: 0 2px 0 rgba(43,168,162,0.30);
+  --shadow-accent-glow: 0 2px 0 rgba(255,210,63,0.45);
+  --shadow-sky-glow: 0 2px 0 rgba(93,173,226,0.30);
+  --shadow-focus: 0 0 0 2px rgba(43,168,162,0.35);
+}
+
+/* No backdrop-filter (mahal banget di GPU lemah) */
+html.lite-mode .overlay {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Matikan radial gradient background */
+html.lite-mode body {
+  background-image: none !important;
+  background: var(--surface-base) !important;
+}
+
+/* Matikan glow animasi & pulse */
+html.lite-mode .display-box.winner-found {
+  animation: none !important;
+  box-shadow: 0 0 0 2px var(--gold) !important;
+}
+html.lite-mode .display-box.rolling {
+  animation: none !important;
+  box-shadow: none !important;
+}
+html.lite-mode .display-box.rolling .winner-text {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Kurangi durasi animasi masuk */
+html.lite-mode .card,
+html.lite-mode header,
+html.lite-mode .list-item,
+html.lite-mode .winner-line {
+  animation-duration: 0.2s !important;
+}
+
+/* Text-shadow lebih tipis */
+html.lite-mode .display-box.winner-found .winner-text {
+  text-shadow: 0 1px 0 rgba(245,158,11,0.4) !important;
+}
+html.lite-mode .brand-text em {
+  text-shadow: none !important;
+}
+
+/* Hilangkan gloss overlay di tombol utama */
+html.lite-mode .btn-main::before {
+  display: none !important;
+}
+
+/* Hover state matikan (touch device) */
+html.lite-mode .list-item:hover,
+html.lite-mode .group:hover,
+html.lite-mode button:hover {
+  transform: none !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+/* Groups card shadow tipis */
+html.lite-mode .group {
+  animation-duration: 0.15s !important;
+}
+
+/* Modal transition lebih cepat */
+html.lite-mode .sheet {
+  transition-duration: 0.2s !important;
+}
+
+/* Scrollbar tetap berfungsi tapi tanpa smooth scroll
+   (smooth-scroll = janky di HP lemah) */
+html.lite-mode .list,
+html.lite-mode .sheet-body,
+html.lite-mode .groups-grid {
+  -webkit-overflow-scrolling: auto !important;
+}
+
+/* Display box multi-winner: kurangi efek */
+html.lite-mode .display-box.multi .winner-line {
+  animation: none !important;
+}
+
+/* Badge prize: stop bounce anim */
+html.lite-mode .prize-badge {
+  animation: none !important;
+}
+
+/* Konfeti canvas tetap ada tapi opacity dikurangi */
+html.lite-mode canvas.confetti-canvas,
+html.lite-mode canvas[style*="pointer-events"] {
+  pointer-events: none !important;
+}
 </style>
 </head>
   <script>
@@ -1876,7 +2013,7 @@ button, .opt, .tab, .icon-btn, .list-item { user-select: none; -webkit-user-sele
           </div>
           <div class="row">
             <div class="row-label">Randomizer Pro</div>
-            <div style="font-size:0.78rem; color:var(--text-muted); font-weight:700;">v3.1 · Desktop Polish</div>
+            <div style="font-size:0.78rem; color:var(--text-muted); font-weight:700;">v3.2 · Lite Mode</div>
           </div>
         </div>
       </div>
@@ -2100,7 +2237,7 @@ function pickWinner() {
   if (n > items.length) n = items.length;
 
   const duration = (parseFloat(document.getElementById('rollDuration').value) || 2.5) * 1000;
-  const intervalTime = 70;
+  const intervalTime = window.__LITE_MODE ? 100 : 70;
   let elapsed = 0;
 
   const box = document.getElementById('displayBox');
@@ -2185,10 +2322,10 @@ function fireConfetti(n) {
   if (typeof confetti === "undefined") { window.__loadConfetti().then(function(){ fireConfetti(n); }); return; }
   if (typeof confetti !== 'function') return;
   const colors = ['#FFD23F', '#2BA8A2', '#EF6C4A', '#5DADE2', '#27AE60'];
-  const base = { particleCount: n > 1 ? 120 : 80, spread: 85, origin: { y: 0.62 }, colors };
+  const base = { particleCount: window.__LITE_MODE ? (n > 1 ? 50 : 35) : (n > 1 ? 120 : 80), spread: 85, origin: { y: 0.62 }, colors };
   confetti({ ...base, startVelocity: 55 });
   if (n > 1) {
-    setTimeout(() => confetti({ ...base, particleCount: 60, spread: 130, startVelocity: 40, origin: { y: 0.55 } }), 180);
+    setTimeout(() => confetti({ ...base, particleCount: window.__LITE_MODE ? 25 : 60, spread: 130, startVelocity: 40, origin: { y: 0.55 } }), 180);
   }
 }
 
@@ -2719,6 +2856,43 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
   window.addEventListener('resize', injectHints);
 })();
+</script>
+<script>
+window.addEventListener('DOMContentLoaded', function () {
+  // Cari section "Tampilan" untuk disisipkan toggle
+  var sections = document.querySelectorAll('#stabPrefs .section');
+  for (var i = 0; i < sections.length; i++) {
+    var t = sections[i].querySelector('.section-title');
+    if (t && t.textContent.indexOf('Tampilan') > -1) {
+      var row = document.createElement('div');
+      row.className = 'row';
+      row.innerHTML =
+        '<div>' +
+          '<div class="row-label">Mode Ringan</div>' +
+          '<div class="row-hint">Kurangi animasi &amp; efek visual untuk HP kelas menengah/bawah</div>' +
+        '</div>' +
+        '<label class="switch">' +
+          '<input type="checkbox" id="liteModeToggle">' +
+          '<span class="switch-track"></span>' +
+        '</label>';
+      sections[i].appendChild(row);
+
+      var toggle = document.getElementById('liteModeToggle');
+      // Set default
+      var saved = localStorage.getItem('randomizer_lite');
+      toggle.checked = saved === '1' || (saved !== '0' && window.__LITE_MODE);
+
+      toggle.addEventListener('change', function () {
+        var on = this.checked;
+        localStorage.setItem('randomizer_lite', on ? '1' : '0');
+        if (on) document.documentElement.classList.add('lite-mode');
+        else document.documentElement.classList.remove('lite-mode');
+        window.__LITE_MODE = on;
+      });
+      break;
+    }
+  }
+});
 </script>
 </body>
 </html>
