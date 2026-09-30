@@ -1076,6 +1076,177 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <style>
 </style>
+<style>
+
+/* ============================================================
+   DESKTOP OPTIMIZATION
+   ============================================================ */
+@media (min-width: 640px) {
+  body { padding-top: calc(20px + var(--safe-top)); padding-bottom: calc(20px + var(--safe-bottom)); }
+  .shell { max-width: 720px; gap: 14px; }
+  header { padding: 14px 18px; }
+  .card { padding: 20px; }
+  .brand-mark { width: 46px; height: 46px; }
+  .brand-mark .fan { width: 16px; height: 26px; }
+  .brand-text { font-size: 1.1rem; }
+  .brand-sub { font-size: 0.68rem; letter-spacing: 2.5px; }
+  .icon-btn { width: 42px; height: 42px; }
+  .icon-btn svg { width: 19px; height: 19px; }
+  .display-box { min-height: 180px; }
+  .winner-text { font-size: 2rem; }
+  .btn-main { min-height: 66px; font-size: 1.1rem; }
+  button { padding: 12px 18px; font-size: 0.86rem; }
+  .opt { padding: 9px 14px; font-size: 0.8rem; }
+  .sheet { max-width: 560px; }
+}
+@media (min-width: 1024px) {
+  body {
+    padding: calc(24px + var(--safe-top)) calc(24px + var(--safe-right)) calc(24px + var(--safe-bottom)) calc(24px + var(--safe-left));
+    font-size: 15px;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(43,168,162,0.07), transparent 42%),
+      radial-gradient(circle at 85% 80%, rgba(255,210,63,0.06), transparent 42%);
+    pointer-events: none;
+    z-index: -1;
+  }
+  .shell {
+    max-width: 1120px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    grid-template-areas:
+      "header header"
+      "stage  side";
+    gap: 18px;
+    align-items: start;
+  }
+  header { grid-area: header; padding: 16px 22px; }
+  .shell > .card:nth-of-type(1) { grid-area: stage; }
+  .shell > .card:nth-of-type(2) { grid-area: side; }
+  .card { padding: 24px; transition: box-shadow 0.25s ease; }
+  .shell > .card:nth-of-type(1) {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 180px);
+  }
+  .display-box {
+    min-height: 320px;
+    flex: 1;
+    padding: 32px;
+    margin-bottom: 20px;
+  }
+  .winner-text { font-size: 2.6rem; line-height: 1.15; }
+  .winner-text.idle { font-size: 1.4rem; }
+  .winner-line { font-size: 1.25rem; padding: 12px 0; }
+  .winner-line .idx { width: 32px; height: 32px; font-size: 0.9rem; }
+  .btn-main {
+    min-height: 76px;
+    font-size: 1.15rem;
+    letter-spacing: 1.5px;
+    flex: 0 0 auto;
+  }
+  .btn-main svg { width: 24px; height: 24px; }
+  .options { gap: 8px; padding-top: 18px; margin-top: 18px; }
+  .opt { padding: 10px 16px; font-size: 0.82rem; min-height: 40px; }
+  .quick-actions { gap: 10px; margin-top: 14px; }
+  .quick-actions button { padding: 13px 16px; font-size: 0.88rem; }
+  .shell > .card:nth-of-type(2) {
+    max-height: calc(100vh - 180px);
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 24px;
+  }
+  #tabWinners, #tabGroups {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+  }
+  .list {
+    flex: 1;
+    min-height: 0;
+    max-height: calc(100vh - 420px);
+  }
+  .winners-actions { margin-top: 16px; }
+  .winners-actions button { padding: 13px 12px; font-size: 0.85rem; }
+  .list-item:hover { transform: translateX(4px); box-shadow: 0 4px 16px rgba(43,168,162,0.14); }
+  .group { transition: transform 0.2s var(--ease-out), box-shadow 0.2s ease; }
+  .group:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(93,173,226,0.15); }
+  .sheet { max-width: 640px; }
+  .sheet-head { padding: 18px 24px; }
+  .sheet-body { padding: 22px 24px; }
+  .kbd-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    background: var(--surface-base);
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.3px;
+    margin-left: auto;
+    margin-right: 6px;
+    flex-shrink: 0;
+  }
+  [data-theme="dark"] .kbd-hint { background: var(--surface-soft); }
+  .kbd-hint kbd {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.66rem;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 4px;
+    background: var(--surface-card);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+  }
+}
+@media (min-width: 1280px) {
+  .shell { max-width: 1200px; gap: 22px; }
+  .card { padding: 28px; }
+  .display-box { min-height: 380px; }
+  .winner-text { font-size: 3rem; }
+}
+@media (min-width: 1600px) {
+  .shell { max-width: 1380px; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn-main:hover { transform: translateY(-3px); }
+  .icon-btn:hover { transform: translateY(-1px); }
+  button:hover:not(:disabled) { transform: translateY(-1px); }
+  button:active { transform: translateY(0) scale(0.97); }
+}
+@media (hover: none) {
+  .list-item:hover { transform: none; }
+}
+@media (min-width: 1024px) {
+  .list::-webkit-scrollbar,
+  .sheet-body::-webkit-scrollbar,
+  .groups-grid::-webkit-scrollbar { width: 8px; }
+  .list::-webkit-scrollbar-track,
+  .sheet-body::-webkit-scrollbar-track,
+  .groups-grid::-webkit-scrollbar-track { background: transparent; }
+  .list::-webkit-scrollbar-thumb,
+  .sheet-body::-webkit-scrollbar-thumb,
+  .groups-grid::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: 999px;
+    border: 2px solid var(--surface-card);
+  }
+  .list::-webkit-scrollbar-thumb:hover,
+  .sheet-body::-webkit-scrollbar-thumb:hover,
+  .groups-grid::-webkit-scrollbar-thumb:hover { background: var(--teal); }
+  * { scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
+}
+button, .opt, .tab, .icon-btn, .list-item { user-select: none; -webkit-user-select: none; }
+</style>
 </head>
 <body>
 
@@ -2092,6 +2263,131 @@ window.addEventListener('DOMContentLoaded', async () => {
 </script>
 <script src="auto-update.js" defer></script>
 <script>
+</script>
+<script>
+/* Desktop Keyboard Shortcuts */
+(function () {
+  var isDesktop = window.matchMedia('(min-width: 1024px) and (hover: hover) and (pointer: fine)').matches;
+
+  document.addEventListener('keydown', function (e) {
+    if (!isDesktop) return;
+    var tag = (e.target.tagName || '').toLowerCase();
+    if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+    if (e.target.isContentEditable) return;
+    var overlay = document.getElementById('settingsOverlay');
+    var overlayOpen = overlay && overlay.classList.contains('open');
+
+    if (e.code === 'Space') {
+      if (overlayOpen) return;
+      e.preventDefault();
+      if (typeof pickWinner === 'function') pickWinner();
+      return;
+    }
+    if (e.code === 'Enter' && !e.target.closest('button')) {
+      if (overlayOpen) return;
+      e.preventDefault();
+      if (typeof pickWinner === 'function') pickWinner();
+      return;
+    }
+    if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === 'z') {
+      e.preventDefault();
+      if (typeof undoLast === 'function') undoLast();
+      return;
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      if (typeof openSettings === 'function') openSettings();
+      return;
+    }
+    if ((e.ctrlKey || e.metaKey) && e.code === 'Enter') {
+      e.preventDefault();
+      if (typeof pickWinner === 'function') pickWinner();
+      return;
+    }
+    if (e.key === 'Escape') {
+      if (typeof closeSettings === 'function') closeSettings();
+      var h = document.getElementById('kbdHelpModal');
+      if (h) h.remove();
+      return;
+    }
+    if (e.key.toLowerCase() === 't' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      if (typeof toggleTheme === 'function') toggleTheme();
+      return;
+    }
+    if (e.key.toLowerCase() === 'f' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      if (typeof toggleFullscreen === 'function') toggleFullscreen();
+      return;
+    }
+    if (e.key === '?' && e.shiftKey) {
+      e.preventDefault();
+      showShortcutHelp();
+      return;
+    }
+  });
+
+  function makeKbd(label) {
+    var span = document.createElement('span');
+    span.className = 'kbd-hint';
+    span.innerHTML = '<kbd>' + label + '</kbd>';
+    return span;
+  }
+
+  function injectHints() {
+    if (!isDesktop) return;
+    var mainBtn = document.querySelector('.btn-main');
+    if (mainBtn && !mainBtn.querySelector('.kbd-hint')) mainBtn.appendChild(makeKbd('Space'));
+    var undoBtn = document.getElementById('undoBtn');
+    if (undoBtn && !undoBtn.querySelector('.kbd-hint')) undoBtn.appendChild(makeKbd('Ctrl+Z'));
+  }
+
+  function showShortcutHelp() {
+    var existing = document.getElementById('kbdHelpModal');
+    if (existing) { existing.remove(); return; }
+    var overlay = document.createElement('div');
+    overlay.id = 'kbdHelpModal';
+    overlay.className = 'overlay open';
+    overlay.style.zIndex = '2000';
+    overlay.onclick = function (e) { if (e.target === overlay) overlay.remove(); };
+    var shortcuts = [
+      ['Space / Enter', 'Mulai acak'],
+      ['Ctrl + Enter', 'Mulai acak (dari mana saja)'],
+      ['Ctrl + Z', 'Undo aksi terakhir'],
+      ['Ctrl + K', 'Buka pengaturan'],
+      ['T', 'Ganti tema terang/gelap'],
+      ['F', 'Fullscreen'],
+      ['Esc', 'Tutup panel'],
+      ['?', 'Tampilkan bantuan ini']
+    ];
+    overlay.innerHTML =
+      '<div class="sheet" style="max-width:440px;">' +
+        '<div class="sheet-head">' +
+          '<div class="sheet-title">Pintasan Keyboard</div>' +
+        '</div>' +
+        '<div class="sheet-body">' +
+          '<div class="section" style="margin-bottom:0;">' +
+            shortcuts.map(function (s) {
+              return '<div class="row">' +
+                '<div class="row-label">' + s[1] + '</div>' +
+                '<div><span class="kbd-hint" style="margin:0;"><kbd>' + s[0] + '</kbd></span></div>' +
+              '</div>';
+            }).join('') +
+          '</div>' +
+          '<div style="margin-top:16px;">' +
+            '<button onclick="document.getElementById(\'kbdHelpModal\').remove()" style="width:100%;">TUTUP</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(overlay);
+  }
+  window.__showShortcutHelp = showShortcutHelp;
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', injectHints);
+  } else {
+    injectHints();
+  }
+  window.addEventListener('resize', injectHints);
+})();
 </script>
 </body>
 </html>
