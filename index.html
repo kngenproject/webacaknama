@@ -2,367 +2,492 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Acak Universal & Siswa - PWA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Randomizer Pro - Responsive PWA</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#4f46e5">
+  <meta name="description" content="Aplikasi pengacak profesional offline-first untuk HP, Tablet, dan Laptop.">
   <style>
     :root {
-      --bg-color: #f3f4f6;
-      --card-bg: #ffffff;
-      --text-color: #1f2937;
-      --primary-color: #4f46e5;
-      --primary-hover: #4338ca;
-      --accent-color: #10b981;
-      --border-color: #e5e7eb;
-      --danger-color: #ef4444;
-    }
-    body.dark-mode {
-      --bg-color: #0f172a;
-      --card-bg: #1e293b;
-      --text-color: #f8fafc;
-      --primary-color: #6366f1;
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface-border: #334155;
+      --primary: #6366f1;
       --primary-hover: #4f46e5;
-      --accent-color: #34d399;
-      --border-color: #334155;
+      --accent: #10b981;
+      --accent-hover: #059669;
+      --danger: #ef4444;
+      --danger-hover: #dc2626;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --radius: 12px;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      padding: 16px;
-      max-width: 1200px;
-      margin: 0 auto;
-      transition: background-color 0.3s, color 0.3s;
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { 
+      background-color: var(--bg); 
+      color: var(--text); 
+      padding: 12px; 
+      min-height: 100vh; 
     }
+    
     header {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
       padding-bottom: 12px;
-      border-bottom: 2px solid var(--border-color);
+      border-bottom: 1px solid var(--surface-border);
     }
     
-    /* Responsive Layout Grid */
-    .app-layout {
+    .brand { display: flex; align-items: center; gap: 8px; font-size: 1.1rem; font-weight: 700; color: #fff; }
+    .status-badge { font-size: 0.7rem; padding: 3px 8px; border-radius: 20px; background: rgba(16, 185, 129, 0.2); color: var(--accent); border: 1px solid var(--accent); }
+
+    /* LAYOUT ADAPTIF (HP, TABLET, LAPTOP) */
+    .app-grid {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
       display: grid;
       grid-template-columns: 1fr;
-      gap: 20px;
+      gap: 16px;
     }
-    @media (min-width: 900px) {
-      .app-layout {
+
+    /* Breakpoint Tablet (768px ke atas) */
+    @media (min-width: 768px) {
+      body { padding: 20px; }
+      header { margin-bottom: 20px; }
+      .brand { font-size: 1.3rem; }
+      .app-grid {
         grid-template-columns: 1fr 1fr;
+        gap: 20px;
         align-items: start;
       }
     }
 
-    .card {
-      background-color: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    /* Breakpoint Laptop / Desktop (1024px ke atas) */
+    @media (min-width: 1024px) {
+      .app-grid {
+        grid-template-columns: 5fr 7fr; /* Porsi kanan sedikit lebih luas di laptop */
+        gap: 24px;
+      }
     }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+      margin-bottom: 16px;
+    }
+    @media (min-width: 768px) {
+      .card { padding: 20px; margin-bottom: 20px; }
+    }
+
+    .card-title { font-size: 1rem; font-weight: 600; margin-bottom: 12px; color: var(--text); display: flex; justify-content: space-between; align-items: center; }
+
     textarea {
       width: 100%;
       height: 140px;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid var(--border-color);
+      background: var(--bg);
+      border: 1px solid var(--surface-border);
       border-radius: 8px;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      font-family: inherit;
+      color: var(--text);
+      padding: 10px;
+      font-size: 0.9rem;
       resize: vertical;
+      outline: none;
     }
-    .grid-options {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 12px;
-      margin: 12px 0;
+    textarea:focus { border-color: var(--primary); }
+    @media (min-width: 1024px) {
+      textarea { height: 180px; font-size: 0.95rem; }
     }
-    .btn-group {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 10px;
+
+    .control-panel { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; }
+    .options-row { display: flex; gap: 12px; flex-wrap: wrap; font-size: 0.8rem; color: var(--text-muted); }
+    .options-row label { display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--text); }
+
+    .btn-group { 
+      display: grid; 
+      grid-template-columns: repeat(2, 1fr); 
+      gap: 8px; 
     }
+    @media (min-width: 480px) {
+      .btn-group { grid-template-columns: repeat(3, 1fr); }
+    }
+
     button {
-      background-color: var(--primary-color);
-      color: white;
+      background: var(--primary);
+      color: #fff;
       border: none;
-      padding: 10px 16px;
-      border-radius: 6px;
-      cursor: pointer;
+      padding: 10px 12px;
+      border-radius: 8px;
       font-weight: 600;
-      transition: background-color 0.2s;
-      flex: 1 1 auto;
-    }
-    button:hover { background-color: var(--primary-hover); }
-    button.btn-accent { background-color: var(--accent-color); }
-    button.btn-danger { background-color: var(--danger-color); }
-    .result-box {
-      font-size: 2.2rem;
-      font-weight: 800;
-      text-align: center;
-      padding: 30px;
-      margin: 16px 0;
-      background-color: var(--bg-color);
-      border: 2px dashed var(--primary-color);
-      border-radius: 12px;
-      color: var(--primary-color);
-      min-height: 140px;
-      display: flex;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      word-break: break-word;
+      gap: 6px;
+      font-size: 0.85rem;
+      width: 100%;
     }
-    .winners-list {
-      list-style: none;
-      padding: 0;
-      max-height: 250px;
-      overflow-y: auto;
+    button:hover { background: var(--primary-hover); transform: translateY(-1px); }
+    button.btn-accent { background: var(--accent); }
+    button.btn-accent:hover { background: var(--accent-hover); }
+    button.btn-danger { background: var(--danger); }
+    button.btn-danger:hover { background: var(--danger-hover); }
+    button.btn-secondary { background: var(--surface-border); color: var(--text); }
+
+    .preset-selector { display: flex; gap: 8px; margin-bottom: 12px; }
+    select {
+      background: var(--bg); color: var(--text); border: 1px solid var(--surface-border);
+      padding: 8px 10px; border-radius: 8px; flex-grow: 1; outline: none; font-size: 0.85rem;
     }
-    .winners-list li {
-      padding: 8px 12px;
-      background: var(--bg-color);
-      margin-bottom: 6px;
-      border-radius: 6px;
+
+    .display-box {
+      background: var(--bg);
+      border: 2px dashed var(--primary);
+      border-radius: var(--radius);
+      min-height: 140px;
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 16px;
+      margin-bottom: 12px;
+      position: relative;
+      overflow: hidden;
     }
-    .group-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 12px;
-      margin-top: 12px;
-      max-height: 300px;
-      overflow-y: auto;
+    .winner-text { font-size: 1.8rem; font-weight: 800; color: var(--primary); word-break: break-word; }
+    .winner-sub { font-size: 0.85rem; color: var(--text-muted); margin-top: 6px; }
+
+    @media (min-width: 768px) {
+      .display-box { min-height: 180px; }
+      .winner-text { font-size: 2.3rem; }
     }
-    .group-card {
-      border: 1px solid var(--border-color);
-      padding: 12px;
-      border-radius: 8px;
-      background-color: var(--bg-color);
+
+    .tabs { display: flex; border-bottom: 1px solid var(--surface-border); margin-bottom: 14px; }
+    .tab-item {
+      padding: 8px 12px; cursor: pointer; border-bottom: 2px solid transparent;
+      color: var(--text-muted); font-weight: 600; font-size: 0.85rem;
     }
-    .tab-btn {
-      background: none;
-      color: var(--text-color);
-      border-bottom: 3px solid transparent;
-      border-radius: 0;
-      padding: 8px 16px;
+    .tab-item.active { border-color: var(--primary); color: var(--primary); }
+
+    .list-container { max-height: 200px; overflow-y: auto; list-style: none; }
+    .list-item {
+      background: var(--bg); padding: 8px 10px; border-radius: 6px; margin-bottom: 6px;
+      display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem;
     }
-    .tab-btn.active {
-      border-color: var(--primary-color);
-      color: var(--primary-color);
+
+    .groups-grid { 
+      display: grid; 
+      grid-template-columns: 1fr; 
+      gap: 10px; 
+      max-height: 250px; 
+      overflow-y: auto; 
     }
+    @media (min-width: 480px) {
+      .groups-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+    }
+
+    .group-box { background: var(--bg); border: 1px solid var(--surface-border); border-radius: 8px; padding: 10px; }
+    .group-box h4 { border-bottom: 1px solid var(--surface-border); padding-bottom: 4px; margin-bottom: 6px; font-size: 0.8rem; color: var(--accent); }
+    .group-box ul { list-style: none; font-size: 0.78rem; }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.75); display: none; align-items: center; justify-content: center; z-index: 1000;
+      padding: 16px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal { background: var(--surface); border: 1px solid var(--surface-border); border-radius: var(--radius); width: 100%; max-width: 400px; padding: 20px; }
   </style>
   <script src="xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
+
   <header>
-    <h1>🎲 Acak Universal & Siswa</h1>
-    <div>
-      <button onclick="toggleTheme()">🌓 Tema</button>
+    <div class="brand">
+      <span>🎲 Randomizer Pro</span>
+      <span class="status-badge">⚡ Offline Ready</span>
     </div>
+    <button onclick="openSettings()" class="btn-secondary" style="width: auto; padding: 6px 12px;">⚙️ Opsi</button>
   </header>
 
-  <main class="app-layout">
-    <!-- Kolom Kiri: Input & Kontrol -->
-    <div class="column-left">
-      <section class="card">
-        <label for="studentInput"><strong>Daftar Nama / Peserta / Items (1 data per baris):</strong></label>
-        <textarea id="studentInput" placeholder="Ahmad&#10;Budi&#10;Siti&#10;Dewi&#10;-Eko (Tanda - untuk Absen/Skip)"></textarea>
-        
-        <div class="grid-options">
-          <div>
-            <label><input type="checkbox" id="removeOnPick"> Hapus jika terpilih (Undian)</label>
-          </div>
-          <div>
-            <label><input type="checkbox" id="soundEffect" checked> Efek Suara</label>
-          </div>
+  <main class="app-grid">
+    <!-- PANEL INPUT & KONTROL -->
+    <div class="left-col">
+      <div class="card">
+        <div class="card-title">
+          <span>Daftar Peserta / Data</span>
         </div>
 
-        <div class="btn-group">
-          <button onclick="pickRandom()" class="btn-accent">🎲 Acak 1 Nama</button>
-          <button onclick="pickMultiple()">🎲 Acak N Nama</button>
-          <button onclick="shuffleList()">🔀 Kocok Daftar</button>
-          <button onclick="sortList()">🔤 Urut A-Z</button>
-          <button onclick="generateNumbers()">🔢 Buat Kupon</button>
-          <button onclick="importExcel()">📂 Impor Excel</button>
+        <div class="preset-selector">
+          <select id="presetSelect" onchange="loadSelectedPreset()">
+            <option value="default">Sesi Utama</option>
+          </select>
+          <button onclick="saveNewPreset()" class="btn-secondary" style="width: auto; white-space:nowrap;">💾 Simpan</button>
         </div>
-        <input type="file" id="excelFile" accept=".xlsx, .xls" style="display:none" onchange="handleExcel(event)">
-      </section>
+
+        <textarea id="dataInput" placeholder="Ketik nama atau angka di sini (1 per baris)&#10;Ahmad&#10;Budi&#10;Siti&#10;-Joko (Awalan minus = Skip/Absen)"></textarea>
+
+        <div class="control-panel">
+          <div class="options-row">
+            <label><input type="checkbox" id="removeOnPick"> Hapus jika terpilih (Undian)</label>
+            <label><input type="checkbox" id="soundToggle" checked> Suara</label>
+          </div>
+
+          <div class="btn-group">
+            <button onclick="pickWinner()" class="btn-accent">🎯 Acak 1 Nama</button>
+            <button onclick="pickMultiWinner()">🎲 Acak Multi</button>
+            <button onclick="shuffleData()">🔀 Kocok Baris</button>
+            <button onclick="sortData()">🔤 Urut A-Z</button>
+            <button onclick="genKupon()">🔢 Buat Kupon</button>
+            <button onclick="triggerExcel()" class="btn-secondary">📂 Import Excel</button>
+          </div>
+          <input type="file" id="excelInput" accept=".xlsx, .xls" style="display:none" onchange="importExcelData(event)">
+        </div>
+      </div>
     </div>
 
-    <!-- Kolom Kanan: Hasil & Tab Pemenang/Kelompok -->
-    <div class="column-right">
-      <section class="card">
-        <h2>Hasil Acakan</h2>
-        <div class="result-box" id="resultDisplay">Siap Mengacak!</div>
-      </section>
+    <!-- PANEL HASIL & RIWAYAT -->
+    <div class="right-col">
+      <div class="card">
+        <div class="card-title">Papan Hasil</div>
+        <div class="display-box" id="displayBox">
+          <div class="winner-text" id="winnerText">Ready</div>
+          <div class="winner-sub" id="winnerSub">Tekan tombol acak untuk memulai</div>
+        </div>
+      </div>
 
-      <section class="card">
-        <div style="display: flex; gap: 10px; margin-bottom: 12px;">
-          <button class="tab-btn active" onclick="switchTab('winnersTab', event)">🏆 Pemenang/Terpilih</button>
-          <button class="tab-btn" onclick="switchTab('groupsTab', event)">👥 Bagi Kelompok</button>
+      <div class="card">
+        <div class="tabs">
+          <div class="tab-item active" onclick="switchTab('tabWinners', this)">🏆 Riwayat Terpilih</div>
+          <div class="tab-item" onclick="switchTab('tabGroups', this)">👥 Bagi Kelompok</div>
         </div>
 
-        <div id="winnersTab">
-          <ul id="winnersList" class="winners-list"></ul>
-          <button onclick="clearWinners()" class="btn-danger" style="margin-top: 10px;">Riset Pemenang</button>
-        </div>
-
-        <div id="groupsTab" style="display: none;">
-          <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 12px;">
-            <label for="groupCount">Jumlah Kelompok:</label>
-            <input type="number" id="groupCount" min="2" value="3" style="padding: 6px; width: 60px;">
-            <button onclick="makeGroups()">Bagi Kelompok</button>
+        <div id="tabWinners">
+          <ul class="list-container" id="winnersList"></ul>
+          <div style="display: flex; gap: 8px; margin-top: 12px;">
+            <button onclick="exportWinnersExcel()" class="btn-secondary">📊 Ekspor Excel</button>
+            <button onclick="clearWinnersHistory()" class="btn-danger">🗑️ Hapus Riwayat</button>
           </div>
-          <div id="groupsContainer" class="group-container"></div>
         </div>
-      </section>
+
+        <div id="tabGroups" style="display:none;">
+          <div style="display:flex; gap:8px; align-items:center; margin-bottom:12px;">
+            <label style="font-size:0.8rem; white-space:nowrap;">Jumlah Kelompok:</label>
+            <input type="number" id="groupCount" min="2" value="3" style="width:60px; padding:6px; background:var(--bg); border:1px solid var(--surface-border); color:#fff; border-radius:6px;">
+            <button onclick="generateGroups()" class="btn-accent" style="width:auto;">Bagi</button>
+          </div>
+          <div class="groups-grid" id="groupsGrid"></div>
+        </div>
+      </div>
     </div>
   </main>
 
-  <script>
-    let winners = [];
+  <!-- MODAL SETTINGS -->
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal">
+      <h3 style="margin-bottom:12px; font-size:1.1rem;">⚙️ Pengaturan Aplikasi</h3>
+      <div style="margin-bottom:16px;">
+        <label style="font-size:0.85rem; color:var(--text-muted);">Durasi Animasi Roll (Detik):</label>
+        <input type="number" id="rollDuration" value="2.5" step="0.5" min="1" style="width:100%; padding:8px; margin-top:4px; background:var(--bg); border:1px solid var(--surface-border); color:#fff; border-radius:6px;">
+      </div>
+      <button onclick="closeSettings()" class="btn-secondary">Tutup</button>
+    </div>
+  </div>
 
-    function playBeep(freq = 440, duration = 0.1) {
-      if (!document.getElementById('soundEffect').checked) return;
+  <script>
+    /* ================= INDEXED DB ENGINE ================= */
+    const DB_NAME = 'RandomizerProDB';
+    const DB_VERSION = 1;
+    let db;
+
+    function initDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        request.onupgradeneeded = (e) => {
+          db = e.target.result;
+          if (!db.objectStoreNames.contains('presets')) db.createObjectStore('presets', { keyPath: 'id' });
+        };
+        request.onsuccess = (e) => { db = e.target.result; resolve(); };
+        request.onerror = (e) => reject(e);
+      });
+    }
+
+    /* ================= SOUND ENGINE ================= */
+    function playBeep(freq = 400, type = 'sine', duration = 0.05) {
+      if (!document.getElementById('soundToggle').checked) return;
       try {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
         osc.frequency.value = freq;
         osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        gain.connect(ctx.destination);
         osc.start();
-        gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
-        osc.stop(audioCtx.currentTime + duration);
+        gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + duration);
+        osc.stop(ctx.currentTime + duration);
       } catch (e) {}
     }
 
-    function getItems() {
-      const text = document.getElementById('studentInput').value;
+    function playFanfare() {
+      if (!document.getElementById('soundToggle').checked) return;
+      const notes = [261, 329, 392, 523];
+      notes.forEach((freq, i) => {
+        setTimeout(() => playBeep(freq, 'triangle', 0.2), i * 100);
+      });
+    }
+
+    /* ================= LOGIKA PENGACAK ================= */
+    let winnersList = [];
+
+    function getDataList() {
+      const text = document.getElementById('dataInput').value;
       return text.split('\n')
         .map(s => s.trim())
         .filter(s => s.length > 0 && !s.startsWith('-'));
     }
 
-    function pickRandom() {
-      const items = getItems();
+    function pickWinner() {
+      const items = getDataList();
       if (items.length === 0) {
-        document.getElementById('resultDisplay').innerText = "Daftar Kosong!";
+        document.getElementById('winnerText').innerText = "Data Kosong!";
+        document.getElementById('winnerSub').innerText = "Silakan isi daftar peserta dahulu";
         return;
       }
 
-      let count = 0;
-      const display = document.getElementById('resultDisplay');
-      const interval = setInterval(() => {
-        const randIndex = Math.floor(Math.random() * items.length);
-        display.innerText = items[randIndex];
-        playBeep(300 + (count * 20), 0.05);
-        count++;
+      const duration = parseFloat(document.getElementById('rollDuration').value) * 1000 || 2500;
+      const intervalTime = 60;
+      let elapsed = 0;
 
-        if (count > 20) {
-          clearInterval(interval);
-          const finalIndex = Math.floor(Math.random() * items.length);
-          const winner = items[finalIndex];
-          display.innerText = "🎉 " + winner;
-          playBeep(880, 0.4);
+      const wText = document.getElementById('winnerText');
+      const wSub = document.getElementById('winnerSub');
+      wSub.innerText = "Mengacak nama...";
 
-          addWinner(winner);
+      const timer = setInterval(() => {
+        const randIdx = Math.floor(Math.random() * items.length);
+        wText.innerText = items[randIdx];
+        playBeep(300 + Math.random() * 200, 'sine', 0.03);
+        elapsed += intervalTime;
+
+        if (elapsed >= duration) {
+          clearInterval(timer);
+          const winnerIndex = Math.floor(Math.random() * items.length);
+          const winner = items[winnerIndex];
+
+          wText.innerText = winner;
+          wSub.innerText = "🎉 Terpilih!";
+          playFanfare();
+
+          addWinnerRecord(winner);
+
           if (document.getElementById('removeOnPick').checked) {
-            removeItemFromInput(winner);
+            removePickedItem(winner);
           }
 
           if (typeof confetti === 'function') {
             confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
           }
         }
-      }, 70);
+      }, intervalTime);
     }
 
-    function pickMultiple() {
-      const items = getItems();
-      const num = prompt("Berapa nama/item yang ingin diacak sekaligus?", "3");
-      const count = parseInt(num);
+    function pickMultiWinner() {
+      const items = getDataList();
+      const count = parseInt(prompt("Masukkan jumlah pemenang:", "3"));
       if (isNaN(count) || count <= 0) return;
-
       if (items.length < count) {
-        alert("Jumlah item di daftar kurang dari jumlah yang diminta!");
+        alert("Jumlah item dalam daftar kurang dari jumlah pemenang!");
         return;
       }
 
-      let shuffled = [...items].sort(() => 0.5 - Math.random());
-      let selected = shuffled.slice(0, count);
-      
-      document.getElementById('resultDisplay').innerHTML = selected.join("<br>");
-      selected.forEach(item => {
-        addWinner(item);
-        if (document.getElementById('removeOnPick').checked) removeItemFromInput(item);
+      const shuffled = [...items].sort(() => 0.5 - Math.random());
+      const selected = shuffled.slice(0, count);
+
+      document.getElementById('winnerText').innerHTML = selected.join("<br>");
+      document.getElementById('winnerSub').innerText = `🎉 ${count} Pemenang Terpilih!`;
+      playFanfare();
+
+      selected.forEach(w => {
+        addWinnerRecord(w);
+        if (document.getElementById('removeOnPick').checked) removePickedItem(w);
       });
-      
-      if (typeof confetti === 'function') confetti({ particleCount: 100 });
+
+      if (typeof confetti === 'function') confetti({ particleCount: 120 });
     }
 
-    function removeItemFromInput(item) {
-      let lines = document.getElementById('studentInput').value.split('\n');
-      let index = lines.findIndex(l => l.trim() === item);
-      if (index !== -1) {
-        lines.splice(index, 1);
-        document.getElementById('studentInput').value = lines.join('\n');
+    function removePickedItem(item) {
+      let lines = document.getElementById('dataInput').value.split('\n');
+      let idx = lines.findIndex(l => l.trim() === item);
+      if (idx !== -1) {
+        lines.splice(idx, 1);
+        document.getElementById('dataInput').value = lines.join('\n');
+        saveCurrentSession();
       }
     }
 
-    function addWinner(name) {
-      winners.push(name);
-      renderWinners();
+    function addWinnerRecord(name) {
+      const record = { name, time: new Date().toLocaleTimeString('id-ID') };
+      winnersList.unshift(record);
+      renderWinnersUI();
     }
 
-    function renderWinners() {
-      const list = document.getElementById('winnersList');
-      list.innerHTML = winners.map((w, i) => `<li><span>#${i+1} ${w}</span></li>`).join('');
+    function renderWinnersUI() {
+      const container = document.getElementById('winnersList');
+      container.innerHTML = winnersList.map((w, i) => `
+        <li class="list-item">
+          <span><strong>#${winnersList.length - i}</strong> ${w.name}</span>
+          <small style="color:var(--text-muted);">${w.time}</small>
+        </li>
+      `).join('');
     }
 
-    function clearWinners() {
-      winners = [];
-      renderWinners();
+    function clearWinnersHistory() {
+      winnersList = [];
+      renderWinnersUI();
     }
 
-    function shuffleList() {
-      const items = getItems();
+    /* ================= KELOMPOK, SHUFFLE & KUPON ================= */
+    function shuffleData() {
+      let items = getDataList();
       for (let i = items.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [items[i], items[j]] = [items[j], items[i]];
       }
-      document.getElementById('studentInput').value = items.join('\n');
+      document.getElementById('dataInput').value = items.join('\n');
+      saveCurrentSession();
     }
 
-    function sortList() {
-      const items = getItems().sort((a, b) => a.localeCompare(b));
-      document.getElementById('studentInput').value = items.join('\n');
+    function sortData() {
+      let items = getDataList().sort((a, b) => a.localeCompare(b));
+      document.getElementById('dataInput').value = items.join('\n');
+      saveCurrentSession();
     }
 
-    function generateNumbers() {
-      const start = parseInt(prompt("Nomor Awal:", "1"));
-      const end = parseInt(prompt("Nomor Akhir:", "50"));
+    function genKupon() {
+      const start = parseInt(prompt("Angka awal kupon:", "1"));
+      const end = parseInt(prompt("Angka akhir kupon:", "50"));
       if (isNaN(start) || isNaN(end) || start >= end) return;
-
-      let nums = [];
-      for (let i = start; i <= end; i++) nums.push("Kupon #" + i);
-      document.getElementById('studentInput').value = nums.join('\n');
+      let list = [];
+      for (let i = start; i <= end; i++) list.push(`Kupon #${i}`);
+      document.getElementById('dataInput').value = list.join('\n');
+      saveCurrentSession();
     }
 
-    function makeGroups() {
-      const items = getItems();
+    function generateGroups() {
+      const items = getDataList();
       const numGroups = parseInt(document.getElementById('groupCount').value);
-      if (items.length === 0 || isNaN(numGroups) || numGroups <= 0) return;
+      if (items.length === 0 || isNaN(numGroups) || numGroups < 1) return;
 
       let shuffled = [...items].sort(() => 0.5 - Math.random());
       let groups = Array.from({ length: numGroups }, () => []);
@@ -371,58 +496,116 @@
         groups[index % numGroups].push(item);
       });
 
-      const container = document.getElementById('groupsContainer');
-      container.innerHTML = groups.map((g, i) => `
-        <div class="group-card">
-          <strong>Kelompok ${i + 1} (${g.length})</strong>
-          <ul style="margin-top:8px; padding-left:16px;">
-            ${g.map(name => `<li>${name}</li>`).join('')}
-          </ul>
+      const grid = document.getElementById('groupsGrid');
+      grid.innerHTML = groups.map((g, i) => `
+        <div class="group-box">
+          <h4>Kelompok ${i + 1} (${g.length})</h4>
+          <ul>${g.map(name => `<li>• ${name}</li>`).join('')}</ul>
         </div>
       `).join('');
     }
 
-    function switchTab(tabId, evt) {
-      document.getElementById('winnersTab').style.display = tabId === 'winnersTab' ? 'block' : 'none';
-      document.getElementById('groupsTab').style.display = tabId === 'groupsTab' ? 'block' : 'none';
-      
-      const btns = document.querySelectorAll('.tab-btn');
-      btns.forEach(b => b.classList.remove('active'));
-      if(evt) evt.target.classList.add('active');
-    }
+    /* ================= EXCEL EXPORT & IMPORT ================= */
+    function triggerExcel() { document.getElementById('excelInput').click(); }
 
-    function importExcel() {
-      document.getElementById('excelFile').click();
-    }
-
-    function handleExcel(e) {
+    function importExcelData(e) {
       const file = e.target.files[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = function(evt) {
         const data = new Uint8Array(evt.target.result);
         const workbook = XLSX.read(data, { type: 'array' });
-        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-        const json = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
-        
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
         let names = [];
         json.forEach(row => {
-          row.forEach(cell => {
-            if (cell) names.push(cell.toString().trim());
-          });
+          row.forEach(cell => { if (cell) names.push(cell.toString().trim()); });
         });
-        document.getElementById('studentInput').value = names.join('\n');
+        document.getElementById('dataInput').value = names.join('\n');
+        saveCurrentSession();
       };
       reader.readAsArrayBuffer(file);
     }
 
-    function toggleTheme() {
-      document.body.classList.toggle('dark-mode');
+    function exportWinnersExcel() {
+      if (winnersList.length === 0) return alert("Belum ada riwayat pemenang!");
+      const data = winnersList.map((w, i) => ({ No: i + 1, Nama: w.name, Waktu: w.time }));
+      const ws = XLSX.utils.json_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Pemenang");
+      XLSX.writeFile(wb, "Riwayat_Pemenang.xlsx");
     }
 
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js');
+    /* ================= PRESET & SESSION ================= */
+    function saveCurrentSession() {
+      localStorage.setItem('randomizer_last_session', document.getElementById('dataInput').value);
     }
+
+    function loadLastSession() {
+      const saved = localStorage.getItem('randomizer_last_session');
+      if (saved !== null) document.getElementById('dataInput').value = saved;
+    }
+
+    function saveNewPreset() {
+      const name = prompt("Nama Preset/Sesi:");
+      if (!name) return;
+      const id = 'preset_' + Date.now();
+      const content = document.getElementById('dataInput').value;
+
+      const tx = db.transaction('presets', 'readwrite');
+      tx.objectStore('presets').put({ id, name, content });
+      tx.oncomplete = () => loadPresetsUI();
+    }
+
+    function loadPresetsUI() {
+      const tx = db.transaction('presets', 'readonly');
+      const store = tx.objectStore('presets');
+      const request = store.getAll();
+      request.onsuccess = () => {
+        const select = document.getElementById('presetSelect');
+        select.innerHTML = '<option value="default">Sesi Utama (Auto Save)</option>';
+        request.result.forEach(p => {
+          select.innerHTML += `<option value="${p.id}">${p.name}</option>`;
+        });
+      };
+    }
+
+    function loadSelectedPreset() {
+      const val = document.getElementById('presetSelect').value;
+      if (val === 'default') {
+        loadLastSession();
+        return;
+      }
+      const tx = db.transaction('presets', 'readonly');
+      const store = tx.objectStore('presets');
+      const request = store.get(val);
+      request.onsuccess = () => {
+        if (request.result) document.getElementById('dataInput').value = request.result.content;
+      };
+    }
+
+    /* ================= TAB & MODAL UI ================= */
+    function switchTab(tabId, el) {
+      document.getElementById('tabWinners').style.display = tabId === 'tabWinners' ? 'block' : 'none';
+      document.getElementById('tabGroups').style.display = tabId === 'tabGroups' ? 'block' : 'none';
+      document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    function openSettings() { document.getElementById('settingsModal').classList.add('open'); }
+    function closeSettings() { document.getElementById('settingsModal').classList.remove('open'); }
+
+    // Init App
+    window.addEventListener('DOMContentLoaded', async () => {
+      await initDB();
+      loadPresetsUI();
+      loadLastSession();
+      document.getElementById('dataInput').addEventListener('input', saveCurrentSession);
+
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      }
+    });
   </script>
 </body>
 </html>

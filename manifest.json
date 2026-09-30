@@ -1,42 +1,21 @@
 {
-  "name": "Acak Universal & Siswa",
-  "short_name": "Pengacak",
-  "description": "Aplikasi PWA Pengacak Nama Siswa, Undian Doorprize, dan Generator Acak Universal",
-  "start_url": "./",
-  "scope": "./",
+  "name": "Randomizer Pro",
+  "short_name": "Randomizer",
+  "description": "Aplikasi Pengacak Universal Offline-First",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#4f46e5",
-  "lang": "id",
-  "dir": "ltr",
-  "categories": [
-    "education",
-    "utilities"
-  ],
   "icons": [
     {
-      "src": "./icon-192.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
+      "type": "image/png"
     },
     {
-      "src": "./icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "./icon-512.png",
+      "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "type": "image/png"
     }
   ]
 }
