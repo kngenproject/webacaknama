@@ -1,7 +1,7 @@
 /* Randomizer Pro — Service Worker v3
    Auto-update enabled: network-first untuk HTML, cache-first untuk assets */
 
-const CACHE = 'randomizer-pro-v4';
+const CACHE = 'randomizer-pro-v5';
 const ASSETS = [
   './',
   './index.html',
