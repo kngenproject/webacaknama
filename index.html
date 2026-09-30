@@ -1913,6 +1913,82 @@ html.lite-mode canvas[style*="pointer-events"] {
    Tidak perlu override karena (hover:hover) + (pointer:fine) akan false di tablet sentuh. */
 
 </style>
+
+<style id="responsive-patch">
+  /* Base Responsive & Layout Controls */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Desktop Optimization */
+  @media (min-width: 769px) {
+    .container, .app-layout, main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .display-box {
+      min-height: 250px;
+      font-size: 2.2rem;
+    }
+    .btn-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+    }
+  }
+
+  /* Mobile Optimization */
+  @media (max-width: 768px) {
+    .container, .app-layout, main {
+      width: 100%;
+      padding: 12px;
+    }
+
+    /* Ukuran Teks & Display Pemenang di HP */
+    .display-box {
+      min-height: 180px;
+      padding: 15px;
+      font-size: 1.5rem;
+      word-break: break-word;
+    }
+
+    /* Tombol & Elemen Interaktif (Touch Friendly) */
+    button, input, select, .btn {
+      min-height: 44px;
+      font-size: 1rem;
+    }
+
+    .btn-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    /* Modal / Pop-up Adjustment */
+    .modal-content, .dialog-box {
+      width: 92% !important;
+      max-width: none !important;
+      padding: 16px;
+      margin: 10px auto;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    /* Multi Winner Scrollable di HP */
+    .winner-line {
+      font-size: 1.1rem;
+      padding: 6px 0;
+    }
+  }
+</style>
+
 </head>
   <script>
   /* Lazy loader — XLSX & Confetti dimuat hanya saat dibutuhkan */
@@ -2537,11 +2613,13 @@ function pickWinner() {
 }
 
 function removePickedItem(item) {
-  const lines = document.getElementById('dataInput').value.split('\n');
-  const idx = lines.findIndex(l => l.trim() === item);
+  const lines = document.getElementById('dataInput').value.split('
+');
+  const idx = lines.findIndex(l => l.trim() === item && !l.trim().startsWith('-'));
   if (idx !== -1) {
     lines.splice(idx, 1);
-    document.getElementById('dataInput').value = lines.join('\n');
+    document.getElementById('dataInput').value = lines.join('
+');
     updateItemCount();
     saveCurrentSession();
   }
@@ -2725,6 +2803,21 @@ function shuffleData() {
   saveCurrentSession();
   Sound.click();
 }
+
+function removeDuplicates() {
+  const lines = getAllLines();
+  const uniqueLines = [...new Set(lines)];
+  if (lines.length === uniqueLines.length) {
+    alert("Tidak ditemukan nama duplikat.");
+    return;
+  }
+  pushUndo();
+  document.getElementById('dataInput').value = uniqueLines.join('\n');
+  updateItemCount();
+  saveCurrentSession();
+  if (typeof Sound !== 'undefined' && Sound.confirm) Sound.confirm();
+}
+
 function sortData() {
   const items = getDataList().sort((a, b) => a.localeCompare(b));
   pushUndo();
@@ -3123,5 +3216,35 @@ window.addEventListener('DOMContentLoaded', function () {
   }
 });
 </script>
+
+<!-- Auto Update & Cache Refresh Handler -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').then(reg => {
+        // Cek update saat halaman dimuat
+        reg.addEventListener('updatefound', () => {
+          const newWorker = reg.installing;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              console.log('Versi baru ditemukan, memuat ulang aplikasi...');
+              window.location.reload();
+            }
+          });
+        });
+      }).catch(err => console.error('SW Registration Failed:', err));
+    });
+
+    // Handle controller change (langsung reload jika SW baru aktif)
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!refreshing) {
+        refreshing = true;
+        window.location.reload();
+      }
+    });
+  }
+</script>
+
 </body>
 </html>
