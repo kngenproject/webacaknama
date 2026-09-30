@@ -1,300 +1,1069 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" content="#6366f1">
+  <meta name="theme-color" content="#2BA8A2">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Randomizer Pro - Kelola Kelas & Offline PWA</title>
+  <title>Randomizer Pro</title>
   <link rel="manifest" href="manifest.json">
+  <script>
+    (function() {
+      try {
+        var t = localStorage.getItem('randomizer_theme') || 'light';
+        document.documentElement.setAttribute('data-theme', t);
+      } catch(e) {}
+    })();
+  </script>
   <style>
+    /* ============================================================
+       FLIP7 DESIGN SYSTEM
+       ============================================================ */
     :root {
-      --bg: #0b0f19;
-      --surface: #1a2437;
-      --surface-2: rgba(11, 15, 25, 0.65);
-      --surface-solid: #1e293b;
-      --surface-border: rgba(255, 255, 255, 0.1);
-      --primary: #6366f1;
-      --accent: #10b981;
-      --accent-2: #059669;
-      --danger: #ef4444;
-      --gold: #f59e0b;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --radius: 14px;
+      /* Brand */
+      --teal: #2BA8A2;
+      --teal-light: #3CC4BD;
+      --teal-dark: #1E8C86;
+      --teal-bg: #E8F6F5;
+      --gold: #FFD23F;
+      --gold-light: #FFE47A;
+      --gold-dark: #E6B800;
+      --coral: #EF6C4A;
+      --coral-light: #FF8A6A;
+      --coral-dark: #D45233;
+      --cream: #FFF8E7;
+      --sky: #5DADE2;
+      --success: #27AE60;
+      --error: #E74C3C;
+
+      /* Theme-specific (light default) */
+      --surface-base: #EFF8F7;
+      --surface-card: #FFFFFF;
+      --surface-input: #FFF8E7;
+      --surface-soft: #E8F6F5;
+      --text: #1a2b2a;
+      --text-dim: #4a6360;
+      --text-muted: #7a908d;
+      --border: #d9e8e6;
+      --border-strong: #b8d4d1;
+      --divider: #e8f1f0;
+      --accent-bar: var(--teal);
+
+      /* Shadows — colored glow system */
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.16);
+      --shadow-card: 0 4px 20px rgba(43,168,162,0.10);
+      --shadow-coral-glow: 0 4px 20px rgba(239,108,74,0.35);
+      --shadow-teal-glow: 0 4px 20px rgba(43,168,162,0.30);
+      --shadow-accent-glow: 0 4px 20px rgba(255,210,63,0.40);
+      --shadow-sky-glow: 0 4px 16px rgba(93,173,226,0.30);
+      --shadow-focus: 0 0 0 4px rgba(43,168,162,0.15);
+
+      /* Radii */
+      --r-sm: 8px;
+      --r-md: 14px;
+      --r-lg: 20px;
+      --r-xl: 26px;
+      --r-pill: 999px;
+
+      /* Spacing */
+      --s-xs: 8px;
+      --s-sm: 12px;
+      --s-md: 16px;
+      --s-lg: 24px;
+      --s-xl: 32px;
+
+      /* Safe area */
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
       --safe-left: env(safe-area-inset-left, 0px);
       --safe-right: env(safe-area-inset-right, 0px);
+
+      /* Motion */
+      --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
       --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-    html, body { width: 100%; max-width: 100vw; overflow-x: hidden; }
-    body {
-      background: #0b0f19;
-      background-image: radial-gradient(ellipse at top, rgba(99,102,241,0.12), transparent 55%);
-      color: var(--text);
-      padding: calc(8px + var(--safe-top)) calc(8px + var(--safe-right)) calc(8px + var(--safe-bottom)) calc(8px + var(--safe-left));
-      min-height: 100vh; min-height: 100dvh;
-      display: flex; flex-direction: column; align-items: center;
-      font-size: 16px; line-height: 1.35;
-      -webkit-font-smoothing: antialiased;
     }
 
-    /* ===== ANIMATIONS (ringan) ===== */
+    [data-theme="dark"] {
+      --surface-base: #0d1a1a;
+      --surface-card: #142524;
+      --surface-input: #1a302e;
+      --surface-soft: #172b2a;
+      --text: #f0f7f6;
+      --text-dim: #a8c4c1;
+      --text-muted: #6b8a87;
+      --border: #1f3a38;
+      --border-strong: #2d514e;
+      --divider: #1f3a38;
+      --cream: #1a302e;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    html, body { width: 100%; max-width: 100vw; overflow-x: hidden; }
+    body {
+      background: var(--surface-base);
+      color: var(--text);
+      padding: calc(var(--s-md) + var(--safe-top)) calc(var(--s-md) + var(--safe-right)) calc(var(--s-md) + var(--safe-bottom)) calc(var(--s-md) + var(--safe-left));
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 15px;
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+      letter-spacing: 0.01em;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* ============================================================
+       ANIMATIONS
+       ============================================================ */
     @keyframes fadeUp {
       from { opacity: 0; transform: translate3d(0, 14px, 0); }
       to   { opacity: 1; transform: translate3d(0, 0, 0); }
     }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes pop {
       0%   { transform: scale(0.85); opacity: 0; }
+      60%  { transform: scale(1.06); opacity: 1; }
       100% { transform: scale(1); opacity: 1; }
     }
-    @keyframes slideInLeft {
-      from { opacity: 0; transform: translate3d(-16px, 0, 0); }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translate3d(-14px, 0, 0); }
       to   { opacity: 1; transform: translate3d(0, 0, 0); }
     }
-    @keyframes pulseBorder {
-      0%, 100% { border-color: rgba(16,185,129,0.5); }
-      50%      { border-color: rgba(16,185,129,1); }
+    @keyframes rollText {
+      0%   { transform: translate3d(0, -4px, 0); opacity: 0.55; }
+      100% { transform: translate3d(0, 4px, 0); opacity: 0.95; }
     }
     @keyframes winnerPop {
-      0%   { transform: scale(0.7); opacity: 0; }
-      60%  { transform: scale(1.12); opacity: 1; }
-      100% { transform: scale(1); opacity: 1; }
+      0%   { transform: scale(0.7) rotate(-3deg); opacity: 0; }
+      55%  { transform: scale(1.15) rotate(2deg); opacity: 1; }
+      75%  { transform: scale(0.97) rotate(-1deg); }
+      100% { transform: scale(1) rotate(0); opacity: 1; }
     }
     @keyframes glowPulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0.5); }
-      100%     { box-shadow: 0 0 0 16px rgba(245,158,11,0); }
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50%      { opacity: 1;   transform: scale(1.02); }
+    }
+    @keyframes boomPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(239,108,74,0.35); }
+      50%      { box-shadow: 0 0 0 12px rgba(239,108,74,0); }
+    }
+    @keyframes crownBounce {
+      0%, 100% { transform: translateY(0) rotate(0); }
+      25%      { transform: translateY(-4px) rotate(-6deg); }
+      50%      { transform: translateY(0) rotate(0); }
+      75%      { transform: translateY(-3px) rotate(6deg); }
     }
     @keyframes shakeX {
       0%,100% { transform: translateX(0); }
       25%     { transform: translateX(-5px); }
       75%     { transform: translateX(5px); }
     }
-    @keyframes bounceIn {
-      0%   { transform: scale(0.85); }
-      60%  { transform: scale(1.05); }
-      100% { transform: scale(1); }
+    @keyframes tealPulse {
+      0%, 100% { border-color: var(--teal); box-shadow: 0 0 0 0 rgba(43,168,162,0.30); }
+      50%      { border-color: var(--teal-light); box-shadow: 0 0 0 10px rgba(43,168,162,0); }
     }
-    @keyframes rollText {
-      0%   { transform: translate3d(0, -6px, 0); opacity: 0.4; }
-      100% { transform: translate3d(0, 6px, 0); opacity: 0.8; }
+    @keyframes badgeBounce {
+      0%   { transform: scale(0.5) rotate(-10deg); opacity: 0; }
+      60%  { transform: scale(1.2) rotate(4deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0); }
     }
 
-    /* ===== HEADER ===== */
+    /* ============================================================
+       LAYOUT
+       ============================================================ */
+    .shell {
+      width: 100%;
+      max-width: 580px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-sm);
+    }
+
+    /* ============================================================
+       HEADER — Retro logo
+       ============================================================ */
     header {
-      width: 100%; max-width: 600px;
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 8px 10px;
-      background: var(--surface);
-      border: 1px solid var(--surface-border);
-      border-radius: var(--radius);
-      margin-bottom: 10px; gap: 6px;
-      animation: fadeUp 0.35s var(--ease-out) both;
-    }
-    .brand { display: flex; align-items: center; gap: 6px; font-size: clamp(0.82rem, 3.4vw, 1rem); font-weight: 800; color: #fff; min-width: 0; flex: 1 1 auto; overflow: hidden; }
-    .brand > span:first-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .status-badge { font-size: 0.6rem; padding: 2px 6px; border-radius: 20px; background: rgba(16,185,129,0.15); color: var(--accent); border: 1px solid rgba(16,185,129,0.3); font-weight: 600; flex-shrink: 0; white-space: nowrap; }
-    .header-actions { display: flex; gap: 6px; flex-shrink: 0; }
-    .header-actions button { padding: 6px 9px !important; font-size: 0.78rem; }
-    .hide-xs { display: inline; }
-    .show-xs { display: none; }
-    main { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 10px; }
-
-    .display-card, .card {
-      background: var(--surface);
-      border: 1px solid var(--surface-border);
-      border-radius: var(--radius);
-      padding: 12px;
+      width: 100%;
+      padding: var(--s-sm) var(--s-md);
+      background: var(--surface-card);
+      border: 2px solid var(--border);
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow-card);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--s-sm);
       animation: fadeUp 0.4s var(--ease-out) both;
-    }
-    .display-card { text-align: center; padding: 14px; animation-delay: 0.04s; }
-    .card { animation-delay: 0.1s; }
-
-    /* ===== DISPLAY BOX ===== */
-    .display-box {
       position: relative;
-      background: #0d1420;
-      border: 2px dashed rgba(99,102,241,0.4);
-      border-radius: var(--radius);
-      min-height: 130px;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 14px; margin-bottom: 12px;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: var(--s-sm);
+      min-width: 0;
+      flex: 1 1 auto;
       overflow: hidden;
     }
+
+    /* Fanned cards brand mark */
+    .brand-mark {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+    }
+    .brand-mark .fan {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 14px;
+      height: 22px;
+      border-radius: 4px;
+      border: 1.5px solid rgba(0,0,0,0.15);
+      transform-origin: 50% 100%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .brand-mark .fan:nth-child(1) { background: var(--coral); transform: translate(-50%, -55%) rotate(-24deg); }
+    .brand-mark .fan:nth-child(2) { background: var(--gold); transform: translate(-50%, -55%) rotate(-12deg); }
+    .brand-mark .fan:nth-child(3) { background: var(--sky); transform: translate(-50%, -55%) rotate(0deg); }
+    .brand-mark .fan:nth-child(4) { background: var(--gold); transform: translate(-50%, -55%) rotate(12deg); }
+    .brand-mark .fan:nth-child(5) { background: var(--coral); transform: translate(-50%, -55%) rotate(24deg); }
+
+    .brand-text-wrap {
+      min-width: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    .brand-text {
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: var(--teal-dark);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.15;
+    }
+    .brand-text em {
+      color: var(--gold-dark);
+      font-style: normal;
+      font-size: 1.15em;
+      text-shadow: 1px 1px 0 rgba(0,0,0,0.12);
+    }
+    [data-theme="dark"] .brand-text { color: var(--teal-light); }
+    [data-theme="dark"] .brand-text em { color: var(--gold); }
+
+    .brand-sub {
+      font-size: 0.62rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      line-height: 1.15;
+    }
+
+    .header-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+    .icon-btn {
+      width: 38px; height: 38px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      background: var(--cream);
+      border: 2px solid var(--border);
+      border-radius: var(--r-md);
+      color: var(--teal-dark);
+      cursor: pointer;
+      transition: all 0.18s var(--ease-bounce);
+    }
+    [data-theme="dark"] .icon-btn { background: var(--surface-soft); color: var(--teal-light); }
+    .icon-btn:hover { background: var(--teal-bg); border-color: var(--teal); }
+    .icon-btn:active { transform: scale(0.9); }
+    .icon-btn svg { width: 17px; height: 17px; }
+    [data-theme="light"] .theme-sun { display: none; }
+    [data-theme="light"] .theme-moon { display: block; }
+    [data-theme="dark"] .theme-sun { display: block; }
+    [data-theme="dark"] .theme-moon { display: none; }
+
+    /* ============================================================
+       CARDS
+       ============================================================ */
+    .card {
+      background: var(--surface-card);
+      border: 2px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: var(--s-md);
+      box-shadow: var(--shadow-card);
+      animation: fadeUp 0.45s var(--ease-out) both;
+      animation-delay: var(--d, 0s);
+    }
+
+    /* ============================================================
+       DISPLAY BOX
+       ============================================================ */
+    .display-box {
+      position: relative;
+      background: var(--cream);
+      border: 3px dashed var(--border-strong);
+      border-radius: var(--r-md);
+      min-height: 130px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--s-md);
+      margin-bottom: var(--s-sm);
+      transition: all 0.3s var(--ease-out);
+      overflow: hidden;
+    }
+    [data-theme="dark"] .display-box { background: var(--surface-soft); }
+
     .display-box.rolling {
       border-style: solid;
-      animation: pulseBorder 0.9s ease-in-out infinite;
+      border-color: var(--teal);
+      background: var(--teal-bg);
+      animation: tealPulse 1.2s ease-in-out infinite;
     }
+    [data-theme="dark"] .display-box.rolling { background: var(--surface-input); }
     .display-box.rolling .winner-text {
-      animation: rollText 0.1s linear infinite alternate;
-      color: #d1fae5;
+      animation: rollText 0.12s linear infinite alternate;
+      color: var(--teal-dark);
     }
+    [data-theme="dark"] .display-box.rolling .winner-text { color: var(--teal-light); }
+
     .display-box.winner-found {
-      border-color: var(--gold);
       border-style: solid;
-      box-shadow: 0 0 22px rgba(245,158,11,0.35);
-      animation: glowPulse 1s var(--ease-out) 1;
+      border-color: var(--gold-dark);
+      background: linear-gradient(180deg, var(--gold-light) 0%, var(--cream) 70%);
+      box-shadow: var(--shadow-accent-glow);
+      animation: glowPulse 2s ease-in-out infinite;
+    }
+    [data-theme="dark"] .display-box.winner-found {
+      background: linear-gradient(180deg, rgba(255,210,63,0.15) 0%, var(--surface-input) 70%);
     }
     .display-box.winner-found .winner-text {
-      animation: winnerPop 0.55s var(--ease-spring) both;
-      color: #fff;
-      text-shadow: 0 0 16px rgba(245,158,11,0.6);
+      animation: winnerPop 0.55s var(--ease-bounce) both;
+      color: var(--text);
     }
-    .display-box.multi { align-items: center; justify-content: flex-start; padding: 12px 14px; max-height: 220px; overflow-y: auto; }
 
-    .winner-text { font-size: clamp(1.3rem, 6.5vw, 1.8rem); font-weight: 800; color: #fff; word-break: break-word; overflow-wrap: anywhere; line-height: 1.25; width: 100%; text-align: center; }
-    .winner-line { font-size: clamp(0.95rem, 4vw, 1.15rem); margin: 3px 0; padding: 4px 0; border-bottom: 1px dashed rgba(255,255,255,0.08); animation: slideInLeft 0.35s var(--ease-out) both; }
-    .winner-line:nth-child(1) { animation-delay: 0.04s; }
-    .winner-line:nth-child(2) { animation-delay: 0.1s; }
-    .winner-line:nth-child(3) { animation-delay: 0.16s; }
-    .winner-line:nth-child(4) { animation-delay: 0.22s; }
-    .winner-line:nth-child(n+5) { animation-delay: 0.28s; }
+    .display-box.multi {
+      align-items: stretch;
+      justify-content: flex-start;
+      padding: var(--s-sm) var(--s-md);
+      max-height: 240px;
+      overflow-y: auto;
+    }
+
+    .winner-text {
+      font-size: clamp(1.4rem, 6.2vw, 1.75rem);
+      font-weight: 800;
+      color: var(--text);
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      line-height: 1.2;
+      width: 100%;
+      text-align: center;
+      letter-spacing: -0.01em;
+    }
+    .winner-text.idle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .winner-line {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 9px 0;
+      color: var(--text);
+      border-bottom: 1.5px dashed var(--border);
+      animation: slideIn 0.32s var(--ease-out) both;
+      animation-delay: calc(var(--i, 0) * 0.06s);
+      letter-spacing: 0.01em;
+    }
     .winner-line:last-child { border-bottom: 0; }
-    .winner-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 6px; }
+    .winner-line .idx {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      border-radius: var(--r-sm);
+      background: var(--gold);
+      color: var(--text);
+      font-size: 0.75rem;
+      font-weight: 800;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(255,210,63,0.5);
+    }
+    .winner-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: var(--s-xs);
+      text-align: center;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
 
-    /* ===== BUTTONS ===== */
+    /* ============================================================
+       BUTTONS — pill shaped, glow shadows
+       ============================================================ */
     button {
-      position: relative; overflow: hidden;
-      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-      color: #fff; border: none;
-      padding: 8px 12px; border-radius: 8px;
-      font-weight: 600; cursor: pointer;
-      display: inline-flex; align-items: center; justify-content: center; gap: 4px;
-      font-size: 0.82rem;
-      touch-action: manipulation; white-space: nowrap;
-      transition: transform 0.15s var(--ease-out);
+      position: relative;
+      overflow: hidden;
+      background: var(--surface-card);
+      color: var(--teal-dark);
+      border: 2px solid var(--border);
+      padding: 11px 16px;
+      border-radius: var(--r-pill);
+      font-weight: 700;
+      font-size: 0.84rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 44px;
+      touch-action: manipulation;
+      white-space: nowrap;
+      transition: all 0.18s var(--ease-bounce);
+      letter-spacing: 0.3px;
+    }
+    button:hover {
+      background: var(--teal-bg);
+      border-color: var(--teal);
+      transform: translateY(-1px);
     }
     button:active { transform: scale(0.95); }
-    button:disabled { opacity: 0.45; }
-    button.btn-secondary { background: rgba(255,255,255,0.07); border: 1px solid var(--surface-border); color: var(--text); }
-    button.btn-danger { background: linear-gradient(135deg, #f87171 0%, #dc2626 100%); }
+    button:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+    button svg { width: 15px; height: 15px; flex-shrink: 0; }
 
-    .btn-main {
-      background: linear-gradient(135deg, #34d399 0%, #059669 100%);
-      color: #fff; border: none;
-      min-height: 52px; padding: 12px;
-      border-radius: 14px;
-      font-weight: 800; font-size: 1.05rem;
-      cursor: pointer; width: 100%;
-      box-shadow: 0 4px 14px rgba(16,185,129,0.3);
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      touch-action: manipulation;
-      transition: transform 0.15s var(--ease-out), box-shadow 0.25s ease;
+    /* Gold CTA */
+    .btn-primary {
+      background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 55%, var(--gold-dark) 100%);
+      border: 2px solid var(--gold-dark);
+      color: #5a4200;
+      box-shadow: var(--shadow-accent-glow);
+      text-shadow: 0 1px 0 rgba(255,255,255,0.5);
     }
-    .btn-main:active { transform: scale(0.96); }
+    .btn-primary:hover {
+      background: linear-gradient(180deg, var(--gold) 0%, var(--gold-dark) 100%);
+      border-color: var(--gold-dark);
+      color: #3a2a00;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 26px rgba(255,210,63,0.5);
+    }
 
-    /* ===== QUICK OPTIONS ===== */
-    .quick-options { display: flex; flex-wrap: wrap; gap: 6px; background: var(--surface-2); padding: 8px 10px; border-radius: 10px; border: 1px solid var(--surface-border); font-size: 0.78rem; margin-top: 10px; justify-content: center; }
-    .quick-options label { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; color: var(--text); padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.04); white-space: nowrap; user-select: none; }
-    .quick-options label input[type="checkbox"] { flex-shrink: 0; width: 16px; height: 16px; accent-color: var(--accent); }
-    .quick-options label input[type="number"] { width: 52px; padding: 3px 5px; margin: 0; font-size: 15px; text-align: center; background: rgba(11,15,25,0.8); border-radius: 6px; border: 1px solid var(--surface-border); color: #fff; }
+    /* Coral danger */
+    .btn-danger {
+      background: var(--surface-card);
+      border: 2px solid var(--coral);
+      color: var(--coral-dark);
+    }
+    .btn-danger:hover {
+      background: var(--coral);
+      color: #fff;
+      border-color: var(--coral-dark);
+      box-shadow: var(--shadow-coral-glow);
+    }
 
-    .quick-actions { display: flex; gap: 6px; margin-top: 8px; }
-    .quick-actions button { flex: 1; font-size: 0.78rem; padding: 9px 6px; }
-    #undoBtn:not(:disabled) { animation: bounceIn 0.35s var(--ease-spring); }
-    #undoBtn.shake { animation: shakeX 0.35s ease; }
+    /* Main CTA */
+    .btn-main {
+      background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dark) 100%);
+      border: 3px solid var(--gold-dark);
+      color: #4a3400;
+      min-height: 62px;
+      padding: 16px;
+      border-radius: var(--r-pill);
+      font-weight: 800;
+      font-size: 1.05rem;
+      width: 100%;
+      box-shadow: var(--shadow-accent-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.55);
+      position: relative;
+    }
+    .btn-main::before {
+      content: '';
+      position: absolute;
+      top: 4px;
+      left: 8%;
+      right: 8%;
+      height: 40%;
+      border-radius: var(--r-pill);
+      background: linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0));
+      pointer-events: none;
+    }
+    .btn-main:hover {
+      box-shadow: 0 8px 30px rgba(255,210,63,0.55);
+      transform: translateY(-2px);
+    }
+    .btn-main:active { transform: scale(0.97); }
+    .btn-main svg { width: 20px; height: 20px; }
 
-    /* ===== TABS ===== */
-    .tabs { display: flex; border-bottom: 1px solid var(--surface-border); margin-bottom: 10px; overflow-x: auto; scrollbar-width: none; }
+    /* ============================================================
+       OPTIONS (checkbox pills)
+       ============================================================ */
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: var(--s-sm);
+      padding-top: var(--s-sm);
+      border-top: 3px dashed var(--divider);
+    }
+    .opt {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      background: var(--cream);
+      border: 2px solid var(--border);
+      border-radius: var(--r-pill);
+      font-size: 0.76rem;
+      color: var(--text-dim);
+      cursor: pointer;
+      user-select: none;
+      font-weight: 700;
+      min-height: 36px;
+      transition: all 0.18s var(--ease-bounce);
+      letter-spacing: 0.3px;
+    }
+    [data-theme="dark"] .opt { background: var(--surface-soft); }
+    .opt:hover { border-color: var(--teal); background: var(--teal-bg); }
+    .opt:active { transform: scale(0.96); }
+    .opt input[type="checkbox"] {
+      width: 15px; height: 15px;
+      accent-color: var(--teal);
+      cursor: pointer;
+      flex-shrink: 0;
+      margin: 0;
+    }
+    .opt input[type="number"] {
+      width: 40px;
+      padding: 2px 4px;
+      margin: 0;
+      background: var(--surface-card);
+      border: 2px solid var(--border);
+      border-radius: var(--r-sm);
+      color: var(--text);
+      font-size: 0.8rem;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+      font-weight: 800;
+    }
+    .opt input[type="number"]:focus { outline: none; border-color: var(--teal); }
+    .opt.on {
+      color: var(--teal-dark);
+      border-color: var(--teal);
+      background: var(--teal-bg);
+    }
+    [data-theme="dark"] .opt.on { color: var(--teal-light); }
+
+    .quick-actions { display: flex; gap: 8px; margin-top: 10px; }
+    .quick-actions button { flex: 1; }
+    #undoBtn.shake { animation: shakeX 0.4s ease; }
+
+    /* ============================================================
+       TABS
+       ============================================================ */
+    .tabs {
+      display: flex;
+      border-bottom: 3px dashed var(--divider);
+      margin-bottom: var(--s-md);
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 0 4px;
+    }
     .tabs::-webkit-scrollbar { display: none; }
-    .tab-item { padding: 8px 10px; cursor: pointer; border-bottom: 2px solid transparent; color: var(--text-muted); font-weight: 700; font-size: 0.82rem; flex: 1; text-align: center; white-space: nowrap; transition: color 0.2s ease, border-color 0.2s ease; }
-    .tab-item.active { border-color: var(--primary); color: #fff; }
+    .tab {
+      padding: 10px 14px;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-weight: 800;
+      font-size: 0.85rem;
+      text-align: center;
+      white-space: nowrap;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -3px;
+      transition: all 0.2s var(--ease-out);
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+    .tab:hover { color: var(--teal); }
+    .tab.active {
+      color: var(--teal-dark);
+      border-color: var(--gold);
+    }
+    [data-theme="dark"] .tab.active { color: var(--teal-light); }
 
-    /* ===== LIST ===== */
-    .list-container { max-height: 200px; overflow-y: auto; list-style: none; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; padding: 2px; }
-    .list-item { background: var(--surface-2); padding: 9px 11px; border-radius: 8px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 0.84rem; border: 1px solid rgba(255,255,255,0.05); word-break: break-word; animation: slideInLeft 0.3s var(--ease-out) both; }
-    .list-item > span { min-width: 0; overflow-wrap: anywhere; }
-    .list-item small { flex-shrink: 0; }
-    .list-item.prize { border-left: 3px solid var(--gold); }
-    .list-item.prize .prize-badge { display: inline-block; padding: 1px 6px; margin-right: 4px; border-radius: 20px; background: rgba(245,158,11,0.2); color: var(--gold); font-size: 0.7rem; font-weight: 800; border: 1px solid rgba(245,158,11,0.4); animation: pop 0.4s var(--ease-spring); }
+    /* ============================================================
+       LIST — scoring items with left accent
+       ============================================================ */
+    .list {
+      list-style: none;
+      max-height: 240px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+    }
+    .list-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px 12px 18px;
+      background: var(--surface-card);
+      border: 2px solid var(--border);
+      border-left: 6px solid var(--teal-light);
+      border-radius: var(--r-md);
+      margin-bottom: 8px;
+      font-size: 0.88rem;
+      box-shadow: var(--shadow-sm);
+      animation: slideIn 0.3s var(--ease-out) both;
+      transition: transform 0.15s var(--ease-out);
+      position: relative;
+    }
+    .list-item:hover { transform: translateX(2px); }
+    .list-item .name {
+      min-width: 0;
+      overflow-wrap: anywhere;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .list-item .meta {
+      flex-shrink: 0;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+    }
+    .list-item.prize {
+      border-left-color: var(--gold);
+      background: linear-gradient(90deg, var(--gold-light) 0%, var(--surface-card) 40%);
+    }
+    [data-theme="dark"] .list-item.prize {
+      background: linear-gradient(90deg, rgba(255,210,63,0.12) 0%, var(--surface-card) 40%);
+    }
+    .prize-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 9px;
+      border-radius: var(--r-pill);
+      background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold-dark) 100%);
+      color: #4a3400;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      border: 1.5px solid var(--gold-dark);
+      box-shadow: 0 2px 6px rgba(255,210,63,0.4);
+      animation: badgeBounce 0.5s var(--ease-bounce);
+    }
+    .list-item .num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: var(--r-sm);
+      background: var(--teal-bg);
+      color: var(--teal-dark);
+      font-size: 0.72rem;
+      font-weight: 800;
+      border: 1.5px solid var(--teal);
+      font-variant-numeric: tabular-nums;
+    }
+    [data-theme="dark"] .list-item .num { background: var(--surface-soft); color: var(--teal-light); }
 
-    .winners-actions { display: flex; gap: 6px; margin-top: 10px; }
-    .winners-actions button { flex: 1; min-width: 0; padding: 9px 6px; font-size: 0.78rem; }
+    .empty-state {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.84rem;
+      padding: 32px 12px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      line-height: 1.7;
+    }
 
-    /* ===== GROUPS ===== */
-    .groups-toolbar { display: flex; gap: 6px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
-    .groups-toolbar label { font-size: 0.8rem; white-space: nowrap; }
-    .groups-toolbar input[type="number"] { width: 60px; padding: 8px; background: rgba(11,15,25,0.7); border: 1px solid var(--surface-border); color: #fff; border-radius: 8px; font-size: 16px; }
-    .groups-toolbar button { min-height: 40px; padding: 8px 14px; font-size: 0.85rem; margin-left: auto; }
-    #groupsGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; max-height: 220px; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
-    .group-card { background: var(--surface-2); border: 1px solid var(--surface-border); border-radius: 8px; padding: 8px; animation: pop 0.35s var(--ease-spring) both; }
-    .group-card h4 { border-bottom: 1px solid var(--surface-border); padding-bottom: 3px; font-size: 0.78rem; color: var(--accent); margin-bottom: 4px; }
-    .group-card ul { list-style: none; font-size: 0.76rem; }
-    .group-card ul li { overflow-wrap: anywhere; }
+    .winners-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: var(--s-sm);
+    }
+    .winners-actions button { flex: 1; padding: 11px 8px; font-size: 0.78rem; }
 
-    /* ===== MODAL ===== */
-    .modal-overlay {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.75);
-      display: flex; align-items: center; justify-content: center;
+    /* ============================================================
+       GROUPS
+       ============================================================ */
+    .groups-bar {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: var(--s-sm);
+      flex-wrap: wrap;
+    }
+    .groups-bar label {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      white-space: nowrap;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+    .groups-bar input[type="number"] {
+      width: 60px;
+      padding: 9px 6px;
+      background: var(--cream);
+      border: 2px solid var(--border);
+      color: var(--text);
+      border-radius: var(--r-md);
+      font-size: 0.9rem;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+      font-weight: 800;
+    }
+    [data-theme="dark"] .groups-bar input[type="number"] { background: var(--surface-soft); }
+    .groups-bar input:focus { outline: none; border-color: var(--teal); }
+    .groups-bar button { margin-left: auto; padding: 11px 20px; }
+
+    .groups-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 8px;
+      max-height: 260px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+    }
+    .group {
+      background: var(--surface-card);
+      border: 2px solid var(--border);
+      border-left: 5px solid var(--sky);
+      border-radius: var(--r-md);
+      padding: 12px;
+      box-shadow: var(--shadow-sm);
+      animation: pop 0.35s var(--ease-bounce) both;
+    }
+    .group:nth-child(3n+1) { border-left-color: var(--teal); }
+    .group:nth-child(3n+2) { border-left-color: var(--gold); }
+    .group:nth-child(3n+3) { border-left-color: var(--coral); }
+
+    .group h4 {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--teal-dark);
+      padding-bottom: 8px;
+      margin-bottom: 8px;
+      border-bottom: 2px dashed var(--divider);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+    [data-theme="dark"] .group h4 { color: var(--teal-light); }
+    .group h4 .count {
+      background: var(--teal-bg);
+      color: var(--teal-dark);
+      padding: 2px 7px;
+      border-radius: var(--r-pill);
+      font-size: 0.68rem;
+      font-weight: 800;
+      border: 1.5px solid var(--teal);
+    }
+    [data-theme="dark"] .group h4 .count { background: var(--surface-soft); color: var(--teal-light); }
+    .group ul { list-style: none; font-size: 0.8rem; color: var(--text-dim); }
+    .group li { padding: 3px 0; overflow-wrap: anywhere; font-weight: 500; }
+
+    /* ============================================================
+       MODAL
+       ============================================================ */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(26, 43, 42, 0.55);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       z-index: 1000;
-      padding: calc(10px + var(--safe-top)) calc(10px + var(--safe-right)) calc(10px + var(--safe-bottom)) calc(10px + var(--safe-left));
-      opacity: 0; pointer-events: none;
+      padding: calc(var(--s-sm) + var(--safe-top)) calc(var(--s-sm) + var(--safe-right)) calc(var(--s-sm) + var(--safe-bottom)) calc(var(--s-sm) + var(--safe-left));
+      opacity: 0;
+      pointer-events: none;
       transition: opacity 0.25s ease;
     }
-    .modal-overlay.open { opacity: 1; pointer-events: auto; }
-    .modal {
-      background: var(--surface-solid);
-      border: 1px solid var(--surface-border);
-      border-radius: var(--radius);
-      width: 100%; max-width: 500px; padding: 14px;
-      max-height: calc(100dvh - 20px - var(--safe-top) - var(--safe-bottom));
-      overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
-      transform: translate3d(0, 24px, 0) scale(0.96);
+    .overlay.open { opacity: 1; pointer-events: auto; }
+    .sheet {
+      background: var(--surface-base);
+      border: 3px solid var(--border-strong);
+      border-radius: var(--r-xl);
+      width: 100%;
+      max-width: 520px;
+      max-height: calc(100dvh - 32px - var(--safe-top) - var(--safe-bottom));
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-lg);
+      transform: translate3d(0, 30px, 0) scale(0.94);
       opacity: 0;
-      transition: transform 0.3s var(--ease-spring), opacity 0.25s ease;
+      transition: transform 0.4s var(--ease-bounce), opacity 0.25s ease;
     }
-    .modal-overlay.open .modal { transform: translate3d(0, 0, 0) scale(1); opacity: 1; }
+    .overlay.open .sheet { transform: translate3d(0, 0, 0) scale(1); opacity: 1; }
+    .sheet-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--s-sm) var(--s-md);
+      background: var(--teal-bg);
+      border-bottom: 3px dashed var(--border-strong);
+      border-radius: var(--r-xl) var(--r-xl) 0 0;
+      flex-shrink: 0;
+    }
+    [data-theme="dark"] .sheet-head { background: var(--surface-soft); }
+    .sheet-title {
+      font-weight: 800;
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--teal-dark);
+    }
+    [data-theme="dark"] .sheet-title { color: var(--teal-light); }
+    .sheet-body {
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      padding: var(--s-md);
+    }
+    .sheet-body .tabs { padding: 0; margin-bottom: var(--s-md); }
 
-    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px; }
-    .modal-header h3 { font-size: 0.95rem; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    /* ============================================================
+       SECTION
+       ============================================================ */
+    .section { margin-bottom: var(--s-lg); }
+    .section:last-child { margin-bottom: 0; }
+    .section-title {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: var(--teal-dark);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: var(--s-sm);
+      padding-bottom: 8px;
+      border-bottom: 3px dashed var(--divider);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    [data-theme="dark"] .section-title { color: var(--teal-light); }
+    .section-title svg { width: 14px; height: 14px; }
 
-    /* ===== FORM ===== */
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 2px dashed var(--divider);
+    }
+    .row:last-child { border-bottom: 0; padding-bottom: 0; }
+    .row:first-of-type { padding-top: 0; }
+    .row-label {
+      font-size: 0.87rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: 0.2px;
+    }
+    .row-hint {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+
+    /* ============================================================
+       TOGGLE SWITCH
+       ============================================================ */
+    .switch { position: relative; width: 48px; height: 28px; flex-shrink: 0; }
+    .switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .switch-track {
+      position: absolute;
+      inset: 0;
+      background: var(--cream);
+      border: 2px solid var(--border-strong);
+      border-radius: var(--r-pill);
+      cursor: pointer;
+      transition: background 0.22s ease, border-color 0.22s ease;
+    }
+    [data-theme="dark"] .switch-track { background: var(--surface-soft); }
+    .switch-track::before {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      top: 3px;
+      left: 3px;
+      background: var(--text-muted);
+      border-radius: 50%;
+      transition: transform 0.25s var(--ease-bounce), background 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    }
+    .switch input:checked + .switch-track {
+      background: var(--teal);
+      border-color: var(--teal-dark);
+    }
+    .switch input:checked + .switch-track::before {
+      transform: translateX(20px);
+      background: #fff;
+    }
+
+    /* ============================================================
+       FORM
+       ============================================================ */
     textarea, input[type="text"], input[type="number"], select {
-      width: 100%; background: rgba(11,15,25,0.7);
-      border: 1px solid var(--surface-border);
-      border-radius: 10px; color: var(--text);
-      padding: 10px; font-size: 16px; outline: none; margin: 6px 0;
-      -webkit-appearance: none; appearance: none;
-      transition: border-color 0.2s ease;
+      width: 100%;
+      background: var(--cream);
+      border: 2px solid var(--border);
+      border-radius: var(--r-md);
+      color: var(--text);
+      padding: 12px 14px;
+      font-size: 16px;
+      outline: none;
+      font-family: inherit;
+      font-weight: 500;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
-    textarea { height: 120px; resize: vertical; font-family: inherit; }
-    textarea:focus, input:focus, select:focus { border-color: var(--primary); }
+    [data-theme="dark"] textarea,
+    [data-theme="dark"] input[type="text"],
+    [data-theme="dark"] input[type="number"],
+    [data-theme="dark"] select { background: var(--surface-soft); }
+    textarea { height: 132px; resize: vertical; line-height: 1.5; }
+    textarea:focus, input:focus, select:focus {
+      border-color: var(--teal);
+      box-shadow: var(--shadow-focus);
+    }
+    select {
+      cursor: pointer;
+      padding-right: 36px;
+      background-image: linear-gradient(45deg, transparent 50%, var(--teal) 50%), linear-gradient(135deg, var(--teal) 50%, transparent 50%);
+      background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%;
+      background-size: 6px 6px, 6px 6px;
+      background-repeat: no-repeat;
+      -webkit-appearance: none;
+      appearance: none;
+      font-weight: 700;
+    }
 
-    .btn-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 8px; }
-    .btn-grid button { padding: 10px 6px; font-size: 0.78rem; }
+    .input-label {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
 
-    .class-toolbar { background: var(--surface-2); padding: 10px; border-radius: 10px; border: 1px solid var(--surface-border); margin-bottom: 10px; }
-    .class-toolbar .row { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
-    .class-toolbar select { flex: 1 1 120px; margin: 0; }
-    .class-toolbar button { flex-shrink: 0; }
+    .btn-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: var(--s-sm);
+    }
+    .btn-grid button { padding: 12px 8px; font-size: 0.78rem; }
 
-    .settings-row { display: flex; flex-direction: column; gap: 8px; font-size: 0.82rem; }
-    .settings-row label { display: flex; align-items: center; gap: 8px; }
-    .hint { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+    .divider {
+      height: 0;
+      border-top: 3px dashed var(--divider);
+      margin: var(--s-md) 0;
+    }
 
-    /* ===== RESPONSIVE ===== */
+    .range-row { display: flex; align-items: center; gap: 12px; flex: 1.3; }
+    .range-row input[type="range"] {
+      flex: 1;
+      accent-color: var(--teal);
+      height: 6px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+    .range-val {
+      min-width: 44px;
+      text-align: right;
+      font-size: 0.8rem;
+      color: var(--teal-dark);
+      font-variant-numeric: tabular-nums;
+      font-weight: 800;
+    }
+    [data-theme="dark"] .range-val { color: var(--teal-light); }
+
+    .class-block {
+      background: var(--cream);
+      border: 2px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 14px;
+      margin-bottom: var(--s-sm);
+    }
+    [data-theme="dark"] .class-block { background: var(--surface-soft); }
+    .class-block .toolbar { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+    .class-block .toolbar select { flex: 1 1 120px; }
+    .class-block .toolbar button { flex-shrink: 0; padding: 10px 14px; }
+
+    .hint {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-top: var(--s-sm);
+      line-height: 1.55;
+      padding: 10px 12px;
+      background: var(--teal-bg);
+      border-radius: var(--r-md);
+      border-left: 4px solid var(--teal);
+      font-weight: 500;
+    }
+    [data-theme="dark"] .hint { background: var(--surface-soft); }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
     @media (max-width: 480px) {
-      .hide-xs { display: none; }
-      .show-xs { display: inline; }
-      header { padding: 7px 9px; }
-      .status-badge { display: none; }
-      .display-box { min-height: 115px; padding: 12px; }
-      .winners-actions button { font-size: 0.72rem; padding: 8px 4px; }
-      .quick-options { font-size: 0.72rem; padding: 7px 8px; }
-      .quick-options label { padding: 3px 6px; }
+      body { padding: calc(12px + var(--safe-top)) calc(12px + var(--safe-right)) calc(12px + var(--safe-bottom)) calc(12px + var(--safe-left)); }
+      .card { padding: 14px; }
+      .sheet-body { padding: 14px; }
+      .winner-text { font-size: 1.35rem; }
+      .brand-text { font-size: 0.92rem; }
     }
     @media (max-width: 360px) {
-      .tab-item { font-size: 0.75rem; padding: 8px 6px; }
-      .btn-grid button { font-size: 0.72rem; }
-      .winners-actions { flex-wrap: wrap; }
-      .winners-actions button { flex: 1 1 calc(50% - 3px); }
+      .tab { padding: 9px 10px; font-size: 0.76rem; letter-spacing: 0.2px; }
+      .winners-actions button { font-size: 0.72rem; padding: 10px 4px; }
+      .groups-grid { grid-template-columns: 1fr 1fr; }
+      .btn-main { font-size: 0.95rem; letter-spacing: 0.5px; }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
@@ -308,624 +1077,1016 @@
 </head>
 <body>
 
+<div class="shell">
+
   <header>
     <div class="brand">
-      <span>🎲 Randomizer Pro</span>
-      <span class="status-badge">Offline</span>
+      <div class="brand-mark">
+        <div class="fan"></div>
+        <div class="fan"></div>
+        <div class="fan"></div>
+        <div class="fan"></div>
+        <div class="fan"></div>
+      </div>
+      <div class="brand-text-wrap">
+        <div class="brand-text">RANDOMIZER <em>PRO</em></div>
+        <div class="brand-sub">Offline · PWA</div>
+      </div>
     </div>
     <div class="header-actions">
-      <button onclick="toggleFullScreen()" class="btn-secondary" title="Fullscreen" aria-label="Fullscreen">📺</button>
-      <button onclick="openSettings()" class="btn-secondary" aria-label="Kelola Data">
-        <span class="hide-xs">⚙️ Kelola Data / Kelas</span>
-        <span class="show-xs">⚙️ Kelola</span>
+      <button class="icon-btn" id="themeBtn" aria-label="Ganti tema" title="Ganti tema">
+        <svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="4"/>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+        </svg>
+        <svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <button class="icon-btn" onclick="toggleFullscreen()" aria-label="Fullscreen" title="Fullscreen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/>
+        </svg>
+      </button>
+      <button class="icon-btn" onclick="openSettings()" aria-label="Pengaturan" title="Pengaturan">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
       </button>
     </div>
   </header>
 
-  <main>
-    <section class="display-card">
-      <div class="display-box" id="displayBox">
-        <div class="winner-text" id="winnerText">Siap Mengacak</div>
-        <div class="winner-sub" id="winnerSub">Tekan tombol di bawah untuk memilih nama</div>
-      </div>
-      <button onclick="pickWinner()" class="btn-main">🎯 ACAK NAMA NOW</button>
+  <section class="card" style="--d:0.04s">
+    <div class="display-box" id="displayBox">
+      <div class="winner-text idle" id="winnerText">Siap mengacak</div>
+      <div class="winner-sub" id="winnerSub">Tekan tombol untuk memulai</div>
+    </div>
 
-      <div class="quick-options">
-        <label title="Jumlah pemenang yang diambil sekaligus">
-          🎯 <input type="number" id="winnerCount" min="1" value="1"> pemenang
-        </label>
-        <label title="Nomor hadiah + otomatis hapus peserta terpilih">
-          <input type="checkbox" id="doorprizeMode"> 🎟️ Doorprize
-        </label>
-        <label title="Hapus nama dari daftar setelah terpilih">
-          <input type="checkbox" id="removeOnPick"> 🚫 No repeat
-        </label>
-        <label title="Bacakan nama pemenang dengan suara">
-          <input type="checkbox" id="ttsToggle" checked> 🔊 Suara
-        </label>
-      </div>
-      <div class="quick-actions">
-        <button onclick="undoLast()" class="btn-secondary" id="undoBtn" disabled>↩️ Undo Terakhir</button>
-        <button onclick="resetOriginalData()" class="btn-secondary">🔄 Restore Data</button>
-      </div>
-    </section>
+    <button class="btn-main" onclick="pickWinner()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2L15 8.5L22 9.5L17 14.5L18 22L12 18.5L6 22L7 14.5L2 9.5L9 8.5Z"/>
+      </svg>
+      MULAI ACAK
+    </button>
 
-    <section class="card">
-      <div class="tabs">
-        <div class="tab-item active" onclick="switchTab('tabWinners', this)">🏆 Terpilih</div>
-        <div class="tab-item" onclick="switchTab('tabGroups', this)">👥 Bagi Kelompok</div>
-      </div>
-      <div id="tabWinners">
-        <ul class="list-container" id="winnersList"></ul>
-        <div class="winners-actions">
-          <button onclick="shareToWhatsApp()" class="btn-secondary">💬 Share WA</button>
-          <button onclick="exportWinnersExcel()" class="btn-secondary">📊 Excel</button>
-          <button onclick="clearWinnersHistory()" class="btn-danger">🗑️ Hapus</button>
-        </div>
-      </div>
-      <div id="tabGroups" style="display:none;">
-        <div class="groups-toolbar">
-          <label>Jumlah Kelompok:</label>
-          <input type="number" id="groupCount" min="2" value="3">
-          <button onclick="generateGroups()">Bagi</button>
-        </div>
-        <div id="groupsGrid"></div>
-      </div>
-    </section>
-  </main>
+    <div class="options">
+      <label class="opt">
+        <input type="checkbox" id="doorprizeMode"> Doorprize
+      </label>
+      <label class="opt">
+        <input type="checkbox" id="removeOnPick"> Tanpa Ulang
+      </label>
+      <label class="opt">
+        <input type="checkbox" id="ttsToggle" checked> Suara
+      </label>
+      <label class="opt" title="Jumlah pemenang sekaligus">
+        Ambil
+        <input type="number" id="winnerCount" min="1" value="1" max="99">
+        nama
+      </label>
+    </div>
 
-  <div class="modal-overlay" id="settingsModal">
-    <div class="modal">
-      <div class="modal-header">
-        <h3>⚙️ Kelola Data & Sesi Kelas</h3>
-        <button onclick="closeSettings()" class="btn-secondary" style="padding:5px 10px;">✕ Tutup</button>
-      </div>
-      <div class="tabs" style="margin-bottom:10px;">
-        <div class="tab-item active" onclick="switchModalTab('mTabClass', this)">🏫 Kelola Kelas</div>
-        <div class="tab-item" onclick="switchModalTab('mTabInput', this)">📝 Input Manual</div>
-      </div>
-      <div id="mTabClass">
-        <div class="class-toolbar">
-          <label style="font-size:0.8rem; color:var(--text-muted);">Pilih / Tambah Kelas Baru:</label>
-          <div class="row">
-            <select id="classSelect" onchange="loadClassStudents()">
-              <option value="">-- Pilih Kelas --</option>
-            </select>
-            <button onclick="addNewClass()" class="btn-secondary">➕ Buat Kelas</button>
-            <button onclick="deleteCurrentClass()" class="btn-danger" style="padding:6px 10px;" aria-label="Hapus kelas">🗑️</button>
-          </div>
-        </div>
-        <div id="classEditor" style="display:none;">
-          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:4px;">
-            <span style="font-size:0.8rem; color:var(--text-muted);">Daftar Siswa Kelas Ini:</span>
-            <strong id="classStudentCount" style="font-size:0.8rem; color:var(--accent);">0 Siswa</strong>
-          </div>
-          <textarea id="classStudentsInput" oninput="saveClassStudents()" placeholder="Ketik nama-nama siswa (1 baris 1 siswa)"></textarea>
-          <button onclick="applyClassToMain()" class="btn-main" style="min-height:44px; font-size:0.9rem; margin-top:8px;">🚀 Muat ke Pengacak Utama</button>
-        </div>
-      </div>
-      <div id="mTabInput" style="display:none;">
-        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; font-size:0.8rem; color:var(--text-muted);">
-          <span>Data Pengacak Saat Ini:</span>
-          <strong id="itemCount" style="color:var(--accent); white-space:nowrap;">Total: 0 Peserta</strong>
-        </div>
-        <textarea id="dataInput" oninput="updateItemCount(); saveCurrentSession();" placeholder="Ahmad&#10;Budi&#10;Siti&#10;-Joko (Awalan - = Absen/Skip)"></textarea>
-        <div class="hint">💡 Awali nama dengan tanda <b>-</b> untuk menandai siswa <b>absen</b> (tidak dihapus, hanya di-skip dari pengacakan).</div>
-        <div class="btn-grid">
-          <button onclick="shuffleData()" class="btn-secondary">🔀 Kocok Baris</button>
-          <button onclick="sortData()" class="btn-secondary">🔤 Urut A-Z</button>
-          <button onclick="genKupon()" class="btn-secondary">🔢 Buat Kupon</button>
-          <button onclick="triggerExcel()" class="btn-secondary">📂 Import Excel</button>
-        </div>
-        <input type="file" id="excelInput" accept=".xlsx, .xls" style="display:none" onchange="importExcelData(event)">
-      </div>
-      <hr style="border:0; border-top:1px solid var(--surface-border); margin:12px 0;">
-      <div class="settings-row">
-        <label>
-          <input type="checkbox" id="soundToggle" checked> Aktifkan Suara Beep & Fanfare
-        </label>
-        <div>
-          <label style="color:var(--text-muted);">Durasi Roll Animasi (Detik):</label>
-          <input type="number" id="rollDuration" value="2.5" step="0.5" min="1">
-        </div>
-        <div>
-          <label style="color:var(--text-muted);">Nomor Hadiah Doorprize Berikutnya:</label>
-          <input type="number" id="doorprizeCounterInput" value="1" min="1">
-        </div>
-        <button onclick="resetDoorprizeCounter()" class="btn-secondary" style="width:100%;">🎟️ Reset Nomor Hadiah ke 1</button>
+    <div class="quick-actions">
+      <button onclick="undoLast()" id="undoBtn" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 7v6h6"/>
+          <path d="M21 17a9 9 0 0 0-15-6.7L3 13"/>
+        </svg>
+        Undo
+      </button>
+      <button onclick="resetOriginalData()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M23 4v6h-6"/>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+        </svg>
+        Reset
+      </button>
+    </div>
+  </section>
+
+  <section class="card" style="--d:0.1s">
+    <div class="tabs">
+      <div class="tab active" data-tab="winners" onclick="switchTab('winners', this)">Pemenang</div>
+      <div class="tab" data-tab="groups" onclick="switchTab('groups', this)">Bagi Kelompok</div>
+    </div>
+
+    <div id="tabWinners">
+      <ul class="list" id="winnersList"></ul>
+      <div class="winners-actions">
+        <button onclick="shareToWhatsApp()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+          </svg>
+          Bagikan
+        </button>
+        <button onclick="exportWinnersExcel()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          Excel
+        </button>
+        <button class="btn-danger" onclick="clearWinnersHistory()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/>
+          </svg>
+          Hapus
+        </button>
       </div>
     </div>
+
+    <div id="tabGroups" style="display:none;">
+      <div class="groups-bar">
+        <label>Jumlah kelompok</label>
+        <input type="number" id="groupCount" min="2" value="3">
+        <button class="btn-primary" onclick="generateGroups()">BAGI</button>
+      </div>
+      <div class="groups-grid" id="groupsGrid"></div>
+    </div>
+  </section>
+
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="overlay" id="settingsOverlay" onclick="if(event.target===this) closeSettings()">
+  <div class="sheet" role="dialog" aria-modal="true">
+    <div class="sheet-head">
+      <div class="sheet-title">Pengaturan</div>
+      <button class="icon-btn" onclick="closeSettings()" aria-label="Tutup">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="sheet-body">
+
+      <div class="tabs">
+        <div class="tab active" data-stab="data" onclick="switchSettingsTab('data', this)">Data &amp; Peserta</div>
+        <div class="tab" data-stab="prefs" onclick="switchSettingsTab('prefs', this)">Preferensi</div>
+      </div>
+
+      <div id="stabData">
+
+        <div class="section">
+          <div class="section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/></svg>
+            Kelola Kelas
+          </div>
+          <div class="class-block">
+            <label class="input-label">Pilih kelas</label>
+            <select id="classSelect" onchange="loadClassStudents()">
+              <option value="">— Belum ada kelas dipilih —</option>
+            </select>
+            <div class="toolbar">
+              <button class="btn-primary" onclick="addNewClass()">Kelas Baru</button>
+              <button class="btn-danger" onclick="deleteCurrentClass()">Hapus</button>
+            </div>
+          </div>
+
+          <div id="classEditor" style="display:none;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <label class="input-label" style="margin:0;">Daftar siswa</label>
+              <span id="classStudentCount" style="font-size:0.75rem; color:var(--teal-dark); font-weight:800;">0 siswa</span>
+            </div>
+            <textarea id="classStudentsInput" oninput="saveClassStudents()" placeholder="Satu nama per baris"></textarea>
+            <button class="btn-main" onclick="applyClassToMain()" style="min-height:52px; font-size:0.9rem; margin-top:12px;">
+              MUAT KE PENGACAK
+            </button>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="section">
+          <div class="section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Daftar Peserta Aktif
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span style="font-size:0.78rem; color:var(--text-dim); font-weight:600;">Pisahkan dengan baris baru</span>
+            <span id="itemCount" style="font-size:0.78rem; color:var(--teal-dark); font-weight:800;">0 peserta</span>
+          </div>
+          <textarea id="dataInput" oninput="updateItemCount(); saveCurrentSession();" placeholder="Ahmad&#10;Budi&#10;Siti&#10;-Absen Joko"></textarea>
+          <div class="hint">
+            Awali nama dengan tanda <strong>—</strong> untuk menandai siswa absen. Nama tersebut tetap tersimpan namun dilewati saat pengacakan.
+          </div>
+          <div class="btn-grid">
+            <button onclick="shuffleData()">Kocok Urutan</button>
+            <button onclick="sortData()">Urut A–Z</button>
+            <button onclick="genKupon()">Buat Kupon</button>
+            <button onclick="triggerExcel()">Impor Excel</button>
+          </div>
+          <input type="file" id="excelInput" accept=".xlsx, .xls" style="display:none" onchange="importExcelData(event)">
+        </div>
+      </div>
+
+      <div id="stabPrefs" style="display:none;">
+
+        <div class="section">
+          <div class="section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2"/></svg>
+            Tampilan
+          </div>
+          <div class="row">
+            <div>
+              <div class="row-label">Mode Terang</div>
+              <div class="row-hint">Tema terang yang nyaman untuk ruangan bercahaya</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="lightModeToggle" checked>
+              <span class="switch-track"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+            Suara
+          </div>
+          <div class="row">
+            <div>
+              <div class="row-label">Efek Suara</div>
+              <div class="row-hint">Bunyi klik, tick, dan fanfare pemenang</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="soundToggle" checked>
+              <span class="switch-track"></span>
+            </label>
+          </div>
+          <div class="row">
+            <div class="row-label" style="flex:1;">Volume</div>
+            <div class="range-row">
+              <input type="range" id="volumeSlider" min="0" max="100" value="60">
+              <span class="range-val" id="volumeVal">60%</span>
+            </div>
+          </div>
+          <div class="row">
+            <div>
+              <div class="row-label">Pembaca Nama (TTS)</div>
+              <div class="row-hint">Bacakan nama pemenang dalam Bahasa Indonesia</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="ttsSetting" checked>
+              <span class="switch-track"></span>
+            </label>
+          </div>
+          <div class="row">
+            <div class="row-label" style="flex:1;">Kecepatan Bicara</div>
+            <div class="range-row">
+              <input type="range" id="ttsRate" min="50" max="150" value="100">
+              <span class="range-val" id="ttsRateVal">1.0×</span>
+            </div>
+          </div>
+          <div class="row">
+            <button class="btn-primary" onclick="testSound()" style="width:100%;">TES SUARA PEMENANG</button>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Pengacakan
+          </div>
+          <div class="row">
+            <div class="row-label" style="flex:1;">Durasi animasi</div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <input type="number" id="rollDuration" value="2.5" step="0.5" min="1" max="10" style="width:78px; text-align:center; padding:8px;">
+              <span style="font-size:0.8rem; color:var(--text-dim); font-weight:700;">detik</span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="row-label" style="flex:1;">Nomor hadiah berikutnya</div>
+            <input type="number" id="doorprizeCounterInput" value="1" min="1" style="width:78px; text-align:center; padding:8px;">
+          </div>
+          <div class="row">
+            <button onclick="resetDoorprizeCounter()" style="width:100%;">RESET NOMOR HADIAH</button>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            Tentang
+          </div>
+          <div class="row">
+            <div class="row-label">Randomizer Pro</div>
+            <div style="font-size:0.78rem; color:var(--text-muted); font-weight:700;">v2.1 · PWA Offline</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
+</div>
 
-  <script>
-    const DB_NAME = 'RandomizerProDB';
-    const DB_VERSION = 2;
-    let db, backupOriginalData = "";
-    let winnersList = [];
-    let undoStack = [];
-    let doorprizeCounter = parseInt(localStorage.getItem('randomizer_doorprize_counter') || '1');
+<script>
+/* ============================================================
+   SOUND ENGINE — ADSR envelope
+   ============================================================ */
+const Sound = {
+  ctx: null,
+  enabled: true,
+  volume: 0.6,
+  init() {
+    if (!this.ctx) {
+      try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) { return; }
+    }
+    if (this.ctx.state === 'suspended') this.ctx.resume();
+  },
+  tone(freq, dur, opts = {}) {
+    if (!this.enabled || this.volume <= 0) return;
+    this.init();
+    if (!this.ctx) return;
+    const { type = 'sine', vol = 0.3, attack = 0.004, release = 0.4 } = opts;
+    const ctx = this.ctx;
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, now);
+    const peak = vol * this.volume;
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(peak, now + attack);
+    gain.gain.setValueAtTime(peak, now + attack + dur * (1 - release));
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(Math.min(freq * 4, 8000), now);
+    osc.connect(filter).connect(gain).connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + dur + 0.05);
+  },
+  click() { this.tone(1200, 0.045, { type: 'sine', vol: 0.18, attack: 0.001, release: 0.7 }); },
+  tick() { this.tone(1400 + Math.random() * 500, 0.022, { type: 'sine', vol: 0.09, attack: 0.001, release: 0.85 }); },
+  winner() {
+    if (!this.enabled) return;
+    this.init();
+    [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => setTimeout(() => {
+      this.tone(f, 0.32, { type: 'triangle', vol: 0.28, attack: 0.008, release: 0.35 });
+    }, i * 75));
+    setTimeout(() => {
+      [523.25, 659.25, 783.99].forEach(f => this.tone(f, 0.85, { type: 'triangle', vol: 0.22, attack: 0.01, release: 0.6 }));
+    }, 320);
+    setTimeout(() => this.tone(1567.98, 0.5, { type: 'sine', vol: 0.12, attack: 0.02, release: 0.5 }), 450);
+  },
+  error() {
+    this.tone(440, 0.14, { type: 'square', vol: 0.18, attack: 0.002, release: 0.5 });
+    setTimeout(() => this.tone(330, 0.22, { type: 'square', vol: 0.18, attack: 0.002, release: 0.5 }), 150);
+  },
+  undo() {
+    this.tone(700, 0.09, { type: 'sine', vol: 0.16 });
+    setTimeout(() => this.tone(500, 0.13, { type: 'sine', vol: 0.16 }), 80);
+  },
+  confirm() {
+    this.tone(880, 0.08, { type: 'sine', vol: 0.15 });
+    setTimeout(() => this.tone(1174.66, 0.14, { type: 'sine', vol: 0.15 }), 70);
+  }
+};
 
-    function initDB() {
-      return new Promise((resolve, reject) => {
-        const request = indexedDB.open(DB_NAME, DB_VERSION);
-        request.onupgradeneeded = (e) => {
-          db = e.target.result;
-          if (!db.objectStoreNames.contains('classes')) db.createObjectStore('classes', { keyPath: 'id' });
-        };
-        request.onsuccess = (e) => { db = e.target.result; resolve(); };
-        request.onerror = (e) => reject(e);
+/* ============================================================
+   APP STATE
+   ============================================================ */
+const DB_NAME = 'RandomizerProDB';
+const DB_VERSION = 2;
+let db = null;
+let backupOriginalData = "";
+let winnersList = [];
+let undoStack = [];
+let doorprizeCounter = parseInt(localStorage.getItem('randomizer_doorprize_counter') || '1');
+
+function initDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = (e) => {
+      db = e.target.result;
+      if (!db.objectStoreNames.contains('classes')) db.createObjectStore('classes', { keyPath: 'id' });
+    };
+    req.onsuccess = (e) => { db = e.target.result; resolve(); };
+    req.onerror = (e) => reject(e);
+  });
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function vibrate(p) { if (navigator.vibrate) navigator.vibrate(p); }
+
+/* THEME */
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  try { localStorage.setItem('randomizer_theme', theme); } catch(e) {}
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.content = theme === 'light' ? '#2BA8A2' : '#0d1a1a';
+  const toggle = document.getElementById('lightModeToggle');
+  if (toggle) toggle.checked = (theme === 'light');
+}
+function toggleTheme() {
+  const cur = document.documentElement.getAttribute('data-theme') || 'light';
+  applyTheme(cur === 'dark' ? 'light' : 'dark');
+  Sound.click();
+}
+
+/* TTS */
+function speak(text) {
+  if (!('speechSynthesis' in window)) return;
+  const toggle = document.getElementById('ttsSetting');
+  if (toggle && !toggle.checked) return;
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'id-ID';
+    u.rate = (parseInt(document.getElementById('ttsRate').value) || 100) / 100;
+    u.pitch = 1;
+    const voices = speechSynthesis.getVoices();
+    const idVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('id'));
+    if (idVoice) u.voice = idVoice;
+    speechSynthesis.speak(u);
+  } catch (e) {}
+}
+if ('speechSynthesis' in window) speechSynthesis.getVoices();
+
+/* DATA */
+function getAllLines() {
+  return document.getElementById('dataInput').value.split('\n').map(s => s.trim()).filter(s => s.length > 0);
+}
+function getDataList() { return getAllLines().filter(s => !s.startsWith('-')); }
+function getStats() {
+  const all = getAllLines();
+  return {
+    hadir: all.filter(s => !s.startsWith('-')).length,
+    absen: all.filter(s => s.startsWith('-')).length
+  };
+}
+function updateItemCount() {
+  const { hadir, absen } = getStats();
+  const el = document.getElementById('itemCount');
+  el.innerText = absen > 0 ? `${hadir} hadir · ${absen} absen` : `${hadir} peserta`;
+}
+
+/* UNDO */
+function pushUndo() {
+  undoStack.push({
+    dataInput: document.getElementById('dataInput').value,
+    winnersList: JSON.parse(JSON.stringify(winnersList)),
+    doorprizeCounter: doorprizeCounter
+  });
+  if (undoStack.length > 20) undoStack.shift();
+  updateUndoButton();
+}
+function updateUndoButton() {
+  const btn = document.getElementById('undoBtn');
+  if (btn) btn.disabled = undoStack.length === 0;
+}
+function undoLast() {
+  if (undoStack.length === 0) {
+    const btn = document.getElementById('undoBtn');
+    btn.classList.add('shake');
+    setTimeout(() => btn.classList.remove('shake'), 400);
+    Sound.error();
+    return;
+  }
+  const snap = undoStack.pop();
+  document.getElementById('dataInput').value = snap.dataInput;
+  winnersList = snap.winnersList;
+  doorprizeCounter = snap.doorprizeCounter;
+  try { localStorage.setItem('randomizer_doorprize_counter', doorprizeCounter); } catch(e) {}
+  const ci = document.getElementById('doorprizeCounterInput');
+  if (ci) ci.value = doorprizeCounter;
+  updateItemCount();
+  renderWinnersUI();
+  saveCurrentSession();
+  const box = document.getElementById('displayBox');
+  box.className = 'display-box winner-found';
+  const wt = document.getElementById('winnerText');
+  wt.classList.remove('idle');
+  wt.innerText = 'Aksi dibatalkan';
+  document.getElementById('winnerSub').innerText = 'Kembali ke kondisi sebelumnya';
+  Sound.undo();
+  vibrate([40, 40]);
+  updateUndoButton();
+}
+
+/* PICK WINNER */
+let isRolling = false;
+function pickWinner() {
+  if (isRolling) return;
+  const items = getDataList();
+  if (items.length === 0) {
+    const box = document.getElementById('displayBox');
+    box.classList.add('shake');
+    setTimeout(() => box.classList.remove('shake'), 400);
+    const wt = document.getElementById('winnerText');
+    wt.classList.add('idle');
+    wt.innerText = 'Belum ada data';
+    document.getElementById('winnerSub').innerText = 'Tambahkan nama peserta lewat menu Pengaturan';
+    Sound.error();
+    vibrate([80, 40, 80]);
+    return;
+  }
+
+  pushUndo();
+  if (!backupOriginalData) backupOriginalData = document.getElementById('dataInput').value;
+
+  const doorprize = document.getElementById('doorprizeMode').checked;
+  const removeOnPick = document.getElementById('removeOnPick').checked || doorprize;
+  let n = parseInt(document.getElementById('winnerCount').value) || 1;
+  if (n < 1) n = 1;
+  if (n > items.length) n = items.length;
+
+  const duration = (parseFloat(document.getElementById('rollDuration').value) || 2.5) * 1000;
+  const intervalTime = 70;
+  let elapsed = 0;
+
+  const box = document.getElementById('displayBox');
+  const wt = document.getElementById('winnerText');
+  const ws = document.getElementById('winnerSub');
+
+  isRolling = true;
+  Sound.init();
+  box.className = 'display-box rolling';
+  wt.classList.remove('idle');
+  ws.innerText = n > 1 ? `Mengacak ${n} pemenang...` : 'Mengacak...';
+  vibrate([20]);
+
+  const timer = setInterval(() => {
+    const randIdx = Math.floor(Math.random() * items.length);
+    wt.innerText = items[randIdx];
+    Sound.tick();
+    elapsed += intervalTime;
+
+    if (elapsed >= duration) {
+      clearInterval(timer);
+      isRolling = false;
+
+      const pool = [...items];
+      const winners = [];
+      for (let i = 0; i < n; i++) {
+        const idx = Math.floor(Math.random() * pool.length);
+        winners.push(pool.splice(idx, 1)[0]);
+      }
+
+      box.className = n > 1 ? 'display-box winner-found multi' : 'display-box winner-found';
+      wt.classList.remove('idle');
+
+      if (n === 1) {
+        wt.innerText = winners[0];
+      } else {
+        wt.innerHTML = winners.map((w, i) =>
+          `<div class="winner-line" style="--i:${i}"><span class="idx">${i + 1}</span><span>${escapeHtml(w)}</span></div>`
+        ).join('');
+      }
+      ws.innerText = n > 1 ? `${n} pemenang terpilih` : 'Terpilih';
+
+      Sound.winner();
+      vibrate([60, 40, 120]);
+
+      const speechText = winners.length === 1
+        ? `Pemenangnya adalah, ${winners[0]}`
+        : `Pemenangnya adalah, ${winners.slice(0, -1).join(', ')}, dan ${winners[winners.length - 1]}`;
+      setTimeout(() => speak(speechText), 500);
+
+      winners.forEach((w) => {
+        let prizeNum = null;
+        if (doorprize) prizeNum = doorprizeCounter++;
+        addWinnerRecord(w, prizeNum);
       });
-    }
+      if (doorprize) {
+        try { localStorage.setItem('randomizer_doorprize_counter', doorprizeCounter); } catch(e) {}
+        const ci = document.getElementById('doorprizeCounterInput');
+        if (ci) ci.value = doorprizeCounter;
+      }
 
-    function escapeHtml(s) {
-      return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-    }
-    function triggerVibration(pattern = [50]) { if (navigator.vibrate) navigator.vibrate(pattern); }
-    function playBeep(freq = 400, type = 'sine', duration = 0.05) {
-      const toggle = document.getElementById('soundToggle');
-      if (toggle && !toggle.checked) return;
-      try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = type; osc.frequency.value = freq;
-        osc.connect(gain); gain.connect(ctx.destination);
-        osc.start();
-        gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + duration);
-        osc.stop(ctx.currentTime + duration);
-      } catch (e) {}
-    }
-    function playFanfare() {
-      const toggle = document.getElementById('soundToggle');
-      if (toggle && !toggle.checked) return;
-      const notes = [261, 329, 392, 523, 659, 784];
-      notes.forEach((freq, i) => setTimeout(() => playBeep(freq, 'triangle', 0.2), i * 90));
-    }
+      if (removeOnPick) winners.forEach(w => removePickedItem(w));
 
-    function speak(text) {
-      if (!('speechSynthesis' in window)) return;
-      const toggle = document.getElementById('ttsToggle');
-      if (toggle && !toggle.checked) return;
-      try {
-        speechSynthesis.cancel();
-        const u = new SpeechSynthesisUtterance(text);
-        u.lang = 'id-ID'; u.rate = 1; u.pitch = 1;
-        const voices = speechSynthesis.getVoices();
-        const idVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('id'));
-        if (idVoice) u.voice = idVoice;
-        speechSynthesis.speak(u);
-      } catch (e) {}
-    }
-    if ('speechSynthesis' in window) speechSynthesis.getVoices();
-
-    function getAllLines() {
-      return document.getElementById('dataInput').value.split('\n').map(s => s.trim()).filter(s => s.length > 0);
-    }
-    function getDataList() { return getAllLines().filter(s => !s.startsWith('-')); }
-    function getStats() {
-      const all = getAllLines();
-      return { hadir: all.filter(s => !s.startsWith('-')).length, absen: all.filter(s => s.startsWith('-')).length };
-    }
-    function updateItemCount() {
-      const { hadir, absen } = getStats();
-      const el = document.getElementById('itemCount');
-      el.innerText = absen > 0 ? `Hadir: ${hadir} | Absen: ${absen}` : `Total: ${hadir} Peserta`;
-    }
-
-    function pushUndo() {
-      undoStack.push({
-        dataInput: document.getElementById('dataInput').value,
-        winnersList: JSON.parse(JSON.stringify(winnersList)),
-        doorprizeCounter: doorprizeCounter
-      });
-      if (undoStack.length > 20) undoStack.shift();
+      fireConfetti(n);
       updateUndoButton();
     }
-    function updateUndoButton() {
-      const btn = document.getElementById('undoBtn');
-      if (btn) btn.disabled = undoStack.length === 0;
-    }
-    function undoLast() {
-      if (undoStack.length === 0) {
-        const btn = document.getElementById('undoBtn');
-        btn.classList.add('shake');
-        setTimeout(() => btn.classList.remove('shake'), 400);
-        return;
-      }
-      const snap = undoStack.pop();
-      document.getElementById('dataInput').value = snap.dataInput;
-      winnersList = snap.winnersList;
-      doorprizeCounter = snap.doorprizeCounter;
-      localStorage.setItem('randomizer_doorprize_counter', doorprizeCounter);
-      const ci = document.getElementById('doorprizeCounterInput');
-      if (ci) ci.value = doorprizeCounter;
-      updateItemCount();
-      renderWinnersUI();
-      saveCurrentSession();
-      const box = document.getElementById('displayBox');
-      box.className = 'display-box winner-found';
-      document.getElementById('winnerText').innerText = "↩️ Undo Berhasil";
-      document.getElementById('winnerSub').innerText = "Aksi terakhir dibatalkan";
-      triggerVibration([40, 40]);
-      updateUndoButton();
-    }
+  }, intervalTime);
+}
 
-    function pickWinner() {
-      const items = getDataList();
-      if (items.length === 0) {
-        const box = document.getElementById('displayBox');
-        box.className = 'display-box';
-        box.classList.add('shake');
-        setTimeout(() => box.classList.remove('shake'), 400);
-        document.getElementById('winnerText').innerText = "Data Kosong!";
-        document.getElementById('winnerSub').innerText = "Buka Kelola Data/Kelas untuk memilih peserta";
-        triggerVibration([100, 50, 100]);
-        return;
-      }
-      pushUndo();
-      if (!backupOriginalData) backupOriginalData = document.getElementById('dataInput').value;
+function removePickedItem(item) {
+  const lines = document.getElementById('dataInput').value.split('\n');
+  const idx = lines.findIndex(l => l.trim() === item);
+  if (idx !== -1) {
+    lines.splice(idx, 1);
+    document.getElementById('dataInput').value = lines.join('\n');
+    updateItemCount();
+    saveCurrentSession();
+  }
+}
 
-      const doorprize = document.getElementById('doorprizeMode').checked;
-      const removeOnPick = document.getElementById('removeOnPick').checked || doorprize;
-      let nWinners = parseInt(document.getElementById('winnerCount').value) || 1;
-      if (nWinners < 1) nWinners = 1;
-      if (nWinners > items.length) nWinners = items.length;
+function fireConfetti(n) {
+  if (typeof confetti !== 'function') return;
+  const colors = ['#FFD23F', '#2BA8A2', '#EF6C4A', '#5DADE2', '#27AE60'];
+  const base = { particleCount: n > 1 ? 120 : 80, spread: 85, origin: { y: 0.62 }, colors };
+  confetti({ ...base, startVelocity: 55 });
+  if (n > 1) {
+    setTimeout(() => confetti({ ...base, particleCount: 60, spread: 130, startVelocity: 40, origin: { y: 0.55 } }), 180);
+  }
+}
 
-      const duration = parseFloat(document.getElementById('rollDuration').value) * 1000 || 2500;
-      const intervalTime = 70;
-      let elapsed = 0;
+function resetOriginalData() {
+  if (!backupOriginalData) {
+    Sound.error();
+    alert("Belum ada backup. Backup otomatis dibuat saat pengacakan pertama.");
+    return;
+  }
+  if (!confirm("Kembalikan daftar nama ke kondisi awal?")) return;
+  pushUndo();
+  document.getElementById('dataInput').value = backupOriginalData;
+  updateItemCount();
+  saveCurrentSession();
+  Sound.confirm();
+  vibrate([40, 40]);
+}
 
-      const box = document.getElementById('displayBox');
-      const wText = document.getElementById('winnerText');
-      const wSub = document.getElementById('winnerSub');
+/* WINNERS LIST */
+function addWinnerRecord(name, prizeNum) {
+  winnersList.unshift({
+    name,
+    time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+    prize: prizeNum || null
+  });
+  renderWinnersUI();
+}
+function renderWinnersUI() {
+  const container = document.getElementById('winnersList');
+  if (winnersList.length === 0) {
+    container.innerHTML = '<div class="empty-state">Belum ada pemenang.<br>Tekan tombol MULAI ACAK untuk memulai.</div>';
+    return;
+  }
+  container.innerHTML = winnersList.map((w, i) => {
+    const badge = w.prize
+      ? `<span class="prize-badge">HADIAH ${w.prize}</span>`
+      : `<span class="num">${winnersList.length - i}</span>`;
+    const cls = w.prize ? 'list-item prize' : 'list-item';
+    return `<li class="${cls}">
+      <span class="name">${badge}${escapeHtml(w.name)}</span>
+      <span class="meta">${w.time}</span>
+    </li>`;
+  }).join('');
+}
+function clearWinnersHistory() {
+  if (winnersList.length === 0) return;
+  if (!confirm("Hapus seluruh riwayat pemenang?")) return;
+  pushUndo();
+  winnersList = [];
+  renderWinnersUI();
+  Sound.confirm();
+}
 
-      box.className = 'display-box rolling';
-      wSub.innerText = nWinners > 1 ? `Mengacak ${nWinners} pemenang...` : "Mengacak nama...";
-      triggerVibration([30]);
+function shareToWhatsApp() {
+  if (winnersList.length === 0) { Sound.error(); return alert("Belum ada pemenang yang terpilih!"); }
+  let text = "*DAFTAR PEMENANG*\n\n";
+  winnersList.forEach((w, i) => {
+    text += w.prize
+      ? `${i + 1}. Hadiah ${w.prize} — ${w.name} (${w.time})\n`
+      : `${i + 1}. ${w.name} (${w.time})\n`;
+  });
+  if (navigator.share) navigator.share({ title: 'Hasil Pengacakan', text });
+  else window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+}
 
-      const timer = setInterval(() => {
-        const randIdx = Math.floor(Math.random() * items.length);
-        wText.innerText = items[randIdx];
-        playBeep(300 + Math.random() * 250, 'sine', 0.028);
-        elapsed += intervalTime;
+function toggleFullscreen() {
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+  else if (document.exitFullscreen) document.exitFullscreen();
+  Sound.click();
+}
 
-        if (elapsed >= duration) {
-          clearInterval(timer);
-          const pool = [...items];
-          const winners = [];
-          for (let i = 0; i < nWinners; i++) {
-            const idx = Math.floor(Math.random() * pool.length);
-            winners.push(pool.splice(idx, 1)[0]);
-          }
-
-          box.className = nWinners > 1 ? 'display-box winner-found multi' : 'display-box winner-found';
-
-          if (nWinners === 1) {
-            wText.innerText = winners[0];
-          } else {
-            wText.innerHTML = winners.map((w, i) =>
-              `<div class="winner-line">${i + 1}. ${escapeHtml(w)}</div>`
-            ).join('');
-          }
-          wSub.innerText = nWinners > 1 ? `🎉 ${nWinners} Pemenang Terpilih!` : "🎉 Terpilih!";
-
-          playFanfare();
-          triggerVibration([100, 50, 200]);
-
-          const speechText = winners.length === 1
-            ? `Pemenangnya adalah, ${winners[0]}`
-            : `Pemenangnya adalah, ${winners.slice(0, -1).join(', ')}, dan ${winners[winners.length - 1]}`;
-          speak(speechText);
-
-          winners.forEach((w) => {
-            let prizeNum = null;
-            if (doorprize) prizeNum = doorprizeCounter++;
-            addWinnerRecord(w, prizeNum);
-          });
-          if (doorprize) {
-            localStorage.setItem('randomizer_doorprize_counter', doorprizeCounter);
-            const ci = document.getElementById('doorprizeCounterInput');
-            if (ci) ci.value = doorprizeCounter;
-          }
-
-          if (removeOnPick) winners.forEach(w => removePickedItem(w));
-
-          fireConfetti(nWinners);
-          updateUndoButton();
-        }
-      }, intervalTime);
-    }
-
-    function removePickedItem(item) {
-      const lines = document.getElementById('dataInput').value.split('\n');
-      const idx = lines.findIndex(l => l.trim() === item);
-      if (idx !== -1) {
-        lines.splice(idx, 1);
-        document.getElementById('dataInput').value = lines.join('\n');
-        updateItemCount();
-        saveCurrentSession();
-      }
-    }
-
-    function fireConfetti(nWinners) {
-      if (typeof confetti !== 'function') return;
-      const base = { particleCount: nWinners > 1 ? 100 : 70, spread: 80, origin: { y: 0.65 } };
-      confetti(base);
-      if (nWinners > 1) {
-        setTimeout(() => confetti({ particleCount: 50, spread: 120, origin: { y: 0.6 } }), 200);
-      }
-    }
-
-    function resetOriginalData() {
-      if (!backupOriginalData) {
-        alert("Belum ada backup. Backup otomatis dibuat saat pengacakan pertama.");
-        return;
-      }
-      if (!confirm("Kembalikan daftar nama ke kondisi awal?")) return;
-      pushUndo();
-      document.getElementById('dataInput').value = backupOriginalData;
-      updateItemCount();
-      saveCurrentSession();
-      triggerVibration([50, 50]);
-    }
-
-    function addWinnerRecord(name, prizeNum) {
-      winnersList.unshift({
-        name,
-        time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
-        prize: prizeNum || null
-      });
-      renderWinnersUI();
-    }
-    function renderWinnersUI() {
-      const container = document.getElementById('winnersList');
-      if (winnersList.length === 0) {
-        container.innerHTML = '<li class="list-item" style="justify-content:center;color:var(--text-muted);font-size:0.78rem;">Belum ada pemenang. Tekan tombol ACAK.</li>';
-        return;
-      }
-      container.innerHTML = winnersList.map((w, i) => {
-        const badge = w.prize
-          ? `<span class="prize-badge">Hadiah #${w.prize}</span>`
-          : `<strong>#${winnersList.length - i}</strong> `;
-        const cls = w.prize ? 'list-item prize' : 'list-item';
-        return `<li class="${cls}"><span>${badge}${escapeHtml(w.name)}</span><small style="color:var(--text-muted);">${w.time}</small></li>`;
-      }).join('');
-    }
-    function clearWinnersHistory() {
-      if (winnersList.length === 0) return;
-      if (!confirm("Hapus semua riwayat pemenang?")) return;
-      pushUndo();
-      winnersList = [];
-      renderWinnersUI();
-    }
-
-    function shareToWhatsApp() {
-      if (winnersList.length === 0) return alert("Belum ada pemenang yang terpilih!");
-      let text = "*🏆 DAFTAR PEMENANG TERPILIH 🏆*\n\n";
-      winnersList.forEach((w) => {
-        text += w.prize ? `🎟️ Hadiah #${w.prize}: ${w.name} (${w.time})\n` : `• ${w.name} (${w.time})\n`;
-      });
-      if (navigator.share) navigator.share({ title: 'Hasil Pengacak', text });
-      else window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
-    }
-
-    function toggleFullScreen() {
-      if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
-      else if (document.exitFullscreen) document.exitFullscreen();
-    }
-
-    function loadClassesList() {
-      const req = db.transaction('classes', 'readonly').objectStore('classes').getAll();
-      req.onsuccess = () => {
-        const select = document.getElementById('classSelect');
-        select.innerHTML = '<option value="">-- Pilih Kelas --</option>';
-        req.result.forEach(c => {
-          const opt = document.createElement('option');
-          opt.value = c.id;
-          opt.textContent = c.name;
-          select.appendChild(opt);
-        });
-      };
-    }
-    function addNewClass() {
-      const name = prompt("Masukkan Nama Kelas/Kelompok:");
-      if (!name) return;
-      const id = 'class_' + Date.now();
-      const tx = db.transaction('classes', 'readwrite');
-      tx.objectStore('classes').put({ id, name, students: "" });
-      tx.oncomplete = () => {
-        loadClassesList();
-        setTimeout(() => {
-          document.getElementById('classSelect').value = id;
-          loadClassStudents();
-        }, 100);
-      };
-    }
-    function loadClassStudents() {
-      const id = document.getElementById('classSelect').value;
-      const editor = document.getElementById('classEditor');
-      if (!id) { editor.style.display = 'none'; return; }
-      editor.style.display = 'block';
-      const req = db.transaction('classes', 'readonly').objectStore('classes').get(id);
-      req.onsuccess = () => {
-        if (req.result) {
-          document.getElementById('classStudentsInput').value = req.result.students || "";
-          updateClassCount();
-        }
-      };
-    }
-    function saveClassStudents() {
-      const id = document.getElementById('classSelect').value;
-      if (!id) return;
-      const students = document.getElementById('classStudentsInput').value;
-      const req = db.transaction('classes', 'readonly').objectStore('classes').get(id);
-      req.onsuccess = () => {
-        if (req.result) {
-          const item = req.result;
-          item.students = students;
-          db.transaction('classes', 'readwrite').objectStore('classes').put(item);
-        }
-      };
+/* KELAS */
+function loadClassesList() {
+  if (!db) return;
+  const req = db.transaction('classes', 'readonly').objectStore('classes').getAll();
+  req.onsuccess = () => {
+    const select = document.getElementById('classSelect');
+    select.innerHTML = '<option value="">— Belum ada kelas dipilih —</option>';
+    req.result.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.id;
+      opt.textContent = c.name;
+      select.appendChild(opt);
+    });
+  };
+}
+function addNewClass() {
+  const name = prompt("Nama kelas atau kelompok:");
+  if (!name) return;
+  const id = 'class_' + Date.now();
+  const tx = db.transaction('classes', 'readwrite');
+  tx.objectStore('classes').put({ id, name, students: "" });
+  tx.oncomplete = () => {
+    loadClassesList();
+    setTimeout(() => {
+      document.getElementById('classSelect').value = id;
+      loadClassStudents();
+    }, 100);
+    Sound.confirm();
+  };
+}
+function loadClassStudents() {
+  const id = document.getElementById('classSelect').value;
+  const editor = document.getElementById('classEditor');
+  if (!id) { editor.style.display = 'none'; return; }
+  editor.style.display = 'block';
+  const req = db.transaction('classes', 'readonly').objectStore('classes').get(id);
+  req.onsuccess = () => {
+    if (req.result) {
+      document.getElementById('classStudentsInput').value = req.result.students || "";
       updateClassCount();
     }
-    function updateClassCount() {
-      const text = document.getElementById('classStudentsInput').value;
-      const count = text.split('\n').map(s => s.trim()).filter(s => s.length > 0).length;
-      document.getElementById('classStudentCount').innerText = `${count} Siswa`;
+  };
+}
+function saveClassStudents() {
+  const id = document.getElementById('classSelect').value;
+  if (!id) return;
+  const students = document.getElementById('classStudentsInput').value;
+  const req = db.transaction('classes', 'readonly').objectStore('classes').get(id);
+  req.onsuccess = () => {
+    if (req.result) {
+      const item = req.result;
+      item.students = students;
+      db.transaction('classes', 'readwrite').objectStore('classes').put(item);
     }
-    function deleteCurrentClass() {
-      const id = document.getElementById('classSelect').value;
-      if (!id) return alert("Pilih kelas yang ingin dihapus!");
-      if (!confirm("Yakin hapus kelas ini?")) return;
-      const tx = db.transaction('classes', 'readwrite');
-      tx.objectStore('classes').delete(id);
-      tx.oncomplete = () => {
-        document.getElementById('classEditor').style.display = 'none';
-        loadClassesList();
-      };
-    }
-    function applyClassToMain() {
-      const students = document.getElementById('classStudentsInput').value;
-      if (!students.trim()) return alert("Daftar siswa kelas ini masih kosong!");
+  };
+  updateClassCount();
+}
+function updateClassCount() {
+  const text = document.getElementById('classStudentsInput').value;
+  const count = text.split('\n').map(s => s.trim()).filter(s => s.length > 0).length;
+  document.getElementById('classStudentCount').innerText = `${count} siswa`;
+}
+function deleteCurrentClass() {
+  const id = document.getElementById('classSelect').value;
+  if (!id) { Sound.error(); return alert("Pilih kelas terlebih dahulu."); }
+  if (!confirm("Hapus kelas ini?")) return;
+  const tx = db.transaction('classes', 'readwrite');
+  tx.objectStore('classes').delete(id);
+  tx.oncomplete = () => {
+    document.getElementById('classEditor').style.display = 'none';
+    loadClassesList();
+    Sound.confirm();
+  };
+}
+function applyClassToMain() {
+  const students = document.getElementById('classStudentsInput').value;
+  if (!students.trim()) { Sound.error(); return alert("Daftar siswa masih kosong."); }
+  pushUndo();
+  document.getElementById('dataInput').value = students;
+  backupOriginalData = students;
+  updateItemCount();
+  saveCurrentSession();
+  closeSettings();
+  Sound.confirm();
+  vibrate([40]);
+}
+
+/* SHUFFLE / GROUP / EXCEL */
+function shuffleData() {
+  let items = getDataList();
+  for (let i = items.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [items[i], items[j]] = [items[j], items[i]];
+  }
+  pushUndo();
+  document.getElementById('dataInput').value = items.join('\n');
+  saveCurrentSession();
+  Sound.click();
+}
+function sortData() {
+  const items = getDataList().sort((a, b) => a.localeCompare(b));
+  pushUndo();
+  document.getElementById('dataInput').value = items.join('\n');
+  saveCurrentSession();
+  Sound.click();
+}
+function genKupon() {
+  const start = parseInt(prompt("Nomor awal:", "1"));
+  const end = parseInt(prompt("Nomor akhir:", "50"));
+  if (isNaN(start) || isNaN(end) || start >= end) { Sound.error(); return; }
+  const list = [];
+  for (let i = start; i <= end; i++) list.push(`Kupon ${i}`);
+  pushUndo();
+  document.getElementById('dataInput').value = list.join('\n');
+  updateItemCount();
+  saveCurrentSession();
+  Sound.confirm();
+}
+function generateGroups() {
+  const items = getDataList();
+  const num = parseInt(document.getElementById('groupCount').value);
+  if (items.length === 0 || isNaN(num) || num < 1) { Sound.error(); return; }
+  const shuffled = [...items].sort(() => 0.5 - Math.random());
+  const groups = Array.from({ length: num }, () => []);
+  shuffled.forEach((item, i) => groups[i % num].push(item));
+  const grid = document.getElementById('groupsGrid');
+  grid.innerHTML = groups.map((g, i) => `
+    <div class="group" style="animation-delay:${i * 0.05}s">
+      <h4>Kelompok ${i + 1} <span class="count">${g.length}</span></h4>
+      <ul>${g.map(n => `<li>${escapeHtml(n)}</li>`).join('')}</ul>
+    </div>
+  `).join('');
+  Sound.confirm();
+}
+function triggerExcel() { document.getElementById('excelInput').click(); Sound.click(); }
+function importExcelData(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    try {
+      const data = new Uint8Array(evt.target.result);
+      const wb = XLSX.read(data, { type: 'array' });
+      const sheet = wb.Sheets[wb.SheetNames[0]];
+      const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+      const names = [];
+      json.forEach(row => row.forEach(cell => { if (cell) names.push(cell.toString().trim()); }));
       pushUndo();
-      document.getElementById('dataInput').value = students;
-      backupOriginalData = students;
+      document.getElementById('dataInput').value = names.join('\n');
       updateItemCount();
       saveCurrentSession();
-      closeSettings();
-      triggerVibration([50]);
-    }
-    function switchModalTab(tabId, el) {
-      document.getElementById('mTabClass').style.display = tabId === 'mTabClass' ? 'block' : 'none';
-      document.getElementById('mTabInput').style.display = tabId === 'mTabInput' ? 'block' : 'none';
-      el.parentElement.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
-      el.classList.add('active');
-    }
+      Sound.confirm();
+    } catch (err) { Sound.error(); alert("Gagal membaca file Excel."); }
+  };
+  reader.readAsArrayBuffer(file);
+}
+function exportWinnersExcel() {
+  if (winnersList.length === 0) { Sound.error(); return alert("Belum ada riwayat pemenang."); }
+  const data = winnersList.slice().reverse().map((w, i) => ({
+    No: i + 1,
+    Hadiah: w.prize ? `#${w.prize}` : '',
+    Nama: w.name,
+    Waktu: w.time
+  }));
+  const ws = XLSX.utils.json_to_sheet(data);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Pemenang");
+  XLSX.writeFile(wb, "Riwayat_Pemenang.xlsx");
+  Sound.confirm();
+}
 
-    function shuffleData() {
-      let items = getDataList();
-      for (let i = items.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [items[i], items[j]] = [items[j], items[i]];
-      }
-      pushUndo();
-      document.getElementById('dataInput').value = items.join('\n');
-      saveCurrentSession();
-    }
-    function sortData() {
-      let items = getDataList().sort((a, b) => a.localeCompare(b));
-      pushUndo();
-      document.getElementById('dataInput').value = items.join('\n');
-      saveCurrentSession();
-    }
-    function genKupon() {
-      const start = parseInt(prompt("Angka awal:", "1"));
-      const end = parseInt(prompt("Angka akhir:", "50"));
-      if (isNaN(start) || isNaN(end) || start >= end) return;
-      const list = [];
-      for (let i = start; i <= end; i++) list.push(`Kupon #${i}`);
-      pushUndo();
-      document.getElementById('dataInput').value = list.join('\n');
+/* SESSION */
+function saveCurrentSession() {
+  try { localStorage.setItem('randomizer_last_session', document.getElementById('dataInput').value); } catch(e) {}
+}
+function loadLastSession() {
+  try {
+    const saved = localStorage.getItem('randomizer_last_session');
+    if (saved !== null) {
+      document.getElementById('dataInput').value = saved;
+      backupOriginalData = saved;
       updateItemCount();
-      saveCurrentSession();
     }
-    function generateGroups() {
-      const items = getDataList();
-      const numGroups = parseInt(document.getElementById('groupCount').value);
-      if (items.length === 0 || isNaN(numGroups) || numGroups < 1) return;
-      const shuffled = [...items].sort(() => 0.5 - Math.random());
-      const groups = Array.from({ length: numGroups }, () => []);
-      shuffled.forEach((item, index) => groups[index % numGroups].push(item));
-      const grid = document.getElementById('groupsGrid');
-      grid.innerHTML = groups.map((g, i) => `
-        <div class="group-card">
-          <h4>Kelompok ${i + 1} (${g.length})</h4>
-          <ul>${g.map(name => `<li>• ${escapeHtml(name)}</li>`).join('')}</ul>
-        </div>
-      `).join('');
-    }
-    function triggerExcel() { document.getElementById('excelInput').click(); }
-    function importExcelData(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        const data = new Uint8Array(evt.target.result);
-        const workbook = XLSX.read(data, { type: 'array' });
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-        const names = [];
-        json.forEach(row => { row.forEach(cell => { if (cell) names.push(cell.toString().trim()); }); });
-        pushUndo();
-        document.getElementById('dataInput').value = names.join('\n');
-        updateItemCount();
-        saveCurrentSession();
-      };
-      reader.readAsArrayBuffer(file);
-    }
-    function exportWinnersExcel() {
-      if (winnersList.length === 0) return alert("Belum ada riwayat pemenang!");
-      const data = winnersList.slice().reverse().map((w, i) => ({
-        No: i + 1, Hadiah: w.prize ? `#${w.prize}` : '', Nama: w.name, Waktu: w.time
-      }));
-      const ws = XLSX.utils.json_to_sheet(data);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Pemenang");
-      XLSX.writeFile(wb, "Riwayat_Pemenang.xlsx");
-    }
+  } catch(e) {}
+  const ci = document.getElementById('doorprizeCounterInput');
+  if (ci) ci.value = doorprizeCounter;
+}
+function resetDoorprizeCounter() {
+  if (!confirm("Reset nomor hadiah ke 1?")) return;
+  doorprizeCounter = 1;
+  try { localStorage.setItem('randomizer_doorprize_counter', 1); } catch(e) {}
+  const ci = document.getElementById('doorprizeCounterInput');
+  if (ci) ci.value = 1;
+  Sound.confirm();
+}
 
-    function saveCurrentSession() { localStorage.setItem('randomizer_last_session', document.getElementById('dataInput').value); }
-    function loadLastSession() {
-      const saved = localStorage.getItem('randomizer_last_session');
-      if (saved !== null) {
-        document.getElementById('dataInput').value = saved;
-        backupOriginalData = saved;
-        updateItemCount();
-      }
-      const ci = document.getElementById('doorprizeCounterInput');
-      if (ci) ci.value = doorprizeCounter;
-    }
-    function resetDoorprizeCounter() {
-      if (!confirm("Reset nomor hadiah ke 1?")) return;
-      doorprizeCounter = 1;
-      localStorage.setItem('randomizer_doorprize_counter', 1);
-      const ci = document.getElementById('doorprizeCounterInput');
-      if (ci) ci.value = 1;
-    }
+/* TABS */
+function switchTab(id, el) {
+  const showW = id === 'winners';
+  document.getElementById('tabWinners').style.display = showW ? 'block' : 'none';
+  document.getElementById('tabGroups').style.display = showW ? 'none' : 'block';
+  el.parentElement.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  Sound.click();
+}
+function switchSettingsTab(id, el) {
+  const isData = id === 'data';
+  document.getElementById('stabData').style.display = isData ? 'block' : 'none';
+  document.getElementById('stabPrefs').style.display = isData ? 'none' : 'block';
+  el.parentElement.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  Sound.click();
+}
 
-    function switchTab(tabId, el) {
-      const showW = tabId === 'tabWinners';
-      document.getElementById('tabWinners').style.display = showW ? 'block' : 'none';
-      document.getElementById('tabGroups').style.display = showW ? 'none' : 'block';
-      el.parentElement.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
-      el.classList.add('active');
-    }
+/* MODAL */
+function openSettings() {
+  const ci = document.getElementById('doorprizeCounterInput');
+  if (ci) ci.value = doorprizeCounter;
+  document.getElementById('settingsOverlay').classList.add('open');
+  Sound.click();
+}
+function closeSettings() {
+  document.getElementById('settingsOverlay').classList.remove('open');
+  Sound.click();
+}
 
-    function openSettings() {
-      const ci = document.getElementById('doorprizeCounterInput');
-      if (ci) ci.value = doorprizeCounter;
-      document.getElementById('settingsModal').classList.add('open');
-    }
-    function closeSettings() { document.getElementById('settingsModal').classList.remove('open'); }
+function testSound() {
+  Sound.init();
+  Sound.winner();
+  speak("Pemenangnya adalah, Ahmad");
+}
 
-    window.addEventListener('DOMContentLoaded', async () => {
-      document.getElementById('doorprizeMode').addEventListener('change', function() {
-        if (this.checked) document.getElementById('removeOnPick').checked = true;
-      });
-      document.getElementById('doorprizeCounterInput').addEventListener('change', function() {
-        const v = parseInt(this.value);
-        if (!isNaN(v) && v >= 1) {
-          doorprizeCounter = v;
-          localStorage.setItem('randomizer_doorprize_counter', v);
-        }
-      });
-      await initDB();
-      loadClassesList();
-      loadLastSession();
-      renderWinnersUI();
-      updateUndoButton();
-      if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
-    });
-  </script>
+/* INIT */
+window.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const savedSound = localStorage.getItem('randomizer_sound');
+    if (savedSound === '0') { document.getElementById('soundToggle').checked = false; Sound.enabled = false; }
+    const savedVol = localStorage.getItem('randomizer_volume');
+    if (savedVol) {
+      Sound.volume = parseFloat(savedVol);
+      document.getElementById('volumeSlider').value = Math.round(Sound.volume * 100);
+      document.getElementById('volumeVal').innerText = Math.round(Sound.volume * 100) + '%';
+    }
+    const savedTts = localStorage.getItem('randomizer_tts');
+    if (savedTts === '0') {
+      document.getElementById('ttsSetting').checked = false;
+      document.getElementById('ttsToggle').checked = false;
+    }
+    const savedTtsRate = localStorage.getItem('randomizer_tts_rate');
+    if (savedTtsRate) {
+      document.getElementById('ttsRate').value = savedTtsRate;
+      document.getElementById('ttsRateVal').innerText = (savedTtsRate / 100).toFixed(1) + '×';
+    }
+    const savedDur = localStorage.getItem('randomizer_duration');
+    if (savedDur) document.getElementById('rollDuration').value = savedDur;
+  } catch(e) {}
+
+  applyTheme(document.documentElement.getAttribute('data-theme') || 'light');
+
+  document.getElementById('themeBtn').addEventListener('click', toggleTheme);
+  document.getElementById('lightModeToggle').addEventListener('change', function() {
+    applyTheme(this.checked ? 'light' : 'dark');
+    Sound.click();
+  });
+
+  document.getElementById('soundToggle').addEventListener('change', function() {
+    Sound.enabled = this.checked;
+    try { localStorage.setItem('randomizer_sound', this.checked ? '1' : '0'); } catch(e) {}
+    if (this.checked) Sound.confirm();
+  });
+
+  const vol = document.getElementById('volumeSlider');
+  vol.addEventListener('input', function() {
+    Sound.volume = this.value / 100;
+    document.getElementById('volumeVal').innerText = this.value + '%';
+    try { localStorage.setItem('randomizer_volume', Sound.volume); } catch(e) {}
+  });
+  vol.addEventListener('change', () => Sound.click());
+
+  document.getElementById('ttsSetting').addEventListener('change', function() {
+    try { localStorage.setItem('randomizer_tts', this.checked ? '1' : '0'); } catch(e) {}
+    document.getElementById('ttsToggle').checked = this.checked;
+  });
+  document.getElementById('ttsToggle').addEventListener('change', function() {
+    document.getElementById('ttsSetting').checked = this.checked;
+    try { localStorage.setItem('randomizer_tts', this.checked ? '1' : '0'); } catch(e) {}
+  });
+
+  const tr = document.getElementById('ttsRate');
+  tr.addEventListener('input', function() {
+    document.getElementById('ttsRateVal').innerText = (this.value / 100).toFixed(1) + '×';
+    try { localStorage.setItem('randomizer_tts_rate', this.value); } catch(e) {}
+  });
+
+  document.getElementById('rollDuration').addEventListener('change', function() {
+    try { localStorage.setItem('randomizer_duration', this.value); } catch(e) {}
+  });
+
+  document.getElementById('doorprizeMode').addEventListener('change', function() {
+    if (this.checked) document.getElementById('removeOnPick').checked = true;
+    Sound.click();
+  });
+  document.getElementById('removeOnPick').addEventListener('change', () => Sound.click());
+
+  document.getElementById('doorprizeCounterInput').addEventListener('change', function() {
+    const v = parseInt(this.value);
+    if (!isNaN(v) && v >= 1) {
+      doorprizeCounter = v;
+      try { localStorage.setItem('randomizer_doorprize_counter', v); } catch(e) {}
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    if (btn.id === 'undoBtn' && btn.disabled) return;
+    if (btn.dataset.silent) return;
+    if (btn.onclick && /pickWinner|undoLast|testSound|generateGroups|resetDoorprizeCounter/.test(btn.getAttribute('onclick') || '')) return;
+    Sound.click();
+  }, { passive: true });
+
+  await initDB();
+  loadClassesList();
+  loadLastSession();
+  renderWinnersUI();
+  updateUndoButton();
+
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
+});
+</script>
 </body>
 </html>
