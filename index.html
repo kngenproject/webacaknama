@@ -28,6 +28,8 @@
       --safe-bottom: env(safe-area-inset-bottom, 0px);
       --safe-left: env(safe-area-inset-left, 0px);
       --safe-right: env(safe-area-inset-right, 0px);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
     html, body { width: 100%; max-width: 100vw; overflow-x: hidden; }
@@ -42,6 +44,85 @@
       font-size: 16px; line-height: 1.35;
       -webkit-font-smoothing: antialiased;
     }
+
+    /* ========== GLOBAL ENTRANCE ========== */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translate3d(0, 16px, 0); }
+      to   { opacity: 1; transform: translate3d(0, 0, 0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes pop {
+      0%   { transform: scale(0.7); opacity: 0; }
+      60%  { transform: scale(1.08); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes popBig {
+      0%   { transform: scale(0.4) rotate(-3deg); opacity: 0; }
+      50%  { transform: scale(1.15) rotate(2deg); opacity: 1; }
+      70%  { transform: scale(0.96) rotate(-1deg); }
+      100% { transform: scale(1) rotate(0); opacity: 1; }
+    }
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translate3d(-24px, 0, 0); }
+      to   { opacity: 1; transform: translate3d(0, 0, 0); }
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translate3d(0, 32px, 0) scale(0.96); }
+      to   { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+    }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 14px rgba(16,185,129,0.25), inset 0 0 20px rgba(16,185,129,0.05); }
+      50%      { box-shadow: 0 0 34px rgba(16,185,129,0.55), inset 0 0 30px rgba(16,185,129,0.12); }
+    }
+    @keyframes victoryPulse {
+      0%   { box-shadow: 0 0 0 0 rgba(245,158,11,0.55), 0 0 26px rgba(245,158,11,0.45); }
+      100% { box-shadow: 0 0 0 22px rgba(245,158,11,0), 0 0 26px rgba(245,158,11,0.45); }
+    }
+    @keyframes textRoll {
+      0%   { transform: translate3d(0, -8px, 0) scale(0.96); filter: blur(3px); opacity: 0.35; }
+      50%  { opacity: 0.9; }
+      100% { transform: translate3d(0, 8px, 0) scale(1.02); filter: blur(1.5px); opacity: 0.6; }
+    }
+    @keyframes winnerPop {
+      0%   { transform: scale(0.6) rotate(-4deg); filter: blur(6px); opacity: 0; }
+      55%  { transform: scale(1.14) rotate(2.5deg); filter: blur(0); opacity: 1; }
+      75%  { transform: scale(0.97) rotate(-1deg); }
+      100% { transform: scale(1) rotate(0); }
+    }
+    @keyframes shineSweep {
+      0%   { transform: translateX(-120%) skewX(-20deg); }
+      100% { transform: translateX(220%) skewX(-20deg); }
+    }
+    @keyframes badgePulse {
+      0%   { transform: scale(0.6); opacity: 0; }
+      55%  { transform: scale(1.25); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+    @keyframes shakeX {
+      0%,100% { transform: translateX(0); }
+      20%     { transform: translateX(-4px); }
+      40%     { transform: translateX(4px); }
+      60%     { transform: translateX(-3px); }
+      80%     { transform: translateX(3px); }
+    }
+    @keyframes rotateSpin {
+      from { transform: rotate(0); }
+      to   { transform: rotate(360deg); }
+    }
+    @keyframes bounceIn {
+      0%   { transform: scale(0.8); opacity: 0; }
+      60%  { transform: scale(1.06); opacity: 1; }
+      80%  { transform: scale(0.98); }
+      100% { transform: scale(1); }
+    }
+    @keyframes bgShift {
+      0%, 100% { background-position: 0% 50%; }
+      50%      { background-position: 100% 50%; }
+    }
+
     header {
       width: 100%; max-width: 600px;
       display: flex; justify-content: space-between; align-items: center;
@@ -51,77 +132,273 @@
       border: 1px solid var(--surface-border);
       border-radius: var(--radius);
       margin-bottom: 10px; gap: 6px;
+      animation: fadeUp 0.5s var(--ease-out) both;
     }
     .brand { display: flex; align-items: center; gap: 6px; font-size: clamp(0.82rem, 3.4vw, 1rem); font-weight: 800; color: #fff; min-width: 0; flex: 1 1 auto; overflow: hidden; }
     .brand > span:first-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .status-badge { font-size: 0.6rem; padding: 2px 6px; border-radius: 20px; background: rgba(16,185,129,0.15); color: var(--accent); border: 1px solid rgba(16,185,129,0.3); font-weight: 600; flex-shrink: 0; white-space: nowrap; }
+    .status-badge::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-right: 4px; vertical-align: middle; box-shadow: 0 0 8px var(--accent); animation: fadeIn 1.5s ease-in-out infinite alternate; }
     .header-actions { display: flex; gap: 6px; flex-shrink: 0; }
     .header-actions button { padding: 6px 9px !important; font-size: 0.78rem; }
     .hide-xs { display: inline; }
     .show-xs { display: none; }
     main { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 10px; }
-    .display-card, .card { background: var(--surface); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--surface-border); border-radius: var(--radius); padding: 12px; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5); }
-    .display-card { text-align: center; padding: 14px; }
-    .display-box { background: linear-gradient(180deg, rgba(15,23,42,0.8) 0%, rgba(11,15,25,0.9) 100%); border: 2px dashed rgba(99,102,241,0.4); border-radius: var(--radius); min-height: 130px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 14px; margin-bottom: 12px; transition: all 0.3s ease; overflow: hidden; }
-    .display-box.rolling { border-color: var(--accent); box-shadow: 0 0 25px rgba(16,185,129,0.3); animation: pulseGlow 0.8s infinite alternate; }
-    .display-box.winner-found { border-color: var(--gold); box-shadow: 0 0 30px rgba(245,158,11,0.4); animation: victoryShake 0.4s ease-in-out; }
+
+    .display-card, .card {
+      background: var(--surface);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius);
+      padding: 12px;
+      box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+      animation: fadeUp 0.55s var(--ease-out) both;
+      will-change: transform, opacity;
+    }
+    .display-card { text-align: center; padding: 14px; animation-delay: 0.05s; }
+    .card { animation-delay: 0.15s; }
+
+    .display-box {
+      position: relative;
+      background: linear-gradient(180deg, rgba(15,23,42,0.8) 0%, rgba(11,15,25,0.9) 100%);
+      border: 2px dashed rgba(99,102,241,0.4);
+      border-radius: var(--radius);
+      min-height: 130px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 14px; margin-bottom: 12px;
+      transition: border-color 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
+      overflow: hidden;
+      will-change: box-shadow, border-color;
+    }
+    .display-box::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.14) 50%, transparent 70%);
+      transform: translateX(-120%) skewX(-20deg);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .display-box.rolling {
+      border-color: var(--accent);
+      border-style: solid;
+      animation: pulseGlow 0.9s ease-in-out infinite;
+    }
+    .display-box.rolling .winner-text {
+      animation: textRoll 0.09s linear infinite;
+      color: #d1fae5;
+      text-shadow: 0 0 18px rgba(16,185,129,0.55);
+    }
+    .display-box.winner-found {
+      border-color: var(--gold);
+      border-style: solid;
+      animation: victoryPulse 1.1s var(--ease-out) 1;
+    }
+    .display-box.winner-found::after {
+      opacity: 1;
+      animation: shineSweep 1.1s var(--ease-out);
+    }
+    .display-box.winner-found .winner-text {
+      animation: winnerPop 0.7s var(--ease-spring) both;
+      color: #fff;
+      text-shadow: 0 0 24px rgba(245,158,11,0.55), 0 0 48px rgba(245,158,11,0.25);
+    }
     .display-box.multi { align-items: center; justify-content: flex-start; padding: 12px 14px; max-height: 220px; overflow-y: auto; }
-    .winner-text { font-size: clamp(1.3rem, 6.5vw, 1.8rem); font-weight: 800; color: #fff; word-break: break-word; overflow-wrap: anywhere; line-height: 1.25; width: 100%; text-align: center; }
-    .winner-line { font-size: clamp(0.95rem, 4vw, 1.15rem); margin: 3px 0; padding: 3px 0; border-bottom: 1px dashed rgba(255,255,255,0.08); }
+
+    .winner-text { font-size: clamp(1.3rem, 6.5vw, 1.8rem); font-weight: 800; color: #fff; word-break: break-word; overflow-wrap: anywhere; line-height: 1.25; width: 100%; text-align: center; will-change: transform, filter, opacity; }
+    .winner-line { font-size: clamp(0.95rem, 4vw, 1.15rem); margin: 3px 0; padding: 4px 0; border-bottom: 1px dashed rgba(255,255,255,0.08); animation: slideInLeft 0.4s var(--ease-out) both; }
+    .winner-line:nth-child(1) { animation-delay: 0.05s; }
+    .winner-line:nth-child(2) { animation-delay: 0.15s; }
+    .winner-line:nth-child(3) { animation-delay: 0.25s; }
+    .winner-line:nth-child(4) { animation-delay: 0.35s; }
+    .winner-line:nth-child(5) { animation-delay: 0.45s; }
+    .winner-line:nth-child(n+6) { animation-delay: 0.55s; }
     .winner-line:last-child { border-bottom: 0; }
-    .winner-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 6px; }
-    .btn-main { background: var(--accent-gradient); color: #fff; border: none; min-height: 52px; padding: 12px; border-radius: 14px; font-weight: 800; font-size: 1.05rem; cursor: pointer; width: 100%; box-shadow: 0 6px 20px rgba(16,185,129,0.35); transition: transform 0.15s ease; display: flex; align-items: center; justify-content: center; gap: 8px; touch-action: manipulation; }
-    .btn-main:active { transform: scale(0.96); }
-    .quick-options { display: flex; flex-wrap: wrap; gap: 6px; background: rgba(11,15,25,0.6); padding: 8px 10px; border-radius: 10px; border: 1px solid var(--surface-border); font-size: 0.78rem; margin-top: 10px; justify-content: center; }
-    .quick-options label { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; color: var(--text); padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.04); white-space: nowrap; user-select: none; }
-    .quick-options label input[type="checkbox"] { flex-shrink: 0; width: 16px; height: 16px; accent-color: var(--accent); }
-    .quick-options label input[type="number"] { width: 52px; padding: 3px 5px; margin: 0; font-size: 15px; text-align: center; background: rgba(11,15,25,0.8); border-radius: 6px; border: 1px solid var(--surface-border); color: #fff; }
-    .quick-actions { display: flex; gap: 6px; margin-top: 8px; }
-    .quick-actions button { flex: 1; font-size: 0.78rem; padding: 9px 6px; }
-    .tabs { display: flex; border-bottom: 1px solid var(--surface-border); margin-bottom: 10px; overflow-x: auto; scrollbar-width: none; }
-    .tabs::-webkit-scrollbar { display: none; }
-    .tab-item { padding: 8px 10px; cursor: pointer; border-bottom: 2px solid transparent; color: var(--text-muted); font-weight: 700; font-size: 0.82rem; flex: 1; text-align: center; white-space: nowrap; transition: color 0.2s, border-color 0.2s; }
-    .tab-item.active { border-color: var(--primary); color: #fff; }
-    .list-container { max-height: 200px; overflow-y: auto; list-style: none; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
-    .list-item { background: rgba(11,15,25,0.6); padding: 9px 11px; border-radius: 8px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 0.84rem; border: 1px solid rgba(255,255,255,0.05); word-break: break-word; }
-    .list-item > span { min-width: 0; overflow-wrap: anywhere; }
-    .list-item small { flex-shrink: 0; }
-    .list-item.prize { border-left: 3px solid var(--gold); }
-    button { background: var(--primary-gradient); color: #fff; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; font-size: 0.82rem; touch-action: manipulation; white-space: nowrap; }
-    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .winner-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 6px; transition: color 0.3s ease; }
+
+    /* ========== BUTTONS ========== */
+    button {
+      position: relative;
+      overflow: hidden;
+      background: var(--primary-gradient);
+      color: #fff; border: none;
+      padding: 8px 12px; border-radius: 8px;
+      font-weight: 600; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+      font-size: 0.82rem;
+      touch-action: manipulation; white-space: nowrap;
+      transition: transform 0.18s var(--ease-out), box-shadow 0.25s var(--ease-out), filter 0.2s ease;
+      will-change: transform;
+    }
+    button::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at var(--rx, 50%) var(--ry, 50%), rgba(255,255,255,0.35) 0%, transparent 45%);
+      opacity: 0;
+      transition: opacity 0.35s ease;
+      pointer-events: none;
+    }
+    button:hover { filter: brightness(1.08); }
+    button:active { transform: scale(0.94); }
+    button:active::after { opacity: 1; transition: opacity 0s; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; filter: none; }
     button.btn-secondary { background: rgba(255,255,255,0.08); border: 1px solid var(--surface-border); color: var(--text); }
     button.btn-danger { background: var(--danger-gradient); }
+
+    .btn-main {
+      background: linear-gradient(135deg, #34d399 0%, #059669 50%, #34d399 100%);
+      background-size: 200% 200%;
+      color: #fff; border: none;
+      min-height: 52px; padding: 12px;
+      border-radius: 14px;
+      font-weight: 800; font-size: 1.05rem;
+      cursor: pointer; width: 100%;
+      box-shadow: 0 6px 20px rgba(16,185,129,0.35);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      touch-action: manipulation;
+      animation: bgShift 6s ease-in-out infinite;
+      transition: transform 0.15s var(--ease-out), box-shadow 0.3s var(--ease-out);
+    }
+    .btn-main:hover { box-shadow: 0 10px 28px rgba(16,185,129,0.55); }
+    .btn-main:active { transform: scale(0.96); }
+
+    /* ========== QUICK OPTIONS ========== */
+    .quick-options { display: flex; flex-wrap: wrap; gap: 6px; background: rgba(11,15,25,0.6); padding: 8px 10px; border-radius: 10px; border: 1px solid var(--surface-border); font-size: 0.78rem; margin-top: 10px; justify-content: center; }
+    .quick-options label {
+      display: inline-flex; align-items: center; gap: 5px; cursor: pointer;
+      color: var(--text); padding: 4px 8px; border-radius: 6px;
+      background: rgba(255,255,255,0.04);
+      white-space: nowrap; user-select: none;
+      transition: background 0.2s ease, transform 0.15s ease;
+    }
+    .quick-options label:hover { background: rgba(255,255,255,0.08); }
+    .quick-options label:active { transform: scale(0.96); }
+    .quick-options label input[type="checkbox"] { flex-shrink: 0; width: 16px; height: 16px; accent-color: var(--accent); }
+    .quick-options label input[type="number"] { width: 52px; padding: 3px 5px; margin: 0; font-size: 15px; text-align: center; background: rgba(11,15,25,0.8); border-radius: 6px; border: 1px solid var(--surface-border); color: #fff; }
+
+    .quick-actions { display: flex; gap: 6px; margin-top: 8px; }
+    .quick-actions button { flex: 1; font-size: 0.78rem; padding: 9px 6px; }
+    #undoBtn:not(:disabled) { animation: bounceIn 0.4s var(--ease-spring); }
+    #undoBtn.shake { animation: shakeX 0.4s ease; }
+
+    /* ========== TABS ========== */
+    .tabs { position: relative; display: flex; border-bottom: 1px solid var(--surface-border); margin-bottom: 10px; overflow-x: auto; scrollbar-width: none; }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab-item {
+      padding: 8px 10px; cursor: pointer;
+      border-bottom: 2px solid transparent;
+      color: var(--text-muted); font-weight: 700; font-size: 0.82rem;
+      flex: 1; text-align: center; white-space: nowrap;
+      transition: color 0.3s var(--ease-out), border-color 0.3s var(--ease-out), transform 0.2s var(--ease-out);
+    }
+    .tab-item:active { transform: scale(0.96); }
+    .tab-item.active { border-color: var(--primary); color: #fff; }
+
+    /* ========== LIST ========== */
+    .list-container { max-height: 200px; overflow-y: auto; list-style: none; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; padding: 2px; }
+    .list-item {
+      background: rgba(11,15,25,0.6);
+      padding: 9px 11px; border-radius: 8px; margin-bottom: 6px;
+      display: flex; justify-content: space-between; align-items: center; gap: 8px;
+      font-size: 0.84rem; border: 1px solid rgba(255,255,255,0.05);
+      word-break: break-word;
+      animation: slideInLeft 0.4s var(--ease-out) both;
+      transition: background 0.2s ease, transform 0.2s ease;
+      will-change: transform, opacity;
+    }
+    .list-item:hover { background: rgba(11,15,25,0.85); }
+    .list-item > span { min-width: 0; overflow-wrap: anywhere; }
+    .list-item small { flex-shrink: 0; }
+    .list-item.prize { border-left: 3px solid var(--gold); background: linear-gradient(90deg, rgba(245,158,11,0.10) 0%, rgba(11,15,25,0.6) 55%); }
+    .list-item.prize .prize-badge {
+      display: inline-block; padding: 1px 6px; margin-right: 4px;
+      border-radius: 20px; background: rgba(245,158,11,0.2);
+      color: var(--gold); font-size: 0.7rem; font-weight: 800;
+      border: 1px solid rgba(245,158,11,0.4);
+      animation: badgePulse 0.5s var(--ease-spring);
+    }
+
     .winners-actions { display: flex; gap: 6px; margin-top: 10px; }
     .winners-actions button { flex: 1; min-width: 0; padding: 9px 6px; font-size: 0.78rem; }
+
+    /* ========== GROUPS ========== */
     .groups-toolbar { display: flex; gap: 6px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
     .groups-toolbar label { font-size: 0.8rem; white-space: nowrap; }
     .groups-toolbar input[type="number"] { width: 60px; padding: 8px; background: rgba(11,15,25,0.7); border: 1px solid var(--surface-border); color: #fff; border-radius: 8px; font-size: 16px; }
     .groups-toolbar button { min-height: 40px; padding: 8px 14px; font-size: 0.85rem; margin-left: auto; }
     #groupsGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; max-height: 220px; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
-    .group-card { background: rgba(11,15,25,0.6); border: 1px solid var(--surface-border); border-radius: 8px; padding: 8px; }
+    .group-card {
+      background: rgba(11,15,25,0.6);
+      border: 1px solid var(--surface-border);
+      border-radius: 8px; padding: 8px;
+      animation: pop 0.45s var(--ease-spring) both;
+      transition: transform 0.25s var(--ease-out), border-color 0.25s ease;
+    }
+    .group-card:hover { transform: translateY(-2px); border-color: rgba(99,102,241,0.5); }
     .group-card h4 { border-bottom: 1px solid var(--surface-border); padding-bottom: 3px; font-size: 0.78rem; color: var(--accent); margin-bottom: 4px; }
     .group-card ul { list-style: none; font-size: 0.76rem; }
     .group-card ul li { overflow-wrap: anywhere; }
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: calc(10px + var(--safe-top)) calc(10px + var(--safe-right)) calc(10px + var(--safe-bottom)) calc(10px + var(--safe-left)); opacity: 0; transition: opacity 0.25s ease; }
-    .modal-overlay.open { display: flex; opacity: 1; }
-    .modal { background: var(--surface-solid); border: 1px solid var(--surface-border); border-radius: var(--radius); width: 100%; max-width: 500px; padding: 14px; max-height: calc(100dvh - 20px - var(--safe-top) - var(--safe-bottom)); overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; transform: scale(0.95); transition: transform 0.25s ease; }
-    .modal-overlay.open .modal { transform: scale(1); }
+
+    /* ========== MODAL ========== */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 1000;
+      padding: calc(10px + var(--safe-top)) calc(10px + var(--safe-right)) calc(10px + var(--safe-bottom)) calc(10px + var(--safe-left));
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s var(--ease-out), backdrop-filter 0.35s ease, -webkit-backdrop-filter 0.35s ease;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: auto; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+    .modal {
+      background: var(--surface-solid);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius);
+      width: 100%; max-width: 500px; padding: 14px;
+      max-height: calc(100dvh - 20px - var(--safe-top) - var(--safe-bottom));
+      overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
+      transform: translate3d(0, 40px, 0) scale(0.94);
+      opacity: 0;
+      transition: transform 0.4s var(--ease-spring), opacity 0.3s var(--ease-out);
+      will-change: transform, opacity;
+    }
+    .modal-overlay.open .modal { transform: translate3d(0, 0, 0) scale(1); opacity: 1; }
+
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px; }
     .modal-header h3 { font-size: 0.95rem; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    textarea, input[type="text"], input[type="number"], select { width: 100%; background: rgba(11,15,25,0.7); border: 1px solid var(--surface-border); border-radius: 10px; color: var(--text); padding: 10px; font-size: 16px; outline: none; margin: 6px 0; -webkit-appearance: none; appearance: none; }
+
+    /* ========== FORM ========== */
+    textarea, input[type="text"], input[type="number"], select {
+      width: 100%; background: rgba(11,15,25,0.7);
+      border: 1px solid var(--surface-border);
+      border-radius: 10px; color: var(--text);
+      padding: 10px; font-size: 16px; outline: none; margin: 6px 0;
+      -webkit-appearance: none; appearance: none;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
+    }
     textarea { height: 120px; resize: vertical; font-family: inherit; }
-    textarea:focus, input:focus, select:focus { border-color: var(--primary); }
+    textarea:focus, input:focus, select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+    }
+
     .btn-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 8px; }
     .btn-grid button { padding: 10px 6px; font-size: 0.78rem; }
+
     .class-toolbar { background: rgba(11,15,25,0.6); padding: 10px; border-radius: 10px; border: 1px solid var(--surface-border); margin-bottom: 10px; }
     .class-toolbar .row { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
     .class-toolbar select { flex: 1 1 120px; margin: 0; }
     .class-toolbar button { flex-shrink: 0; }
+
     .settings-row { display: flex; flex-direction: column; gap: 8px; font-size: 0.82rem; }
     .settings-row label { display: flex; align-items: center; gap: 8px; }
     .hint { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
-    @keyframes pulseGlow { from { box-shadow: 0 0 10px rgba(16,185,129,0.2); } to { box-shadow: 0 0 25px rgba(16,185,129,0.5); } }
-    @keyframes victoryShake { 0%, 100% { transform: scale(1); } 20% { transform: scale(1.05) rotate(-2deg); } 40% { transform: scale(1.05) rotate(2deg); } }
+
+    /* ========== CONFETTI LAYER ========== */
+    #confettiLayer { position: fixed; inset: 0; pointer-events: none; z-index: 999; }
+
+    /* ========== RESPONSIVE ========== */
     @media (max-width: 480px) {
       .hide-xs { display: none; }
       .show-xs { display: inline; }
@@ -144,6 +421,13 @@
       .btn-main { min-height: 46px; font-size: 1rem; }
       header { margin-bottom: 8px; }
     }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
   </style>
   <script src="xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -153,7 +437,7 @@
   <header>
     <div class="brand">
       <span>🎲 Randomizer Pro</span>
-      <span class="status-badge">⚡ Offline</span>
+      <span class="status-badge">Offline</span>
     </div>
     <div class="header-actions">
       <button onclick="toggleFullScreen()" class="btn-secondary" title="Fullscreen" aria-label="Fullscreen">📺</button>
@@ -216,6 +500,8 @@
     </section>
   </main>
 
+  <div id="confettiLayer"></div>
+
   <div class="modal-overlay" id="settingsModal">
     <div class="modal">
       <div class="modal-header">
@@ -263,7 +549,7 @@
       </div>
       <hr style="border:0; border-top:1px solid var(--surface-border); margin:12px 0;">
       <div class="settings-row">
-        <label style="display:flex; align-items:center; gap:8px;">
+        <label>
           <input type="checkbox" id="soundToggle" checked> Aktifkan Suara Beep & Fanfare
         </label>
         <div>
@@ -304,11 +590,9 @@
     function escapeHtml(s) {
       return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     }
-
     function triggerVibration(pattern = [50]) {
       if (navigator.vibrate) navigator.vibrate(pattern);
     }
-
     function playBeep(freq = 400, type = 'sine', duration = 0.05) {
       const toggle = document.getElementById('soundToggle');
       if (toggle && !toggle.checked) return;
@@ -323,15 +607,14 @@
         osc.stop(ctx.currentTime + duration);
       } catch (e) {}
     }
-
     function playFanfare() {
       const toggle = document.getElementById('soundToggle');
       if (toggle && !toggle.checked) return;
-      const notes = [261, 329, 392, 523, 659];
-      notes.forEach((freq, i) => setTimeout(() => playBeep(freq, 'triangle', 0.18), i * 90));
+      const notes = [261, 329, 392, 523, 659, 784];
+      notes.forEach((freq, i) => setTimeout(() => playBeep(freq, 'triangle', 0.2), i * 90));
     }
 
-    /* ========== TTS VOICE ANNOUNCER ========== */
+    /* ========== TTS ========== */
     function speak(text) {
       if (!('speechSynthesis' in window)) return;
       const toggle = document.getElementById('ttsToggle');
@@ -339,8 +622,7 @@
       try {
         speechSynthesis.cancel();
         const u = new SpeechSynthesisUtterance(text);
-        u.lang = 'id-ID';
-        u.rate = 1; u.pitch = 1; u.volume = 1;
+        u.lang = 'id-ID'; u.rate = 1; u.pitch = 1; u.volume = 1;
         const voices = speechSynthesis.getVoices();
         const idVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('id'));
         if (idVoice) u.voice = idVoice;
@@ -352,34 +634,31 @@
       speechSynthesis.getVoices();
     }
 
-    /* ========== DATA LIST & STATS ========== */
+    /* ========== DATA ========== */
     function getAllLines() {
-      return document.getElementById('dataInput').value
-        .split('\n').map(s => s.trim()).filter(s => s.length > 0);
+      return document.getElementById('dataInput').value.split('\n').map(s => s.trim()).filter(s => s.length > 0);
     }
-
-    function getDataList() {
-      return getAllLines().filter(s => !s.startsWith('-'));
-    }
-
+    function getDataList() { return getAllLines().filter(s => !s.startsWith('-')); }
     function getStats() {
       const all = getAllLines();
-      const hadir = all.filter(s => !s.startsWith('-')).length;
-      const absen = all.filter(s => s.startsWith('-')).length;
-      return { hadir, absen };
+      return {
+        hadir: all.filter(s => !s.startsWith('-')).length,
+        absen: all.filter(s => s.startsWith('-')).length
+      };
     }
-
     function updateItemCount() {
       const { hadir, absen } = getStats();
       const el = document.getElementById('itemCount');
-      if (absen > 0) {
-        el.innerText = `Hadir: ${hadir} | Absen: ${absen}`;
-      } else {
-        el.innerText = `Total: ${hadir} Peserta`;
+      const next = absen > 0 ? `Hadir: ${hadir} | Absen: ${absen}` : `Total: ${hadir} Peserta`;
+      if (el.innerText !== next) {
+        el.innerText = next;
+        el.style.transform = 'scale(1.15)';
+        el.style.transition = 'transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        setTimeout(() => { el.style.transform = 'scale(1)'; }, 200);
       }
     }
 
-    /* ========== UNDO STACK ========== */
+    /* ========== UNDO ========== */
     function pushUndo() {
       undoStack.push({
         dataInput: document.getElementById('dataInput').value,
@@ -389,15 +668,18 @@
       if (undoStack.length > 30) undoStack.shift();
       updateUndoButton();
     }
-
     function updateUndoButton() {
       const btn = document.getElementById('undoBtn');
       if (!btn) return;
       btn.disabled = undoStack.length === 0;
     }
-
     function undoLast() {
-      if (undoStack.length === 0) return alert("Tidak ada aksi untuk dibatalkan");
+      if (undoStack.length === 0) {
+        const btn = document.getElementById('undoBtn');
+        btn.classList.add('shake');
+        setTimeout(() => btn.classList.remove('shake'), 450);
+        return;
+      }
       const snap = undoStack.pop();
       document.getElementById('dataInput').value = snap.dataInput;
       winnersList = snap.winnersList;
@@ -408,9 +690,9 @@
       updateItemCount();
       renderWinnersUI();
       saveCurrentSession();
-      const db = document.getElementById('displayBox');
-      db.className = 'display-box';
-      document.getElementById('winnerText').innerText = "Undo berhasil";
+      const box = document.getElementById('displayBox');
+      box.className = 'display-box winner-found';
+      document.getElementById('winnerText').innerText = "↩️ Undo Berhasil";
       document.getElementById('winnerSub').innerText = "Aksi terakhir dibatalkan";
       triggerVibration([40, 40]);
       updateUndoButton();
@@ -420,47 +702,45 @@
     function pickWinner() {
       const items = getDataList();
       if (items.length === 0) {
+        const box = document.getElementById('displayBox');
+        box.className = 'display-box';
+        box.classList.add('shake');
+        setTimeout(() => box.classList.remove('shake'), 450);
         document.getElementById('winnerText').innerText = "Data Kosong!";
         document.getElementById('winnerSub').innerText = "Buka Kelola Data/Kelas untuk memilih peserta";
         triggerVibration([100, 50, 100]);
         return;
       }
-
-      // Simpan snapshot untuk undo
       pushUndo();
-
       if (!backupOriginalData) backupOriginalData = document.getElementById('dataInput').value;
 
       const doorprize = document.getElementById('doorprizeMode').checked;
-      const removeOnPickEl = document.getElementById('removeOnPick');
-      const removeOnPick = removeOnPickEl.checked || doorprize;
-
+      const removeOnPick = document.getElementById('removeOnPick').checked || doorprize;
       let nWinners = parseInt(document.getElementById('winnerCount').value) || 1;
       if (nWinners < 1) nWinners = 1;
       if (nWinners > items.length) nWinners = items.length;
 
       const duration = parseFloat(document.getElementById('rollDuration').value) * 1000 || 2500;
-      const intervalTime = 60;
+      const intervalTime = 55;
       let elapsed = 0;
 
-      const displayBox = document.getElementById('displayBox');
+      const box = document.getElementById('displayBox');
       const wText = document.getElementById('winnerText');
       const wSub = document.getElementById('winnerSub');
 
-      displayBox.className = 'display-box rolling';
+      box.className = 'display-box rolling';
       wSub.innerText = nWinners > 1 ? `Mengacak ${nWinners} pemenang...` : "Mengacak nama...";
       triggerVibration([30]);
 
       const timer = setInterval(() => {
         const randIdx = Math.floor(Math.random() * items.length);
         wText.innerText = items[randIdx];
-        playBeep(300 + Math.random() * 250, 'sine', 0.03);
+        playBeep(300 + Math.random() * 250, 'sine', 0.028);
         elapsed += intervalTime;
 
         if (elapsed >= duration) {
           clearInterval(timer);
 
-          // Ambil N pemenang unik
           const pool = [...items];
           const winners = [];
           for (let i = 0; i < nWinners; i++) {
@@ -468,7 +748,7 @@
             winners.push(pool.splice(idx, 1)[0]);
           }
 
-          displayBox.className = nWinners > 1 ? 'display-box winner-found multi' : 'display-box winner-found';
+          box.className = nWinners > 1 ? 'display-box winner-found multi' : 'display-box winner-found';
 
           if (nWinners === 1) {
             wText.innerText = winners[0];
@@ -482,8 +762,7 @@
           playFanfare();
           triggerVibration([100, 50, 200]);
 
-          // TTS bacakan
-          let speechText = '';
+          let speechText;
           if (winners.length === 1) {
             speechText = `Pemenangnya adalah, ${winners[0]}`;
           } else {
@@ -491,12 +770,9 @@
           }
           speak(speechText);
 
-          // Catat ke riwayat
           winners.forEach((w) => {
             let prizeNum = null;
-            if (doorprize) {
-              prizeNum = doorprizeCounter++;
-            }
+            if (doorprize) prizeNum = doorprizeCounter++;
             addWinnerRecord(w, prizeNum);
           });
           if (doorprize) {
@@ -505,15 +781,9 @@
             if (ci) ci.value = doorprizeCounter;
           }
 
-          // Hapus nama terpilih dari daftar
-          if (removeOnPick) {
-            winners.forEach(w => removePickedItem(w));
-          }
+          if (removeOnPick) winners.forEach(w => removePickedItem(w));
 
-          if (typeof confetti === 'function') {
-            confetti({ particleCount: nWinners > 1 ? 200 : 120, spread: 80, origin: { y: 0.6 } });
-          }
-
+          fireConfetti(nWinners);
           updateUndoButton();
         }
       }, intervalTime);
@@ -530,30 +800,40 @@
       }
     }
 
-    function resetOriginalData() {
-      if (backupOriginalData) {
-        if (!confirm("Kembalikan daftar nama ke kondisi awal?")) return;
-        pushUndo();
-        document.getElementById('dataInput').value = backupOriginalData;
-        updateItemCount();
-        saveCurrentSession();
-        triggerVibration([50, 50]);
-      } else {
-        alert("Belum ada backup. Backup otomatis dibuat saat pengacakan pertama.");
+    /* ========== CONFETTI MULTI-BURST ========== */
+    function fireConfetti(nWinners) {
+      if (typeof confetti !== 'function') return;
+      const count = nWinners > 1 ? 3 : 2;
+      const base = { particleCount: nWinners > 1 ? 140 : 100, spread: 90, origin: { y: 0.65 } };
+      confetti({ ...base, startVelocity: 55, colors: ['#f59e0b','#10b981','#6366f1','#ec4899','#facc15'] });
+      setTimeout(() => confetti({ ...base, particleCount: 70, spread: 120, startVelocity: 45, origin: { y: 0.6 } }), 180);
+      if (count >= 3) {
+        setTimeout(() => confetti({ ...base, particleCount: 60, spread: 160, startVelocity: 35, scalar: 0.9, origin: { y: 0.55 } }), 380);
       }
     }
 
-    /* ========== WINNERS LIST ========== */
+    function resetOriginalData() {
+      if (!backupOriginalData) {
+        alert("Belum ada backup. Backup otomatis dibuat saat pengacakan pertama.");
+        return;
+      }
+      if (!confirm("Kembalikan daftar nama ke kondisi awal?")) return;
+      pushUndo();
+      document.getElementById('dataInput').value = backupOriginalData;
+      updateItemCount();
+      saveCurrentSession();
+      triggerVibration([50, 50]);
+    }
+
+    /* ========== WINNERS ========== */
     function addWinnerRecord(name, prizeNum) {
-      const record = {
+      winnersList.unshift({
         name,
         time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
         prize: prizeNum || null
-      };
-      winnersList.unshift(record);
+      });
       renderWinnersUI();
     }
-
     function renderWinnersUI() {
       const container = document.getElementById('winnersList');
       if (winnersList.length === 0) {
@@ -562,17 +842,16 @@
       }
       container.innerHTML = winnersList.map((w, i) => {
         const badge = w.prize
-          ? `🎟️ <strong style="color:var(--gold);">Hadiah #${w.prize}</strong> — `
+          ? `<span class="prize-badge">Hadiah #${w.prize}</span>`
           : `<strong>#${winnersList.length - i}</strong> `;
         const cls = w.prize ? 'list-item prize' : 'list-item';
         return `
-          <li class="${cls}">
+          <li class="${cls}" style="animation-delay:${Math.min(i * 0.04, 0.4)}s">
             <span>${badge}${escapeHtml(w.name)}</span>
             <small style="color:var(--text-muted);">${w.time}</small>
           </li>`;
       }).join('');
     }
-
     function clearWinnersHistory() {
       if (winnersList.length === 0) return;
       if (!confirm("Hapus semua riwayat pemenang?")) return;
@@ -585,33 +864,27 @@
       if (winnersList.length === 0) return alert("Belum ada pemenang yang terpilih!");
       let text = "*🏆 DAFTAR PEMENANG TERPILIH 🏆*\n\n";
       winnersList.forEach((w) => {
-        if (w.prize) {
-          text += `🎟️ Hadiah #${w.prize}: ${w.name} (${w.time})\n`;
-        } else {
-          text += `• ${w.name} (${w.time})\n`;
-        }
+        text += w.prize
+          ? `🎟️ Hadiah #${w.prize}: ${w.name} (${w.time})\n`
+          : `• ${w.name} (${w.time})\n`;
       });
-      if (navigator.share) {
-        navigator.share({ title: 'Hasil Pengacak', text });
-      } else {
-        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
-      }
+      if (navigator.share) navigator.share({ title: 'Hasil Pengacak', text });
+      else window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
     }
 
     /* ========== FULLSCREEN ========== */
     function toggleFullScreen() {
       if (!document.fullscreenElement) {
         document.documentElement.requestFullscreen().catch(() => {});
-      } else {
-        if (document.exitFullscreen) document.exitFullscreen();
+      } else if (document.exitFullscreen) {
+        document.exitFullscreen();
       }
     }
 
-    /* ========== KELOLA KELAS ========== */
+    /* ========== KELAS ========== */
     function loadClassesList() {
       const tx = db.transaction('classes', 'readonly');
-      const store = tx.objectStore('classes');
-      const req = store.getAll();
+      const req = tx.objectStore('classes').getAll();
       req.onsuccess = () => {
         const select = document.getElementById('classSelect');
         select.innerHTML = '<option value="">-- Pilih Kelas --</option>';
@@ -623,7 +896,6 @@
         });
       };
     }
-
     function addNewClass() {
       const name = prompt("Masukkan Nama Kelas/Kelompok (contoh: Kelas 10-A):");
       if (!name) return;
@@ -638,12 +910,14 @@
         }, 100);
       };
     }
-
     function loadClassStudents() {
       const id = document.getElementById('classSelect').value;
       const editor = document.getElementById('classEditor');
       if (!id) { editor.style.display = 'none'; return; }
       editor.style.display = 'block';
+      editor.style.animation = 'none';
+      void editor.offsetHeight;
+      editor.style.animation = 'fadeUp 0.4s var(--ease-out) both';
       const tx = db.transaction('classes', 'readonly');
       const req = tx.objectStore('classes').get(id);
       req.onsuccess = () => {
@@ -653,43 +927,36 @@
         }
       };
     }
-
     function saveClassStudents() {
       const id = document.getElementById('classSelect').value;
       if (!id) return;
       const students = document.getElementById('classStudentsInput').value;
-      const tx = db.transaction('classes', 'readonly');
-      const req = tx.objectStore('classes').get(id);
+      const req = db.transaction('classes', 'readonly').objectStore('classes').get(id);
       req.onsuccess = () => {
         if (req.result) {
           const item = req.result;
           item.students = students;
-          const writeTx = db.transaction('classes', 'readwrite');
-          writeTx.objectStore('classes').put(item);
+          db.transaction('classes', 'readwrite').objectStore('classes').put(item);
         }
       };
       updateClassCount();
     }
-
     function updateClassCount() {
       const text = document.getElementById('classStudentsInput').value;
       const count = text.split('\n').map(s => s.trim()).filter(s => s.length > 0).length;
       document.getElementById('classStudentCount').innerText = `${count} Siswa`;
     }
-
     function deleteCurrentClass() {
       const id = document.getElementById('classSelect').value;
       if (!id) return alert("Pilih kelas yang ingin dihapus!");
-      if (confirm("Apakah Anda yakin ingin menghapus kelas ini?")) {
-        const tx = db.transaction('classes', 'readwrite');
-        tx.objectStore('classes').delete(id);
-        tx.oncomplete = () => {
-          document.getElementById('classEditor').style.display = 'none';
-          loadClassesList();
-        };
-      }
+      if (!confirm("Apakah Anda yakin ingin menghapus kelas ini?")) return;
+      const tx = db.transaction('classes', 'readwrite');
+      tx.objectStore('classes').delete(id);
+      tx.oncomplete = () => {
+        document.getElementById('classEditor').style.display = 'none';
+        loadClassesList();
+      };
     }
-
     function applyClassToMain() {
       const students = document.getElementById('classStudentsInput').value;
       if (!students.trim()) return alert("Daftar siswa kelas ini masih kosong!");
@@ -700,9 +967,7 @@
       saveCurrentSession();
       closeSettings();
       triggerVibration([50]);
-      alert("Siswa berhasil dimuat ke pengacak utama!");
     }
-
     function switchModalTab(tabId, el) {
       document.getElementById('mTabClass').style.display = tabId === 'mTabClass' ? 'block' : 'none';
       document.getElementById('mTabInput').style.display = tabId === 'mTabInput' ? 'block' : 'none';
@@ -710,7 +975,7 @@
       el.classList.add('active');
     }
 
-    /* ========== KELOMPOK / SHUFFLE / EXCEL ========== */
+    /* ========== SHUFFLE / KELOMPOK / EXCEL ========== */
     function shuffleData() {
       let items = getDataList();
       for (let i = items.length - 1; i > 0; i--) {
@@ -721,26 +986,23 @@
       document.getElementById('dataInput').value = items.join('\n');
       saveCurrentSession();
     }
-
     function sortData() {
       let items = getDataList().sort((a, b) => a.localeCompare(b));
       pushUndo();
       document.getElementById('dataInput').value = items.join('\n');
       saveCurrentSession();
     }
-
     function genKupon() {
       const start = parseInt(prompt("Angka awal:", "1"));
       const end = parseInt(prompt("Angka akhir:", "50"));
       if (isNaN(start) || isNaN(end) || start >= end) return;
-      let list = [];
+      const list = [];
       for (let i = start; i <= end; i++) list.push(`Kupon #${i}`);
       pushUndo();
       document.getElementById('dataInput').value = list.join('\n');
       updateItemCount();
       saveCurrentSession();
     }
-
     function generateGroups() {
       const items = getDataList();
       const numGroups = parseInt(document.getElementById('groupCount').value);
@@ -750,15 +1012,13 @@
       shuffled.forEach((item, index) => groups[index % numGroups].push(item));
       const grid = document.getElementById('groupsGrid');
       grid.innerHTML = groups.map((g, i) => `
-        <div class="group-card">
+        <div class="group-card" style="animation-delay:${i * 0.06}s">
           <h4>Kelompok ${i + 1} (${g.length})</h4>
           <ul>${g.map(name => `<li>• ${escapeHtml(name)}</li>`).join('')}</ul>
         </div>
       `).join('');
     }
-
     function triggerExcel() { document.getElementById('excelInput').click(); }
-
     function importExcelData(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -777,7 +1037,6 @@
       };
       reader.readAsArrayBuffer(file);
     }
-
     function exportWinnersExcel() {
       if (winnersList.length === 0) return alert("Belum ada riwayat pemenang!");
       const data = winnersList.slice().reverse().map((w, i) => ({
@@ -796,7 +1055,6 @@
     function saveCurrentSession() {
       localStorage.setItem('randomizer_last_session', document.getElementById('dataInput').value);
     }
-
     function loadLastSession() {
       const saved = localStorage.getItem('randomizer_last_session');
       if (saved !== null) {
@@ -807,7 +1065,6 @@
       const ci = document.getElementById('doorprizeCounterInput');
       if (ci) ci.value = doorprizeCounter;
     }
-
     function resetDoorprizeCounter() {
       if (!confirm("Reset nomor hadiah ke 1?")) return;
       doorprizeCounter = 1;
@@ -818,8 +1075,15 @@
 
     /* ========== TABS ========== */
     function switchTab(tabId, el) {
-      document.getElementById('tabWinners').style.display = tabId === 'tabWinners' ? 'block' : 'none';
-      document.getElementById('tabGroups').style.display = tabId === 'tabGroups' ? 'block' : 'none';
+      const showW = tabId === 'tabWinners';
+      const wEl = document.getElementById('tabWinners');
+      const gEl = document.getElementById('tabGroups');
+      wEl.style.display = showW ? 'block' : 'none';
+      gEl.style.display = showW ? 'none' : 'block';
+      const shown = showW ? wEl : gEl;
+      shown.style.animation = 'none';
+      void shown.offsetHeight;
+      shown.style.animation = 'fadeUp 0.35s var(--ease-out) both';
       el.parentElement.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
       el.classList.add('active');
     }
@@ -836,12 +1100,18 @@
 
     /* ========== INIT ========== */
     window.addEventListener('DOMContentLoaded', async () => {
-      // Saat doorprize dicentang, auto-centang no-repeat
+      // Ripple effect pada tombol
+      document.addEventListener('pointerdown', (e) => {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+        const rect = btn.getBoundingClientRect();
+        btn.style.setProperty('--rx', ((e.clientX - rect.left) / rect.width * 100) + '%');
+        btn.style.setProperty('--ry', ((e.clientY - rect.top) / rect.height * 100) + '%');
+      }, { passive: true });
+
       document.getElementById('doorprizeMode').addEventListener('change', function() {
         if (this.checked) document.getElementById('removeOnPick').checked = true;
       });
-
-      // Simpan perubahan nomor hadiah dari settings
       document.getElementById('doorprizeCounterInput').addEventListener('change', function() {
         const v = parseInt(this.value);
         if (!isNaN(v) && v >= 1) {
