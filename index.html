@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Randomizer Pro - Ultra Mobile UX</title>
+  <title>Randomizer Pro - Kelola Kelas & Offline PWA</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#6366f1">
   <style>
@@ -177,17 +177,17 @@
     .modal-overlay.open { display: flex; opacity: 1; }
     .modal { 
       background: var(--surface-solid); border: 1px solid var(--surface-border); border-radius: var(--radius);
-      width: 100%; max-width: 480px; padding: 16px; max-height: 92vh; overflow-y: auto;
+      width: 100%; max-width: 500px; padding: 16px; max-height: 92vh; overflow-y: auto;
       transform: scale(0.95); transition: transform 0.3s ease;
     }
     .modal-overlay.open .modal { transform: scale(1); }
 
-    textarea {
-      width: 100%; height: 130px; background: rgba(11, 15, 25, 0.7); border: 1px solid var(--surface-border);
+    textarea, input[type="text"] {
+      width: 100%; background: rgba(11, 15, 25, 0.7); border: 1px solid var(--surface-border);
       border-radius: 10px; color: var(--text); padding: 10px; font-size: 0.88rem; outline: none; margin: 6px 0;
-      resize: vertical;
     }
-    textarea:focus { border-color: var(--primary); }
+    textarea { height: 120px; resize: vertical; }
+    textarea:focus, input[type="text"]:focus { border-color: var(--primary); }
 
     .btn-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 8px; }
 
@@ -206,7 +206,7 @@
     </div>
     <div style="display:flex; gap:6px;">
       <button onclick="toggleFullScreen()" class="btn-secondary" style="padding:6px 10px;">📺</button>
-      <button onclick="openSettings()" class="btn-secondary">⚙️ Kelola Data</button>
+      <button onclick="openSettings()" class="btn-secondary">⚙️ Kelola Data / Kelas</button>
     </div>
   </header>
 
@@ -251,42 +251,69 @@
     </section>
   </main>
 
-  <!-- MODAL PENGATURAN DATA -->
+  <!-- MODAL PENGATURAN & KELOLA KELAS -->
   <div class="modal-overlay" id="settingsModal">
     <div class="modal">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-        <h3 style="font-size:1rem;">⚙️ Kelola Peserta</h3>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h3 style="font-size:1rem;">⚙️ Kelola Data & Sesi Kelas</h3>
         <button onclick="closeSettings()" class="btn-secondary" style="padding:4px 8px;">✕ Tutup</button>
       </div>
 
-      <div style="display:flex; gap:6px; margin-bottom:8px;">
-        <select id="presetSelect" onchange="loadSelectedPreset()" style="flex:1; padding:8px; background:rgba(11,15,25,0.7); color:#fff; border:1px solid var(--surface-border); border-radius:8px;">
-          <option value="default">Sesi Utama</option>
-        </select>
-        <button onclick="saveNewPreset()" class="btn-secondary">💾 Simpan Preset</button>
+      <!-- TABS PENGATURAN -->
+      <div class="tabs" style="margin-bottom:10px;">
+        <div class="tab-item active" onclick="switchModalTab('mTabClass', this)">🏫 Kelola Kelas</div>
+        <div class="tab-item" onclick="switchModalTab('mTabInput', this)">📝 Input Manual</div>
       </div>
 
-      <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; color:var(--text-muted);">
-        <span>Daftar Peserta (1 baris 1 data):</span>
-        <strong id="itemCount" style="color:var(--accent);">Total: 0 Peserta</strong>
-      </div>
-      <textarea id="dataInput" oninput="updateItemCount(); saveCurrentSession();" placeholder="Ahmad&#10;Budi&#10;Siti&#10;-Joko (Awalan - = Skip/Absen)"></textarea>
+      <!-- TAB 1: KELOLA KELAS -->
+      <div id="mTabClass">
+        <div style="background:rgba(11,15,25,0.6); padding:10px; border-radius:10px; border:1px solid var(--surface-border); margin-bottom:10px;">
+          <label style="font-size:0.8rem; color:var(--text-muted);">Pilih / Tambah Kelas Baru:</label>
+          <div style="display:flex; gap:6px; margin-top:4px;">
+            <select id="classSelect" onchange="loadClassStudents()" style="flex:1; padding:8px; background:rgba(11,15,25,0.8); color:#fff; border:1px solid var(--surface-border); border-radius:8px; font-size:0.85rem;">
+              <option value="">-- Pilih Kelas --</option>
+            </select>
+            <button onclick="addNewClass()" class="btn-secondary">➕ Buat Kelas</button>
+            <button onclick="deleteCurrentClass()" class="btn-danger" style="padding:6px 10px;">🗑️</button>
+          </div>
+        </div>
 
-      <div class="btn-grid">
-        <button onclick="shuffleData()" class="btn-secondary">🔀 Kocok Baris</button>
-        <button onclick="sortData()" class="btn-secondary">🔤 Urut A-Z</button>
-        <button onclick="genKupon()" class="btn-secondary">🔢 Buat Kupon</button>
-        <button onclick="triggerExcel()" class="btn-secondary">📂 Import Excel</button>
+        <div id="classEditor" style="display:none;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+            <span style="font-size:0.8rem; color:var(--text-muted);">Daftar Siswa Kelas Ini:</span>
+            <strong id="classStudentCount" style="font-size:0.8rem; color:var(--accent);">0 Siswa</strong>
+          </div>
+          <textarea id="classStudentsInput" oninput="saveClassStudents()" placeholder="Ketik nama-nama siswa (1 baris 1 siswa)"></textarea>
+          
+          <button onclick="applyClassToMain()" class="btn-main" style="min-height:42px; font-size:0.9rem; margin-top:8px;">🚀 Muat ke Pengacak Utama</button>
+        </div>
       </div>
-      <input type="file" id="excelInput" accept=".xlsx, .xls" style="display:none" onchange="importExcelData(event)">
+
+      <!-- TAB 2: INPUT MANUAL UTAMA -->
+      <div id="mTabInput" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; color:var(--text-muted);">
+          <span>Data Pengacak Saat Ini:</span>
+          <strong id="itemCount" style="color:var(--accent);">Total: 0 Peserta</strong>
+        </div>
+        <textarea id="dataInput" oninput="updateItemCount(); saveCurrentSession();" placeholder="Ahmad&#10;Budi&#10;Siti&#10;-Joko (Awalan - = Skip/Absen)"></textarea>
+
+        <div class="btn-grid">
+          <button onclick="shuffleData()" class="btn-secondary">🔀 Kocok Baris</button>
+          <button onclick="sortData()" class="btn-secondary">🔤 Urut A-Z</button>
+          <button onclick="genKupon()" class="btn-secondary">🔢 Buat Kupon</button>
+          <button onclick="triggerExcel()" class="btn-secondary">📂 Import Excel</button>
+        </div>
+        <input type="file" id="excelInput" accept=".xlsx, .xls" style="display:none" onchange="importExcelData(event)">
+      </div>
 
       <hr style="border:0; border-top:1px solid var(--surface-border); margin:12px 0;">
 
-      <div style="display:flex; flex-direction:column; gap:10px; font-size:0.85rem;">
+      <!-- PENGATURAN UMUM -->
+      <div style="display:flex; flex-direction:column; gap:8px; font-size:0.82rem;">
         <label><input type="checkbox" id="soundToggle" checked> Aktifkan Suara Beep & Fanfare</label>
         <div>
           <label style="color:var(--text-muted);">Durasi Roll Animasi (Detik):</label>
-          <input type="number" id="rollDuration" value="2.5" step="0.5" min="1" style="width:100%; padding:6px; margin-top:4px; background:rgba(11,15,25,0.7); border:1px solid var(--surface-border); color:#fff; border-radius:6px;">
+          <input type="number" id="rollDuration" value="2.5" step="0.5" min="1" style="width:100%; padding:6px; margin-top:2px; background:rgba(11,15,25,0.7); border:1px solid var(--surface-border); color:#fff; border-radius:6px;">
         </div>
       </div>
     </div>
@@ -294,7 +321,7 @@
 
   <script>
     const DB_NAME = 'RandomizerProDB';
-    const DB_VERSION = 1;
+    const DB_VERSION = 2;
     let db, backupOriginalData = "";
 
     function initDB() {
@@ -302,7 +329,7 @@
         const request = indexedDB.open(DB_NAME, DB_VERSION);
         request.onupgradeneeded = (e) => {
           db = e.target.result;
-          if (!db.objectStoreNames.contains('presets')) db.createObjectStore('presets', { keyPath: 'id' });
+          if (!db.objectStoreNames.contains('classes')) db.createObjectStore('classes', { keyPath: 'id' });
         };
         request.onsuccess = (e) => { db = e.target.result; resolve(); };
         request.onerror = (e) => reject(e);
@@ -349,7 +376,7 @@
       const items = getDataList();
       if (items.length === 0) {
         document.getElementById('winnerText').innerText = "Data Kosong!";
-        document.getElementById('winnerSub').innerText = "Buka Kelola Data untuk mengisi peserta";
+        document.getElementById('winnerSub').innerText = "Buka Kelola Data/Kelas untuk memilih peserta";
         triggerVibration([100, 50, 100]);
         return;
       }
@@ -411,7 +438,7 @@
         updateItemCount();
         saveCurrentSession();
         triggerVibration([50, 50]);
-        alert("Daftar nama berhasil dikembalikan!");
+        alert("Daftar nama dikembalikan!");
       }
     }
 
@@ -453,6 +480,113 @@
       }
     }
 
+    /* ================= MANAJEMEN KELAS (MANAGE CLASSES) ================= */
+    function loadClassesList() {
+      const tx = db.transaction('classes', 'readonly');
+      const store = tx.objectStore('classes');
+      const req = store.getAll();
+      req.onsuccess = () => {
+        const select = document.getElementById('classSelect');
+        select.innerHTML = '<option value="">-- Pilih Kelas --</option>';
+        req.result.forEach(c => {
+          select.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+        });
+      };
+    }
+
+    function addNewClass() {
+      const name = prompt("Masukkan Nama Kelas/Kelompok (contoh: Kelas 10-A):");
+      if (!name) return;
+      const id = 'class_' + Date.now();
+      const tx = db.transaction('classes', 'readwrite');
+      tx.objectStore('classes').put({ id, name, students: "" });
+      tx.oncomplete = () => {
+        loadClassesList();
+        setTimeout(() => {
+          document.getElementById('classSelect').value = id;
+          loadClassStudents();
+        }, 100);
+      };
+    }
+
+    function loadClassStudents() {
+      const id = document.getElementById('classSelect').value;
+      const editor = document.getElementById('classEditor');
+      if (!id) {
+        editor.style.display = 'none';
+        return;
+      }
+      editor.style.display = 'block';
+
+      const tx = db.transaction('classes', 'readonly');
+      const store = tx.objectStore('classes');
+      const req = store.get(id);
+      req.onsuccess = () => {
+        if (req.result) {
+          document.getElementById('classStudentsInput').value = req.result.students || "";
+          updateClassCount();
+        }
+      };
+    }
+
+    function saveClassStudents() {
+      const id = document.getElementById('classSelect').value;
+      if (!id) return;
+      const students = document.getElementById('classStudentsInput').value;
+
+      const tx = db.transaction('classes', 'readonly');
+      const store = tx.objectStore('classes');
+      const req = store.get(id);
+      req.onsuccess = () => {
+        if (req.result) {
+          const item = req.result;
+          item.students = students;
+          const writeTx = db.transaction('classes', 'readwrite');
+          writeTx.objectStore('classes').put(item);
+        }
+      };
+      updateClassCount();
+    }
+
+    function updateClassCount() {
+      const text = document.getElementById('classStudentsInput').value;
+      const count = text.split('\n').map(s => s.trim()).filter(s => s.length > 0).length;
+      document.getElementById('classStudentCount').innerText = `${count} Siswa`;
+    }
+
+    function deleteCurrentClass() {
+      const id = document.getElementById('classSelect').value;
+      if (!id) return alert("Pilih kelas yang ingin dihapus!");
+      if (confirm("Apakah Anda yakin ingin menghapus kelas ini?")) {
+        const tx = db.transaction('classes', 'readwrite');
+        tx.objectStore('classes').delete(id);
+        tx.oncomplete = () => {
+          document.getElementById('classEditor').style.display = 'none';
+          loadClassesList();
+        };
+      }
+    }
+
+    function applyClassToMain() {
+      const students = document.getElementById('classStudentsInput').value;
+      if (!students.trim()) return alert("Daftar siswa kelas ini masih kosong!");
+      document.getElementById('dataInput').value = students;
+      backupOriginalData = students;
+      updateItemCount();
+      saveCurrentSession();
+      closeSettings();
+      triggerVibration([50]);
+      alert("Siswa berhasil dimuat ke pengacak utama!");
+    }
+
+    function switchModalTab(tabId, el) {
+      document.getElementById('mTabClass').style.display = tabId === 'mTabClass' ? 'block' : 'none';
+      document.getElementById('mTabInput').style.display = tabId === 'mTabInput' ? 'block' : 'none';
+      el.parentElement.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    /* ================= KELOMPOK, SHUFFLE & EXCEL ================= */
     function shuffleData() {
       let items = getDataList();
       for (let i = items.length - 1; i > 0; i--) {
@@ -487,7 +621,6 @@
 
       let shuffled = [...items].sort(() => 0.5 - Math.random());
       let groups = Array.from({ length: numGroups }, () => []);
-
       shuffled.forEach((item, index) => groups[index % numGroups].push(item));
 
       const grid = document.getElementById('groupsGrid');
@@ -539,43 +672,6 @@
       }
     }
 
-    function saveNewPreset() {
-      const name = prompt("Nama Preset/Sesi:");
-      if (!name) return;
-      const id = 'preset_' + Date.now();
-      const content = document.getElementById('dataInput').value;
-
-      const tx = db.transaction('presets', 'readwrite');
-      tx.objectStore('presets').put({ id, name, content });
-      tx.oncomplete = () => loadPresetsUI();
-    }
-
-    function loadPresetsUI() {
-      const tx = db.transaction('presets', 'readonly');
-      const store = tx.objectStore('presets');
-      const request = store.getAll();
-      request.onsuccess = () => {
-        const select = document.getElementById('presetSelect');
-        select.innerHTML = '<option value="default">Sesi Utama</option>';
-        request.result.forEach(p => { select.innerHTML += `<option value="${p.id}">${p.name}</option>`; });
-      };
-    }
-
-    function loadSelectedPreset() {
-      const val = document.getElementById('presetSelect').value;
-      if (val === 'default') { loadLastSession(); return; }
-      const tx = db.transaction('presets', 'readonly');
-      const store = tx.objectStore('presets');
-      const request = store.get(val);
-      request.onsuccess = () => {
-        if (request.result) {
-          document.getElementById('dataInput').value = request.result.content;
-          backupOriginalData = request.result.content;
-          updateItemCount();
-        }
-      };
-    }
-
     function switchTab(tabId, el) {
       document.getElementById('tabWinners').style.display = tabId === 'tabWinners' ? 'block' : 'none';
       document.getElementById('tabGroups').style.display = tabId === 'tabGroups' ? 'block' : 'none';
@@ -588,7 +684,7 @@
 
     window.addEventListener('DOMContentLoaded', async () => {
       await initDB();
-      loadPresetsUI();
+      loadClassesList();
       loadLastSession();
       if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
     });
