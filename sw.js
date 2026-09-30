@@ -1,7 +1,7 @@
 /* Randomizer Pro — Service Worker
    Strategi: HTML network-first, asset stale-while-revalidate */
 
-const VERSION = 'v21';
+const VERSION = 'v22';
 const CACHE = 'randomizer-pro-' + VERSION;
 const CORE = [
   './',
