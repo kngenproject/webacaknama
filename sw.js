@@ -1,20 +1,24 @@
-/* Randomizer Pro — Service Worker v3
-   Auto-update enabled: network-first untuk HTML, cache-first untuk assets */
+/* Randomizer Pro — Service Worker
+   Strategi: HTML network-first, asset stale-while-revalidate */
 
-const CACHE = 'randomizer-pro-v7';
-const ASSETS = [
+const VERSION = 'v9';
+const CACHE = 'randomizer-pro-' + VERSION;
+const CORE = [
   './',
   './index.html',
   './manifest.json',
-  './xlsx.full.min.js',
   './auto-update.js',
-  'https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js'
+  './xlsx.full.min.js',
+  './confetti.browser.min.js',
+  './icon-192.png',
+  './icon-512.png'
 ];
 
 self.addEventListener('install', (e) => {
-  // Jangan skipWaiting otomatis — tunggu perintah dari klien
   e.waitUntil(
-    caches.open(CACHE).then((c) => c.addAll(ASSETS)).catch(() => {})
+    caches.open(CACHE).then((c) =>
+      Promise.all(CORE.map((url) => c.add(url).catch(() => null)))
+    )
   );
 });
 
@@ -22,31 +26,29 @@ self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys()
       .then((keys) => Promise.all(
-        keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))
+        keys
+          .filter((k) => k !== CACHE && k.startsWith('randomizer-pro-'))
+          .map((k) => caches.delete(k))
       ))
       .then(() => self.clients.claim())
   );
 });
 
 self.addEventListener('message', (e) => {
-  if (e.data && e.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
+  if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting();
 });
 
 self.addEventListener('fetch', (e) => {
   const req = e.request;
   if (req.method !== 'GET') return;
-
   const url = new URL(req.url);
   const isHTML =
+    req.mode === 'navigate' ||
     req.destination === 'document' ||
     url.pathname === '/' ||
-    url.pathname.endsWith('.html') ||
-    url.pathname.endsWith('/');
+    url.pathname.endsWith('.html');
 
   if (isHTML) {
-    // Network-first: selalu ambil versi terbaru; fallback ke cache saat offline
     e.respondWith(
       fetch(req)
         .then((res) => {
@@ -54,24 +56,25 @@ self.addEventListener('fetch', (e) => {
           caches.open(CACHE).then((c) => c.put(req, clone)).catch(() => {});
           return res;
         })
-        .catch(() =>
-          caches.match(req).then((r) => r || caches.match('./index.html'))
-        )
+        .catch(() => caches.match(req).then((r) => r || caches.match('./index.html')))
     );
     return;
   }
 
-  // Cache-first untuk asset statis
   e.respondWith(
     caches.match(req).then((cached) => {
-      if (cached) return cached;
-      return fetch(req).then((res) => {
-        if (res && res.status === 200 && url.origin === self.location.origin) {
-          const clone = res.clone();
-          caches.open(CACHE).then((c) => c.put(req, clone)).catch(() => {});
-        }
-        return res;
-      }).catch(() => caches.match('./index.html'));
+      const fetchPromise = fetch(req)
+        .then((res) => {
+          if (res && res.status === 200 &&
+              (url.origin === self.location.origin ||
+               url.hostname === 'cdn.jsdelivr.net')) {
+            const clone = res.clone();
+            caches.open(CACHE).then((c) => c.put(req, clone)).catch(() => {});
+          }
+          return res;
+        })
+        .catch(() => cached);
+      return cached || fetchPromise;
     })
   );
 });

@@ -109,3 +109,46 @@
     injectCheckButton();
   }
 })();
+
+/* ============================================================
+   PWA INSTALL PROMPT
+   ============================================================ */
+(function () {
+  var deferredPrompt = null;
+  var installBtn = null;
+
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();
+    deferredPrompt = e;
+    injectInstallButton();
+  });
+
+  function injectInstallButton() {
+    if (installBtn) return;
+    var rows = document.querySelectorAll('#stabPrefs .row');
+    for (var i = 0; i < rows.length; i++) {
+      if (rows[i].textContent.indexOf('Randomizer Pro') > -1) {
+        installBtn = document.createElement('button');
+        installBtn.className = 'btn-primary';
+        installBtn.textContent = 'INSTALL APLIKASI';
+        installBtn.style.width = '100%';
+        installBtn.style.marginTop = '8px';
+        installBtn.onclick = function () {
+          if (!deferredPrompt) return;
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then(function () {
+            deferredPrompt = null;
+            if (installBtn) { installBtn.remove(); installBtn = null; }
+          });
+        };
+        rows[i].parentNode.insertBefore(installBtn, rows[i].nextSibling);
+        break;
+      }
+    }
+  }
+
+  window.addEventListener('appinstalled', function () {
+    if (installBtn) { installBtn.remove(); installBtn = null; }
+    deferredPrompt = null;
+  });
+})();

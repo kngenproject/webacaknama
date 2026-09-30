@@ -1072,8 +1072,6 @@
       }
     }
   </style>
-  <script src="xlsx.full.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <style>
 </style>
 <style>
@@ -1248,6 +1246,34 @@
 button, .opt, .tab, .icon-btn, .list-item { user-select: none; -webkit-user-select: none; }
 </style>
 </head>
+  <script>
+  /* Lazy loader — XLSX & Confetti dimuat hanya saat dibutuhkan */
+  window.__loadScript = function (src) {
+    return new Promise(function (resolve, reject) {
+      if (document.querySelector('script[data-lazy="' + src + '"]')) return resolve();
+      var s = document.createElement('script');
+      s.src = src;
+      s.setAttribute('data-lazy', src);
+      s.onload = resolve;
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  };
+  window.__loadXLSX = function () {
+    if (window.XLSX) return Promise.resolve();
+    return window.__loadScript('xlsx.full.min.js');
+  };
+  window.__loadConfetti = function () {
+    if (window.confetti) return Promise.resolve();
+    return window.__loadScript('confetti.browser.min.js');
+  };
+  /* Prefetch confetti saat idle (kecil ~15KB) */
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(function () { window.__loadConfetti(); });
+  } else {
+    setTimeout(function () { window.__loadConfetti(); }, 2500);
+  }
+  </script>
 <body>
 
 <div class="shell">
@@ -1548,7 +1574,7 @@ button, .opt, .tab, .icon-btn, .list-item { user-select: none; -webkit-user-sele
           </div>
           <div class="row">
             <div class="row-label">Randomizer Pro</div>
-            <div style="font-size:0.78rem; color:var(--text-muted); font-weight:700;">v2.3 · Desktop</div>
+            <div style="font-size:0.78rem; color:var(--text-muted); font-weight:700;">v3.0 · Lightweight</div>
           </div>
         </div>
       </div>
@@ -1854,6 +1880,7 @@ function removePickedItem(item) {
 }
 
 function fireConfetti(n) {
+  if (typeof confetti === "undefined") { window.__loadConfetti().then(function(){ fireConfetti(n); }); return; }
   if (typeof confetti !== 'function') return;
   const colors = ['#FFD23F', '#2BA8A2', '#EF6C4A', '#5DADE2', '#27AE60'];
   const base = { particleCount: n > 1 ? 120 : 80, spread: 85, origin: { y: 0.62 }, colors };
@@ -2067,6 +2094,7 @@ function generateGroups() {
 }
 function triggerExcel() { document.getElementById('excelInput').click(); Sound.click(); }
 function importExcelData(e) {
+  if (typeof XLSX === "undefined") { window.__loadXLSX().then(function(){ importExcelData(e); }); return; }
   const file = e.target.files[0];
   if (!file) return;
   const reader = new FileReader();
@@ -2088,6 +2116,7 @@ function importExcelData(e) {
   reader.readAsArrayBuffer(file);
 }
 function exportWinnersExcel() {
+  if (typeof XLSX === "undefined") { window.__loadXLSX().then(function(){ exportWinnersExcel(); }); return; }
   if (winnersList.length === 0) { Sound.error(); return alert("Belum ada riwayat pemenang."); }
   const data = winnersList.slice().reverse().map((w, i) => ({
     No: i + 1,
