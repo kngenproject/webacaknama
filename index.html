@@ -1989,6 +1989,11 @@ html.lite-mode canvas[style*="pointer-events"] {
   }
 </style>
 
+
+  <!-- Favicon & App Icons -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎁</text></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎁</text></svg>">
+
 </head>
   <script>
   /* Lazy loader — XLSX & Confetti dimuat hanya saat dibutuhkan */
@@ -2804,6 +2809,40 @@ function shuffleData() {
   Sound.click();
 }
 
+
+/* Backup & Export Data */
+function exportData() {
+  const data = document.getElementById('dataInput').value;
+  const blob = new Blob([data], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'daftar_nama_' + new Date().toISOString().slice(0,10) + '.txt';
+  a.click();
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById('dataInput').value = e.target.result;
+    updateItemCount();
+    saveCurrentSession();
+    alert('Data berhasil diimpor!');
+  };
+  reader.readAsText(file);
+}
+
+function checkAppUpdate() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.ready.then(reg => {
+      reg.update().then(() => alert('Mengecek pembaruan... Jika ada versi baru, halaman akan memuat ulang.'));
+    });
+  } else {
+    alert('Service Worker tidak didukung di browser ini.');
+  }
+}
+
 function removeDuplicates() {
   const lines = getAllLines();
   const uniqueLines = [...new Set(lines)];
@@ -3243,6 +3282,130 @@ window.addEventListener('DOMContentLoaded', function () {
         window.location.reload();
       }
     });
+  }
+</script>
+
+
+<!-- Shortcut Keyboard & Helper Pemenang -->
+<script>
+  // Shortcut Keyboard (Spacebar / Enter untuk acak)
+  document.addEventListener('keydown', (e) => {
+    if ((e.code === 'Space' || e.code === 'Enter') && e.target.tagName !== 'TEXTAREA' && e.target.tagName !== 'INPUT') {
+      e.preventDefault();
+      const btn = document.getElementById('pickBtn') || document.querySelector('.btn-pick');
+      if (btn) btn.click();
+    }
+  });
+
+  // Salin Pemenang ke Clipboard (Siap kirim WA)
+  function copyWinnersToClipboard() {
+    const winnerElements = document.querySelectorAll('#winnerList li, .winner-item');
+    if (winnerElements.length === 0) {
+      alert('Belum ada pemenang untuk disalin.');
+      return;
+    }
+    let text = "*DAFTAR PEMENANG DOORPRIZE*\n\n";
+    winnerElements.forEach((el, idx) => {
+      text += `${idx + 1}. ${el.innerText.trim()}\n`;
+    });
+    navigator.clipboard.writeText(text).then(() => {
+      alert('Daftar pemenang berhasil disalin! Tinggal paste di WhatsApp.');
+    }).catch(err => alert('Gagal menyalin: ' + err));
+  }
+</script>
+
+
+<!-- ALL-IN-ONE ADVANCED FEATURES LOGIC -->
+<script>
+  // --- Global State ---
+  window.appState = {
+    prizes: ['Grand Prize', 'Hadiah Utama', 'Hadiah Hiburan'],
+    selectedPrize: 'Grand Prize',
+    rollDuration: 3000, // ms
+    disqualified: []
+  };
+
+  // 1. Impor dari File Excel (.xlsx / .csv)
+  function importExcel(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+      const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+      const json = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+      const names = json.flat().filter(x => x && str(x).trim() !== '');
+      document.getElementById('dataInput').value = names.join('\n');
+      if (typeof updateItemCount === 'function') updateItemCount();
+      if (typeof saveCurrentSession === 'function') saveCurrentSession();
+      alert(`Berhasil mengimpor ${names.length} nama dari Excel!`);
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  // 2. Pembacaan Nama Pemenang (Text-to-Speech)
+  function announceWinnerTTS(name, prize) {
+    if ('speechSynthesis' in window) {
+      const text = `Selamat kepada ${name}, mendapatkan ${prize || 'hadiah'}`;
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'id-ID';
+      utterance.rate = 0.9;
+      window.speechSynthesis.speak(utterance);
+    }
+  }
+
+  // 3. Diskualifikasi Pemenang (Tombol "Batal / Tidak Hadir")
+  function rejectCurrentWinner(winnerName) {
+    if (confirm(`Apakah Anda yakin membatalkan ${winnerName}?`)) {
+      window.appState.disqualified.push(winnerName);
+      alert(`${winnerName} telah didiskualifikasi.`);
+      // Opsi kembalikan ke input atau tandai
+    }
+  }
+
+  // 4. Pengatur Durasi Acakan
+  function setRollDuration(seconds) {
+    window.appState.rollDuration = seconds * 1000;
+  }
+
+  // 5. Ekspor Ringkasan / Laporan LENGKAP (Excel / Text)
+  function exportFullReport() {
+    const winners = document.querySelectorAll('#winnerList li, .winner-item');
+    let reportText = "=== LAPORAN RESMI PEMENANG DOORPRIZE ===\n";
+    reportText += `Tanggal: ${new Date().toLocaleString('id-ID')}\n\n`;
+    
+    winners.forEach((w, i) => {
+      reportText += `${i + 1}. ${w.innerText.trim()}\n`;
+    });
+
+    if (window.appState.disqualified.length > 0) {
+      reportText += "\n=== DAFTAR DISKUALIFIKASI ===\n";
+      window.appState.disqualified.forEach((d, i) => {
+        reportText += `${i + 1}. ${d}\n`;
+      });
+    }
+
+    const blob = new Blob([reportText], { type: 'text/plain;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `Laporan_Pemenang_${new Date().toISOString().slice(0,10)}.txt`;
+    a.click();
+  }
+
+  // 6. Tampilkan Ringkasan Statistik Acara
+  function showEventStats() {
+    const raw = document.getElementById('dataInput').value.split('\n').filter(s => s.trim().length > 0);
+    const winnersCount = document.querySelectorAll('#winnerList li, .winner-item').length;
+    
+    const statsMsg = `
+📊 STATISTIK ACARA
+-----------------------
+• Total Sisa Peserta : ${raw.length}
+• Total Pemenang Sah : ${winnersCount}
+• Total Diskualifikasi: ${window.appState.disqualified.length}
+    `;
+    alert(statsMsg);
   }
 </script>
 
