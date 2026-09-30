@@ -1999,6 +1999,36 @@ html.lite-mode canvas[style*="pointer-events"] {
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎁</text></svg>">
   <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎁</text></svg>">
 
+
+<style id="tablet-scroll-fix">
+  /* Fix Scroll Issue for Mobile & Tablet Browsers */
+  html, body {
+    height: 100% !important;
+    min-height: 100dvh !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Berikan padding bawah agar konten terbawah tidak tertutup bar browser */
+  body {
+    padding-bottom: 80px !important;
+  }
+
+  /* Pastikan modal/pop-up di tablet bisa di-scroll penuh */
+  .modal, .modal-content, .dialog-box {
+    max-height: 85dvh !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Kontainer utama aplikasi */
+  .container, .app-layout, main {
+    min-height: auto !important;
+    height: auto !important;
+    padding-bottom: 40px !important;
+  }
+</style>
+
 </head>
   <script>
   /* Lazy loader — XLSX & Confetti dimuat hanya saat dibutuhkan */
