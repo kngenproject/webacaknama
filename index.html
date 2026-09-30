@@ -1244,6 +1244,308 @@
   * { scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
 }
 button, .opt, .tab, .icon-btn, .list-item { user-select: none; -webkit-user-select: none; }
+
+/* ============================================================
+   DESKTOP POLISH — final visual refinement (≥1024px)
+   ============================================================ */
+@media (min-width: 1024px) {
+  body {
+    padding: 28px 32px;
+    background:
+      radial-gradient(circle at 10% 15%, rgba(43,168,162,0.08), transparent 45%),
+      radial-gradient(circle at 90% 85%, rgba(255,210,63,0.06), transparent 40%),
+      var(--surface-base);
+    background-attachment: fixed;
+  }
+
+  .shell {
+    max-width: 1180px;
+    gap: 20px;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  }
+
+  /* HEADER */
+  header {
+    padding: 18px 26px;
+    border-radius: var(--r-xl);
+    box-shadow: 0 8px 32px rgba(43,168,162,0.08), var(--shadow-card);
+  }
+  .brand-mark { width: 52px; height: 52px; }
+  .brand-mark .fan { width: 18px; height: 30px; border-radius: 5px; }
+  .brand-text { font-size: 1.25rem; letter-spacing: 1px; }
+  .brand-text em { font-size: 1.35em; }
+  .brand-sub { font-size: 0.7rem; letter-spacing: 3px; }
+
+  .icon-btn { width: 46px; height: 46px; border-radius: var(--r-md); }
+  .icon-btn svg { width: 20px; height: 20px; }
+
+  /* STAGE (left column) */
+  .shell > .card:nth-of-type(1) {
+    padding: 32px;
+    border-radius: var(--r-xl);
+    min-height: calc(100vh - 180px);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .display-box {
+    min-height: 340px;
+    padding: 48px 40px;
+    border-radius: var(--r-lg);
+    border-width: 3px;
+    margin-bottom: 24px;
+  }
+
+  .winner-text {
+    font-size: 3rem;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  .winner-text.idle {
+    font-size: 1.6rem;
+    letter-spacing: 1px;
+  }
+
+  .winner-line {
+    font-size: 1.4rem;
+    padding: 16px 0;
+  }
+  .winner-line .idx {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+    border-radius: var(--r-sm);
+  }
+  .winner-sub { font-size: 0.9rem; margin-top: 16px; }
+
+  /* Main CTA */
+  .btn-main {
+    min-height: 88px;
+    font-size: 1.35rem;
+    letter-spacing: 2px;
+    border-radius: var(--r-pill);
+    border-width: 3px;
+  }
+  .btn-main svg { width: 28px; height: 28px; }
+  .btn-main .kbd-hint { margin-left: 14px; }
+
+  /* Options */
+  .options {
+    padding-top: 24px;
+    margin-top: 24px;
+    gap: 10px;
+    border-top-width: 3px;
+  }
+  .opt {
+    padding: 12px 20px;
+    min-height: 46px;
+    font-size: 0.9rem;
+    gap: 8px;
+    border-radius: var(--r-pill);
+  }
+  .opt input[type="checkbox"] { width: 18px; height: 18px; }
+  .opt input[type="number"] { width: 52px; font-size: 0.9rem; }
+
+  /* Quick actions */
+  .quick-actions { gap: 12px; margin-top: 18px; }
+  .quick-actions button {
+    padding: 15px 20px;
+    font-size: 0.95rem;
+    min-height: 52px;
+    border-radius: var(--r-pill);
+  }
+
+  /* SIDE (right column) */
+  .shell > .card:nth-of-type(2) {
+    padding: 26px 24px;
+    border-radius: var(--r-xl);
+    max-height: calc(100vh - 200px);
+    top: 28px;
+  }
+
+  .tabs { padding: 0; margin-bottom: 20px; gap: 6px; }
+  .tab {
+    padding: 12px 20px;
+    font-size: 0.92rem;
+    border-radius: var(--r-md) var(--r-md) 0 0;
+    transition: all 0.2s ease;
+  }
+  .tab:hover { background: var(--surface-base); color: var(--teal); }
+  .tab.active {
+    background: linear-gradient(180deg, var(--teal-bg), transparent);
+  }
+
+  /* List */
+  .list {
+    max-height: calc(100vh - 400px);
+    padding-right: 6px;
+    margin-right: -6px;
+  }
+  .list-item {
+    padding: 16px 18px;
+    border-radius: var(--r-md);
+    font-size: 0.98rem;
+    border-width: 2px;
+    border-left-width: 6px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 8px rgba(43,168,162,0.06);
+  }
+  .list-item:hover {
+    transform: translateX(6px) !important;
+    border-left-color: var(--gold);
+    box-shadow: 0 6px 20px rgba(43,168,162,0.15);
+  }
+  .list-item .meta { font-size: 0.82rem; }
+  .list-item .num { width: 28px; height: 28px; font-size: 0.82rem; }
+  .prize-badge { padding: 4px 12px; font-size: 0.75rem; }
+
+  .empty-state { font-size: 0.95rem; padding: 60px 20px; }
+
+  .winners-actions { gap: 10px; margin-top: 20px; }
+  .winners-actions button {
+    padding: 14px 16px;
+    font-size: 0.9rem;
+    min-height: 52px;
+    border-radius: var(--r-pill);
+  }
+
+  /* Groups */
+  .groups-bar label { font-size: 0.92rem; }
+  .groups-bar input[type="number"] { width: 72px; padding: 12px; font-size: 1rem; }
+  .groups-bar button { padding: 14px 28px; font-size: 0.95rem; min-height: 48px; }
+  .groups-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+  }
+  .group {
+    padding: 16px;
+    border-radius: var(--r-md);
+    border-left-width: 6px;
+  }
+  .group h4 {
+    font-size: 0.86rem;
+    letter-spacing: 0.5px;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+  }
+  .group h4 .count { padding: 3px 10px; font-size: 0.75rem; }
+  .group ul { font-size: 0.88rem; }
+  .group li { padding: 5px 0; }
+
+  /* MODAL */
+  .overlay { padding: 40px; }
+  .sheet {
+    max-width: 720px;
+    max-height: calc(100vh - 80px);
+    border-radius: var(--r-xl);
+    box-shadow: 0 24px 80px rgba(0,0,0,0.35);
+  }
+  .sheet-head { padding: 22px 28px; }
+  .sheet-title { font-size: 1.05rem; letter-spacing: 1px; }
+  .sheet-body { padding: 28px; }
+  .sheet-body .tabs { padding: 0; margin-bottom: 24px; }
+
+  /* Section */
+  .section { margin-bottom: 28px; }
+  .section-title {
+    font-size: 0.8rem;
+    letter-spacing: 2.5px;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+  }
+  .section-title svg { width: 16px; height: 16px; }
+
+  .row { padding: 16px 0; gap: 20px; }
+  .row-label { font-size: 0.95rem; }
+  .row-hint { font-size: 0.78rem; margin-top: 4px; }
+
+  .switch { width: 52px; height: 30px; }
+  .switch-track::before { width: 20px; height: 20px; }
+  .switch input:checked + .switch-track::before { transform: translateX(22px); }
+
+  textarea { height: 160px; padding: 14px 16px; }
+  textarea, input[type="text"], input[type="number"], select {
+    font-size: 15px;
+    padding: 13px 16px;
+    border-radius: var(--r-md);
+  }
+  .input-label { font-size: 0.82rem; letter-spacing: 0.6px; }
+
+  .class-block { padding: 18px; }
+  .class-block .toolbar button { padding: 12px 18px; min-height: 46px; }
+
+  .btn-grid { gap: 12px; margin-top: 16px; }
+  .btn-grid button {
+    padding: 14px 16px;
+    font-size: 0.88rem;
+    min-height: 50px;
+    border-radius: var(--r-pill);
+  }
+
+  .range-val { font-size: 0.88rem; }
+
+  /* Kbd hint */
+  .kbd-hint {
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    margin-left: 12px;
+    gap: 6px;
+  }
+  .kbd-hint kbd {
+    font-size: 0.75rem;
+    padding: 2px 7px;
+    border-radius: 5px;
+    min-width: 24px;
+    text-align: center;
+  }
+
+  /* Focus visible */
+  button:focus-visible,
+  .opt:focus-visible,
+  .tab:focus-visible,
+  .icon-btn:focus-visible {
+    outline: 3px solid var(--gold);
+    outline-offset: 3px;
+  }
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+  }
+
+  /* Entrance */
+  .card { animation: desktopFadeIn 0.6s var(--ease-out) both; }
+  .shell > .card:nth-of-type(1) { animation-delay: 0.08s; }
+  .shell > .card:nth-of-type(2) { animation-delay: 0.16s; }
+}
+
+@keyframes desktopFadeIn {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Very wide screens */
+@media (min-width: 1440px) {
+  .shell { max-width: 1320px; gap: 24px; }
+  .display-box { min-height: 400px; padding: 56px 48px; }
+  .winner-text { font-size: 3.4rem; }
+  .list { max-height: calc(100vh - 380px); }
+}
+
+/* Short laptops (≤800px height) — compact vertical */
+@media (min-width: 1024px) and (max-height: 800px) {
+  .display-box { min-height: 240px; padding: 32px; margin-bottom: 18px; }
+  .winner-text { font-size: 2.2rem; }
+  .winner-text.idle { font-size: 1.35rem; }
+  .btn-main { min-height: 68px; font-size: 1.15rem; letter-spacing: 1.5px; }
+  .shell > .card:nth-of-type(1) { min-height: auto; padding: 24px; }
+  .shell > .card:nth-of-type(2) { position: static; max-height: none; }
+  .list { max-height: 360px; }
+  .options { padding-top: 16px; margin-top: 16px; }
+  .quick-actions { margin-top: 12px; }
+}
 </style>
 </head>
   <script>
@@ -1574,7 +1876,7 @@ button, .opt, .tab, .icon-btn, .list-item { user-select: none; -webkit-user-sele
           </div>
           <div class="row">
             <div class="row-label">Randomizer Pro</div>
-            <div style="font-size:0.78rem; color:var(--text-muted); font-weight:700;">v3.0 · Lightweight</div>
+            <div style="font-size:0.78rem; color:var(--text-muted); font-weight:700;">v3.1 · Desktop Polish</div>
           </div>
         </div>
       </div>
