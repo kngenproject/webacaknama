@@ -2,10 +2,12 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#6366f1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Randomizer Pro - Kelola Kelas & Offline PWA</title>
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#6366f1">
   <style>
     :root {
       --bg: #0b0f19;
@@ -22,177 +24,115 @@
       --text: #f8fafc;
       --text-muted: #94a3b8;
       --radius: 16px;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-left: env(safe-area-inset-left, 0px);
+      --safe-right: env(safe-area-inset-right, 0px);
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-
-    body { 
-      background: var(--bg); 
-      background-image: 
-        radial-gradient(at 50% 0%, rgba(99, 102, 241, 0.2) 0px, transparent 60%),
-        radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
+    html, body { width: 100%; max-width: 100vw; overflow-x: hidden; }
+    body {
+      background: var(--bg);
+      background-image: radial-gradient(at 50% 0%, rgba(99,102,241,0.2) 0px, transparent 60%), radial-gradient(at 100% 100%, rgba(16,185,129,0.1) 0px, transparent 50%);
       background-attachment: fixed;
-      color: var(--text); 
-      padding: 12px; 
-      min-height: 100vh; 
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      color: var(--text);
+      padding: calc(8px + var(--safe-top)) calc(8px + var(--safe-right)) calc(8px + var(--safe-bottom)) calc(8px + var(--safe-left));
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex; flex-direction: column; align-items: center;
+      font-size: 16px; line-height: 1.35;
+      -webkit-font-smoothing: antialiased;
     }
-
     header {
-      width: 100%;
-      max-width: 600px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 14px;
+      width: 100%; max-width: 600px;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 10px;
       background: var(--surface);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
       border: 1px solid var(--surface-border);
       border-radius: var(--radius);
-      margin-bottom: 12px;
+      margin-bottom: 10px; gap: 6px;
     }
-
-    .brand { display: flex; align-items: center; gap: 8px; font-size: 1rem; font-weight: 800; color: #fff; }
-    .status-badge { font-size: 0.65rem; padding: 3px 8px; border-radius: 20px; background: rgba(16, 185, 129, 0.15); color: var(--accent); border: 1px solid rgba(16, 185, 129, 0.3); font-weight: 600; }
-
-    main { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 12px; }
-
-    .display-card {
-      background: var(--surface);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--surface-border);
-      border-radius: var(--radius);
-      padding: 16px;
-      text-align: center;
-      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-    }
-
-    .display-box {
-      background: linear-gradient(180deg, rgba(15, 23, 42, 0.8) 0%, rgba(11, 15, 25, 0.9) 100%);
-      border: 2px dashed rgba(99, 102, 241, 0.4);
-      border-radius: var(--radius);
-      min-height: 140px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      margin-bottom: 12px;
-      transition: all 0.3s ease;
-    }
-
-    .display-box.rolling {
-      border-color: var(--accent);
-      box-shadow: 0 0 25px rgba(16, 185, 129, 0.3);
-      animation: pulseGlow 0.8s infinite alternate;
-    }
-
-    .display-box.winner-found {
-      border-color: var(--gold);
-      box-shadow: 0 0 30px rgba(245, 158, 11, 0.4);
-      animation: victoryShake 0.4s ease-in-out;
-    }
-
-    .winner-text { font-size: 1.8rem; font-weight: 800; color: #fff; word-break: break-word; line-height: 1.2; }
-    .winner-sub { font-size: 0.85rem; color: var(--text-muted); margin-top: 6px; }
-
-    .btn-main {
-      background: var(--accent-gradient);
-      color: #fff;
-      border: none;
-      min-height: 56px;
-      padding: 12px;
-      border-radius: 14px;
-      font-weight: 800;
-      font-size: 1.15rem;
-      cursor: pointer;
-      width: 100%;
-      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
+    .brand { display: flex; align-items: center; gap: 6px; font-size: clamp(0.82rem, 3.4vw, 1rem); font-weight: 800; color: #fff; min-width: 0; flex: 1 1 auto; overflow: hidden; }
+    .brand > span:first-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .status-badge { font-size: 0.6rem; padding: 2px 6px; border-radius: 20px; background: rgba(16,185,129,0.15); color: var(--accent); border: 1px solid rgba(16,185,129,0.3); font-weight: 600; flex-shrink: 0; white-space: nowrap; }
+    .header-actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .header-actions button { padding: 6px 9px !important; font-size: 0.78rem; }
+    .hide-xs { display: inline; }
+    .show-xs { display: none; }
+    main { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 10px; }
+    .display-card, .card { background: var(--surface); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--surface-border); border-radius: var(--radius); padding: 12px; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5); }
+    .display-card { text-align: center; padding: 14px; }
+    .display-box { background: linear-gradient(180deg, rgba(15,23,42,0.8) 0%, rgba(11,15,25,0.9) 100%); border: 2px dashed rgba(99,102,241,0.4); border-radius: var(--radius); min-height: 130px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 14px; margin-bottom: 12px; transition: all 0.3s ease; overflow: hidden; }
+    .display-box.rolling { border-color: var(--accent); box-shadow: 0 0 25px rgba(16,185,129,0.3); animation: pulseGlow 0.8s infinite alternate; }
+    .display-box.winner-found { border-color: var(--gold); box-shadow: 0 0 30px rgba(245,158,11,0.4); animation: victoryShake 0.4s ease-in-out; }
+    .winner-text { font-size: clamp(1.3rem, 6.5vw, 1.8rem); font-weight: 800; color: #fff; word-break: break-word; overflow-wrap: anywhere; line-height: 1.2; width: 100%; }
+    .winner-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 6px; }
+    .btn-main { background: var(--accent-gradient); color: #fff; border: none; min-height: 52px; padding: 12px; border-radius: 14px; font-weight: 800; font-size: 1.05rem; cursor: pointer; width: 100%; box-shadow: 0 6px 20px rgba(16,185,129,0.35); transition: transform 0.15s ease; display: flex; align-items: center; justify-content: center; gap: 8px; touch-action: manipulation; }
     .btn-main:active { transform: scale(0.96); }
-
-    .quick-options {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(11, 15, 25, 0.6);
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px solid var(--surface-border);
-      font-size: 0.8rem;
-      margin-top: 10px;
-    }
-    .quick-options label { display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--text); }
-
-    .card {
-      background: var(--surface);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--surface-border);
-      border-radius: var(--radius);
-      padding: 14px;
-      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-    }
-
-    .tabs { display: flex; border-bottom: 1px solid var(--surface-border); margin-bottom: 12px; }
-    .tab-item {
-      padding: 8px 12px; cursor: pointer; border-bottom: 2px solid transparent;
-      color: var(--text-muted); font-weight: 700; font-size: 0.85rem; flex: 1; text-align: center;
-    }
+    .quick-options { display: flex; justify-content: space-between; align-items: center; gap: 8px; background: rgba(11,15,25,0.6); padding: 8px 10px; border-radius: 10px; border: 1px solid var(--surface-border); font-size: 0.78rem; margin-top: 10px; flex-wrap: wrap; }
+    .quick-options label { display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--text); min-width: 0; flex: 1 1 auto; }
+    .quick-options label input { flex-shrink: 0; }
+    .quick-options button { font-size: 0.72rem !important; padding: 5px 8px !important; flex-shrink: 0; }
+    .tabs { display: flex; border-bottom: 1px solid var(--surface-border); margin-bottom: 10px; overflow-x: auto; scrollbar-width: none; }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab-item { padding: 8px 10px; cursor: pointer; border-bottom: 2px solid transparent; color: var(--text-muted); font-weight: 700; font-size: 0.82rem; flex: 1; text-align: center; white-space: nowrap; transition: color 0.2s, border-color 0.2s; }
     .tab-item.active { border-color: var(--primary); color: #fff; }
-
-    .list-container { max-height: 200px; overflow-y: auto; list-style: none; }
-    .list-item {
-      background: rgba(11, 15, 25, 0.6); 
-      padding: 10px 12px; 
-      border-radius: 8px; 
-      margin-bottom: 6px;
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      font-size: 0.85rem;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    button {
-      background: var(--primary-gradient);
-      color: #fff; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 600; cursor: pointer;
-      display: inline-flex; align-items: center; justify-content: center; gap: 4px; font-size: 0.82rem;
-    }
-    button.btn-secondary { background: rgba(255, 255, 255, 0.08); border: 1px solid var(--surface-border); color: var(--text); }
+    .list-container { max-height: 200px; overflow-y: auto; list-style: none; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+    .list-item { background: rgba(11,15,25,0.6); padding: 9px 11px; border-radius: 8px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 0.84rem; border: 1px solid rgba(255,255,255,0.05); word-break: break-word; }
+    .list-item > span { min-width: 0; overflow-wrap: anywhere; }
+    .list-item small { flex-shrink: 0; }
+    button { background: var(--primary-gradient); color: #fff; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; font-size: 0.82rem; touch-action: manipulation; white-space: nowrap; }
+    button.btn-secondary { background: rgba(255,255,255,0.08); border: 1px solid var(--surface-border); color: var(--text); }
     button.btn-danger { background: var(--danger-gradient); }
-
-    .modal-overlay {
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px);
-      display: none; align-items: center; justify-content: center; z-index: 1000; padding: 12px;
-      opacity: 0; transition: opacity 0.3s ease;
-    }
+    .winners-actions { display: flex; gap: 6px; margin-top: 10px; }
+    .winners-actions button { flex: 1; min-width: 0; padding: 9px 6px; font-size: 0.78rem; }
+    .groups-toolbar { display: flex; gap: 6px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
+    .groups-toolbar label { font-size: 0.8rem; white-space: nowrap; }
+    .groups-toolbar input[type="number"] { width: 60px; padding: 8px; background: rgba(11,15,25,0.7); border: 1px solid var(--surface-border); color: #fff; border-radius: 8px; font-size: 16px; }
+    .groups-toolbar button { min-height: 40px; padding: 8px 14px; font-size: 0.85rem; margin-left: auto; }
+    #groupsGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; max-height: 220px; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+    .group-card { background: rgba(11,15,25,0.6); border: 1px solid var(--surface-border); border-radius: 8px; padding: 8px; }
+    .group-card h4 { border-bottom: 1px solid var(--surface-border); padding-bottom: 3px; font-size: 0.78rem; color: var(--accent); margin-bottom: 4px; }
+    .group-card ul { list-style: none; font-size: 0.76rem; }
+    .group-card ul li { overflow-wrap: anywhere; }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: calc(10px + var(--safe-top)) calc(10px + var(--safe-right)) calc(10px + var(--safe-bottom)) calc(10px + var(--safe-left)); opacity: 0; transition: opacity 0.25s ease; }
     .modal-overlay.open { display: flex; opacity: 1; }
-    .modal { 
-      background: var(--surface-solid); border: 1px solid var(--surface-border); border-radius: var(--radius);
-      width: 100%; max-width: 500px; padding: 16px; max-height: 92vh; overflow-y: auto;
-      transform: scale(0.95); transition: transform 0.3s ease;
-    }
+    .modal { background: var(--surface-solid); border: 1px solid var(--surface-border); border-radius: var(--radius); width: 100%; max-width: 500px; padding: 14px; max-height: calc(100dvh - 20px - var(--safe-top) - var(--safe-bottom)); overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; transform: scale(0.95); transition: transform 0.25s ease; }
     .modal-overlay.open .modal { transform: scale(1); }
-
-    textarea, input[type="text"] {
-      width: 100%; background: rgba(11, 15, 25, 0.7); border: 1px solid var(--surface-border);
-      border-radius: 10px; color: var(--text); padding: 10px; font-size: 0.88rem; outline: none; margin: 6px 0;
-    }
-    textarea { height: 120px; resize: vertical; }
-    textarea:focus, input[type="text"]:focus { border-color: var(--primary); }
-
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px; }
+    .modal-header h3 { font-size: 0.95rem; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    textarea, input[type="text"], input[type="number"], select { width: 100%; background: rgba(11,15,25,0.7); border: 1px solid var(--surface-border); border-radius: 10px; color: var(--text); padding: 10px; font-size: 16px; outline: none; margin: 6px 0; -webkit-appearance: none; appearance: none; }
+    textarea { height: 120px; resize: vertical; font-family: inherit; }
+    textarea:focus, input:focus, select:focus { border-color: var(--primary); }
     .btn-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 8px; }
-
-    @keyframes pulseGlow { from { box-shadow: 0 0 10px rgba(16, 185, 129, 0.2); } to { box-shadow: 0 0 25px rgba(16, 185, 129, 0.5); } }
+    .btn-grid button { padding: 10px 6px; font-size: 0.78rem; }
+    .class-toolbar { background: rgba(11,15,25,0.6); padding: 10px; border-radius: 10px; border: 1px solid var(--surface-border); margin-bottom: 10px; }
+    .class-toolbar .row { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+    .class-toolbar select { flex: 1 1 120px; margin: 0; }
+    .class-toolbar button { flex-shrink: 0; }
+    @keyframes pulseGlow { from { box-shadow: 0 0 10px rgba(16,185,129,0.2); } to { box-shadow: 0 0 25px rgba(16,185,129,0.5); } }
     @keyframes victoryShake { 0%, 100% { transform: scale(1); } 20% { transform: scale(1.05) rotate(-2deg); } 40% { transform: scale(1.05) rotate(2deg); } }
+    @media (max-width: 480px) {
+      .hide-xs { display: none; }
+      .show-xs { display: inline; }
+      header { padding: 7px 9px; }
+      .status-badge { display: none; }
+      .display-box { min-height: 115px; padding: 12px; }
+      .winners-actions button { font-size: 0.72rem; padding: 8px 4px; }
+    }
+    @media (max-width: 360px) {
+      .tab-item { font-size: 0.75rem; padding: 8px 6px; }
+      .btn-grid button { font-size: 0.72rem; }
+      .winners-actions { flex-wrap: wrap; }
+      .winners-actions button { flex: 1 1 calc(50% - 3px); }
+    }
+    @media (max-height: 500px) and (orientation: landscape) {
+      .display-box { min-height: 90px; padding: 10px; }
+      .winner-text { font-size: 1.25rem; }
+      .btn-main { min-height: 46px; font-size: 1rem; }
+      header { margin-bottom: 8px; }
+    }
   </style>
   <script src="xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -204,9 +144,12 @@
       <span>🎲 Randomizer Pro</span>
       <span class="status-badge">⚡ Offline</span>
     </div>
-    <div style="display:flex; gap:6px;">
-      <button onclick="toggleFullScreen()" class="btn-secondary" style="padding:6px 10px;">📺</button>
-      <button onclick="openSettings()" class="btn-secondary">⚙️ Kelola Data / Kelas</button>
+    <div class="header-actions">
+      <button onclick="toggleFullScreen()" class="btn-secondary" title="Fullscreen" aria-label="Fullscreen">📺</button>
+      <button onclick="openSettings()" class="btn-secondary" aria-label="Kelola Data">
+        <span class="hide-xs">⚙️ Kelola Data / Kelas</span>
+        <span class="show-xs">⚙️ Kelola</span>
+      </button>
     </div>
   </header>
 
@@ -216,12 +159,10 @@
         <div class="winner-text" id="winnerText">Siap Mengacak</div>
         <div class="winner-sub" id="winnerSub">Tekan tombol di bawah untuk memilih nama</div>
       </div>
-
       <button onclick="pickWinner()" class="btn-main">🎯 ACAK NAMA NOW</button>
-
       <div class="quick-options">
         <label><input type="checkbox" id="removeOnPick"> 🚫 Jangan ulangi nama terpilih</label>
-        <button onclick="resetOriginalData()" class="btn-secondary" style="font-size: 0.75rem; padding: 4px 8px;">🔄 Restore Data</button>
+        <button onclick="resetOriginalData()" class="btn-secondary">🔄 Restore Data</button>
       </div>
     </section>
 
@@ -230,73 +171,61 @@
         <div class="tab-item active" onclick="switchTab('tabWinners', this)">🏆 Terpilih</div>
         <div class="tab-item" onclick="switchTab('tabGroups', this)">👥 Bagi Kelompok</div>
       </div>
-
       <div id="tabWinners">
         <ul class="list-container" id="winnersList"></ul>
-        <div style="display: flex; gap: 8px; margin-top: 10px;">
-          <button onclick="shareToWhatsApp()" class="btn-secondary" style="flex:1;">💬 Share WA</button>
+        <div class="winners-actions">
+          <button onclick="shareToWhatsApp()" class="btn-secondary">💬 Share WA</button>
           <button onclick="exportWinnersExcel()" class="btn-secondary">📊 Excel</button>
           <button onclick="clearWinnersHistory()" class="btn-danger">🗑️ Hapus</button>
         </div>
       </div>
-
       <div id="tabGroups" style="display:none;">
-        <div style="display:flex; gap:6px; align-items:center; margin-bottom:10px;">
-          <label style="font-size:0.8rem; white-space:nowrap;">Jumlah Kelompok:</label>
-          <input type="number" id="groupCount" min="2" value="3" style="width:50px; padding:6px; background:rgba(11,15,25,0.7); border:1px solid var(--surface-border); color:#fff; border-radius:6px; font-size:0.85rem;">
-          <button onclick="generateGroups()" class="btn-main" style="width:auto; min-height:36px; font-size:0.85rem;">Bagi</button>
+        <div class="groups-toolbar">
+          <label>Jumlah Kelompok:</label>
+          <input type="number" id="groupCount" min="2" value="3">
+          <button onclick="generateGroups()">Bagi</button>
         </div>
-        <div id="groupsGrid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap:8px; max-height:200px; overflow-y:auto;"></div>
+        <div id="groupsGrid"></div>
       </div>
     </section>
   </main>
 
-  <!-- MODAL PENGATURAN & KELOLA KELAS -->
   <div class="modal-overlay" id="settingsModal">
     <div class="modal">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-        <h3 style="font-size:1rem;">⚙️ Kelola Data & Sesi Kelas</h3>
-        <button onclick="closeSettings()" class="btn-secondary" style="padding:4px 8px;">✕ Tutup</button>
+      <div class="modal-header">
+        <h3>⚙️ Kelola Data & Sesi Kelas</h3>
+        <button onclick="closeSettings()" class="btn-secondary" style="padding:5px 10px;">✕ Tutup</button>
       </div>
-
-      <!-- TABS PENGATURAN -->
       <div class="tabs" style="margin-bottom:10px;">
         <div class="tab-item active" onclick="switchModalTab('mTabClass', this)">🏫 Kelola Kelas</div>
         <div class="tab-item" onclick="switchModalTab('mTabInput', this)">📝 Input Manual</div>
       </div>
-
-      <!-- TAB 1: KELOLA KELAS -->
       <div id="mTabClass">
-        <div style="background:rgba(11,15,25,0.6); padding:10px; border-radius:10px; border:1px solid var(--surface-border); margin-bottom:10px;">
+        <div class="class-toolbar">
           <label style="font-size:0.8rem; color:var(--text-muted);">Pilih / Tambah Kelas Baru:</label>
-          <div style="display:flex; gap:6px; margin-top:4px;">
-            <select id="classSelect" onchange="loadClassStudents()" style="flex:1; padding:8px; background:rgba(11,15,25,0.8); color:#fff; border:1px solid var(--surface-border); border-radius:8px; font-size:0.85rem;">
+          <div class="row">
+            <select id="classSelect" onchange="loadClassStudents()">
               <option value="">-- Pilih Kelas --</option>
             </select>
             <button onclick="addNewClass()" class="btn-secondary">➕ Buat Kelas</button>
-            <button onclick="deleteCurrentClass()" class="btn-danger" style="padding:6px 10px;">🗑️</button>
+            <button onclick="deleteCurrentClass()" class="btn-danger" style="padding:6px 10px;" aria-label="Hapus kelas">🗑️</button>
           </div>
         </div>
-
         <div id="classEditor" style="display:none;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:4px;">
             <span style="font-size:0.8rem; color:var(--text-muted);">Daftar Siswa Kelas Ini:</span>
             <strong id="classStudentCount" style="font-size:0.8rem; color:var(--accent);">0 Siswa</strong>
           </div>
           <textarea id="classStudentsInput" oninput="saveClassStudents()" placeholder="Ketik nama-nama siswa (1 baris 1 siswa)"></textarea>
-          
-          <button onclick="applyClassToMain()" class="btn-main" style="min-height:42px; font-size:0.9rem; margin-top:8px;">🚀 Muat ke Pengacak Utama</button>
+          <button onclick="applyClassToMain()" class="btn-main" style="min-height:44px; font-size:0.9rem; margin-top:8px;">🚀 Muat ke Pengacak Utama</button>
         </div>
       </div>
-
-      <!-- TAB 2: INPUT MANUAL UTAMA -->
       <div id="mTabInput" style="display:none;">
-        <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; color:var(--text-muted);">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; font-size:0.8rem; color:var(--text-muted);">
           <span>Data Pengacak Saat Ini:</span>
-          <strong id="itemCount" style="color:var(--accent);">Total: 0 Peserta</strong>
+          <strong id="itemCount" style="color:var(--accent); white-space:nowrap;">Total: 0 Peserta</strong>
         </div>
         <textarea id="dataInput" oninput="updateItemCount(); saveCurrentSession();" placeholder="Ahmad&#10;Budi&#10;Siti&#10;-Joko (Awalan - = Skip/Absen)"></textarea>
-
         <div class="btn-grid">
           <button onclick="shuffleData()" class="btn-secondary">🔀 Kocok Baris</button>
           <button onclick="sortData()" class="btn-secondary">🔤 Urut A-Z</button>
@@ -305,15 +234,14 @@
         </div>
         <input type="file" id="excelInput" accept=".xlsx, .xls" style="display:none" onchange="importExcelData(event)">
       </div>
-
       <hr style="border:0; border-top:1px solid var(--surface-border); margin:12px 0;">
-
-      <!-- PENGATURAN UMUM -->
       <div style="display:flex; flex-direction:column; gap:8px; font-size:0.82rem;">
-        <label><input type="checkbox" id="soundToggle" checked> Aktifkan Suara Beep & Fanfare</label>
+        <label style="display:flex; align-items:center; gap:8px;">
+          <input type="checkbox" id="soundToggle" checked> Aktifkan Suara Beep & Fanfare
+        </label>
         <div>
           <label style="color:var(--text-muted);">Durasi Roll Animasi (Detik):</label>
-          <input type="number" id="rollDuration" value="2.5" step="0.5" min="1" style="width:100%; padding:6px; margin-top:2px; background:rgba(11,15,25,0.7); border:1px solid var(--surface-border); color:#fff; border-radius:6px;">
+          <input type="number" id="rollDuration" value="2.5" step="0.5" min="1">
         </div>
       </div>
     </div>
@@ -341,7 +269,8 @@
     }
 
     function playBeep(freq = 400, type = 'sine', duration = 0.05) {
-      if (!document.getElementById('soundToggle').checked) return;
+      const toggle = document.getElementById('soundToggle');
+      if (toggle && !toggle.checked) return;
       try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
         const osc = ctx.createOscillator();
@@ -355,7 +284,8 @@
     }
 
     function playFanfare() {
-      if (!document.getElementById('soundToggle').checked) return;
+      const toggle = document.getElementById('soundToggle');
+      if (toggle && !toggle.checked) return;
       const notes = [261, 329, 392, 523, 659];
       notes.forEach((freq, i) => setTimeout(() => playBeep(freq, 'triangle', 0.18), i * 90));
     }
@@ -409,7 +339,7 @@
           displayBox.className = 'display-box winner-found';
           wText.innerText = winner;
           wSub.innerText = "🎉 Terpilih!";
-          
+
           playFanfare();
           triggerVibration([100, 50, 200]);
 
@@ -464,7 +394,7 @@
       if (winnersList.length === 0) return alert("Belum ada pemenang yang terpilih!");
       let text = "*🏆 DAFTAR PEMENANG TERPILIH 🏆*\n\n";
       winnersList.forEach((w, i) => { text += `${i+1}. ${w.name} (${w.time})\n`; });
-      
+
       if (navigator.share) {
         navigator.share({ title: 'Hasil Pengacak', text: text });
       } else {
@@ -480,7 +410,6 @@
       }
     }
 
-    /* ================= MANAJEMEN KELAS (MANAGE CLASSES) ================= */
     function loadClassesList() {
       const tx = db.transaction('classes', 'readonly');
       const store = tx.objectStore('classes');
@@ -586,7 +515,6 @@
       el.classList.add('active');
     }
 
-    /* ================= KELOMPOK, SHUFFLE & EXCEL ================= */
     function shuffleData() {
       let items = getDataList();
       for (let i = items.length - 1; i > 0; i--) {
@@ -625,9 +553,9 @@
 
       const grid = document.getElementById('groupsGrid');
       grid.innerHTML = groups.map((g, i) => `
-        <div style="background:rgba(11,15,25,0.6); border:1px solid var(--surface-border); border-radius:8px; padding:8px;">
-          <h4 style="border-bottom:1px solid var(--surface-border); padding-bottom:2px; font-size:0.8rem; color:var(--accent);">Kelompok ${i + 1} (${g.length})</h4>
-          <ul style="list-style:none; font-size:0.78rem; margin-top:4px;">${g.map(name => `<li>• ${name}</li>`).join('')}</ul>
+        <div class="group-card">
+          <h4>Kelompok ${i + 1} (${g.length})</h4>
+          <ul>${g.map(name => `<li>• ${name}</li>`).join('')}</ul>
         </div>
       `).join('');
     }
@@ -675,7 +603,7 @@
     function switchTab(tabId, el) {
       document.getElementById('tabWinners').style.display = tabId === 'tabWinners' ? 'block' : 'none';
       document.getElementById('tabGroups').style.display = tabId === 'tabGroups' ? 'block' : 'none';
-      document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+      el.parentElement.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
       el.classList.add('active');
     }
 
