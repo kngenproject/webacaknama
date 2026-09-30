@@ -2,7 +2,7 @@
    Strategi: HTML network-first, asset stale-while-revalidate */
 
 const VERSION = 'v19';
-const CACHE = 'randomizer-pro-' + VERSION + VERSION + VERSION + VERSION + VERSION + VERSION + VERSION + VERSION + VERSION + VERSION;
+const CACHE = 'randomizer-pro-' + VERSION;
 const CORE = [
   './',
   './index.html',
