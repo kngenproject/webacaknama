@@ -37,8 +37,7 @@
       background-attachment: fixed;
       color: var(--text);
       padding: calc(8px + var(--safe-top)) calc(8px + var(--safe-right)) calc(8px + var(--safe-bottom)) calc(8px + var(--safe-left));
-      min-height: 100vh;
-      min-height: 100dvh;
+      min-height: 100vh; min-height: 100dvh;
       display: flex; flex-direction: column; align-items: center;
       font-size: 16px; line-height: 1.35;
       -webkit-font-smoothing: antialiased;
@@ -66,14 +65,19 @@
     .display-box { background: linear-gradient(180deg, rgba(15,23,42,0.8) 0%, rgba(11,15,25,0.9) 100%); border: 2px dashed rgba(99,102,241,0.4); border-radius: var(--radius); min-height: 130px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 14px; margin-bottom: 12px; transition: all 0.3s ease; overflow: hidden; }
     .display-box.rolling { border-color: var(--accent); box-shadow: 0 0 25px rgba(16,185,129,0.3); animation: pulseGlow 0.8s infinite alternate; }
     .display-box.winner-found { border-color: var(--gold); box-shadow: 0 0 30px rgba(245,158,11,0.4); animation: victoryShake 0.4s ease-in-out; }
-    .winner-text { font-size: clamp(1.3rem, 6.5vw, 1.8rem); font-weight: 800; color: #fff; word-break: break-word; overflow-wrap: anywhere; line-height: 1.2; width: 100%; }
+    .display-box.multi { align-items: center; justify-content: flex-start; padding: 12px 14px; max-height: 220px; overflow-y: auto; }
+    .winner-text { font-size: clamp(1.3rem, 6.5vw, 1.8rem); font-weight: 800; color: #fff; word-break: break-word; overflow-wrap: anywhere; line-height: 1.25; width: 100%; text-align: center; }
+    .winner-line { font-size: clamp(0.95rem, 4vw, 1.15rem); margin: 3px 0; padding: 3px 0; border-bottom: 1px dashed rgba(255,255,255,0.08); }
+    .winner-line:last-child { border-bottom: 0; }
     .winner-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 6px; }
     .btn-main { background: var(--accent-gradient); color: #fff; border: none; min-height: 52px; padding: 12px; border-radius: 14px; font-weight: 800; font-size: 1.05rem; cursor: pointer; width: 100%; box-shadow: 0 6px 20px rgba(16,185,129,0.35); transition: transform 0.15s ease; display: flex; align-items: center; justify-content: center; gap: 8px; touch-action: manipulation; }
     .btn-main:active { transform: scale(0.96); }
-    .quick-options { display: flex; justify-content: space-between; align-items: center; gap: 8px; background: rgba(11,15,25,0.6); padding: 8px 10px; border-radius: 10px; border: 1px solid var(--surface-border); font-size: 0.78rem; margin-top: 10px; flex-wrap: wrap; }
-    .quick-options label { display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--text); min-width: 0; flex: 1 1 auto; }
-    .quick-options label input { flex-shrink: 0; }
-    .quick-options button { font-size: 0.72rem !important; padding: 5px 8px !important; flex-shrink: 0; }
+    .quick-options { display: flex; flex-wrap: wrap; gap: 6px; background: rgba(11,15,25,0.6); padding: 8px 10px; border-radius: 10px; border: 1px solid var(--surface-border); font-size: 0.78rem; margin-top: 10px; justify-content: center; }
+    .quick-options label { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; color: var(--text); padding: 4px 8px; border-radius: 6px; background: rgba(255,255,255,0.04); white-space: nowrap; user-select: none; }
+    .quick-options label input[type="checkbox"] { flex-shrink: 0; width: 16px; height: 16px; accent-color: var(--accent); }
+    .quick-options label input[type="number"] { width: 52px; padding: 3px 5px; margin: 0; font-size: 15px; text-align: center; background: rgba(11,15,25,0.8); border-radius: 6px; border: 1px solid var(--surface-border); color: #fff; }
+    .quick-actions { display: flex; gap: 6px; margin-top: 8px; }
+    .quick-actions button { flex: 1; font-size: 0.78rem; padding: 9px 6px; }
     .tabs { display: flex; border-bottom: 1px solid var(--surface-border); margin-bottom: 10px; overflow-x: auto; scrollbar-width: none; }
     .tabs::-webkit-scrollbar { display: none; }
     .tab-item { padding: 8px 10px; cursor: pointer; border-bottom: 2px solid transparent; color: var(--text-muted); font-weight: 700; font-size: 0.82rem; flex: 1; text-align: center; white-space: nowrap; transition: color 0.2s, border-color 0.2s; }
@@ -82,7 +86,9 @@
     .list-item { background: rgba(11,15,25,0.6); padding: 9px 11px; border-radius: 8px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 0.84rem; border: 1px solid rgba(255,255,255,0.05); word-break: break-word; }
     .list-item > span { min-width: 0; overflow-wrap: anywhere; }
     .list-item small { flex-shrink: 0; }
+    .list-item.prize { border-left: 3px solid var(--gold); }
     button { background: var(--primary-gradient); color: #fff; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; font-size: 0.82rem; touch-action: manipulation; white-space: nowrap; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
     button.btn-secondary { background: rgba(255,255,255,0.08); border: 1px solid var(--surface-border); color: var(--text); }
     button.btn-danger { background: var(--danger-gradient); }
     .winners-actions { display: flex; gap: 6px; margin-top: 10px; }
@@ -111,6 +117,9 @@
     .class-toolbar .row { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
     .class-toolbar select { flex: 1 1 120px; margin: 0; }
     .class-toolbar button { flex-shrink: 0; }
+    .settings-row { display: flex; flex-direction: column; gap: 8px; font-size: 0.82rem; }
+    .settings-row label { display: flex; align-items: center; gap: 8px; }
+    .hint { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
     @keyframes pulseGlow { from { box-shadow: 0 0 10px rgba(16,185,129,0.2); } to { box-shadow: 0 0 25px rgba(16,185,129,0.5); } }
     @keyframes victoryShake { 0%, 100% { transform: scale(1); } 20% { transform: scale(1.05) rotate(-2deg); } 40% { transform: scale(1.05) rotate(2deg); } }
     @media (max-width: 480px) {
@@ -120,6 +129,8 @@
       .status-badge { display: none; }
       .display-box { min-height: 115px; padding: 12px; }
       .winners-actions button { font-size: 0.72rem; padding: 8px 4px; }
+      .quick-options { font-size: 0.72rem; padding: 7px 8px; }
+      .quick-options label { padding: 3px 6px; }
     }
     @media (max-width: 360px) {
       .tab-item { font-size: 0.75rem; padding: 8px 6px; }
@@ -160,8 +171,23 @@
         <div class="winner-sub" id="winnerSub">Tekan tombol di bawah untuk memilih nama</div>
       </div>
       <button onclick="pickWinner()" class="btn-main">🎯 ACAK NAMA NOW</button>
+
       <div class="quick-options">
-        <label><input type="checkbox" id="removeOnPick"> 🚫 Jangan ulangi nama terpilih</label>
+        <label title="Jumlah pemenang yang diambil sekaligus">
+          🎯 <input type="number" id="winnerCount" min="1" value="1"> pemenang
+        </label>
+        <label title="Nomor hadiah + otomatis hapus peserta terpilih">
+          <input type="checkbox" id="doorprizeMode"> 🎟️ Doorprize
+        </label>
+        <label title="Hapus nama dari daftar setelah terpilih">
+          <input type="checkbox" id="removeOnPick"> 🚫 No repeat
+        </label>
+        <label title="Bacakan nama pemenang dengan suara">
+          <input type="checkbox" id="ttsToggle" checked> 🔊 Suara
+        </label>
+      </div>
+      <div class="quick-actions">
+        <button onclick="undoLast()" class="btn-secondary" id="undoBtn" disabled>↩️ Undo Terakhir</button>
         <button onclick="resetOriginalData()" class="btn-secondary">🔄 Restore Data</button>
       </div>
     </section>
@@ -225,7 +251,8 @@
           <span>Data Pengacak Saat Ini:</span>
           <strong id="itemCount" style="color:var(--accent); white-space:nowrap;">Total: 0 Peserta</strong>
         </div>
-        <textarea id="dataInput" oninput="updateItemCount(); saveCurrentSession();" placeholder="Ahmad&#10;Budi&#10;Siti&#10;-Joko (Awalan - = Skip/Absen)"></textarea>
+        <textarea id="dataInput" oninput="updateItemCount(); saveCurrentSession();" placeholder="Ahmad&#10;Budi&#10;Siti&#10;-Joko (Awalan - = Absen/Skip)"></textarea>
+        <div class="hint">💡 Awali nama dengan tanda <b>-</b> untuk menandai siswa <b>absen</b> (tidak dihapus, hanya di-skip dari pengacakan).</div>
         <div class="btn-grid">
           <button onclick="shuffleData()" class="btn-secondary">🔀 Kocok Baris</button>
           <button onclick="sortData()" class="btn-secondary">🔤 Urut A-Z</button>
@@ -235,7 +262,7 @@
         <input type="file" id="excelInput" accept=".xlsx, .xls" style="display:none" onchange="importExcelData(event)">
       </div>
       <hr style="border:0; border-top:1px solid var(--surface-border); margin:12px 0;">
-      <div style="display:flex; flex-direction:column; gap:8px; font-size:0.82rem;">
+      <div class="settings-row">
         <label style="display:flex; align-items:center; gap:8px;">
           <input type="checkbox" id="soundToggle" checked> Aktifkan Suara Beep & Fanfare
         </label>
@@ -243,6 +270,11 @@
           <label style="color:var(--text-muted);">Durasi Roll Animasi (Detik):</label>
           <input type="number" id="rollDuration" value="2.5" step="0.5" min="1">
         </div>
+        <div>
+          <label style="color:var(--text-muted);">Nomor Hadiah Doorprize Berikutnya:</label>
+          <input type="number" id="doorprizeCounterInput" value="1" min="1">
+        </div>
+        <button onclick="resetDoorprizeCounter()" class="btn-secondary" style="width:100%;">🎟️ Reset Nomor Hadiah ke 1</button>
       </div>
     </div>
   </div>
@@ -251,7 +283,11 @@
     const DB_NAME = 'RandomizerProDB';
     const DB_VERSION = 2;
     let db, backupOriginalData = "";
+    let winnersList = [];
+    let undoStack = [];
+    let doorprizeCounter = parseInt(localStorage.getItem('randomizer_doorprize_counter') || '1');
 
+    /* ========== DB ========== */
     function initDB() {
       return new Promise((resolve, reject) => {
         const request = indexedDB.open(DB_NAME, DB_VERSION);
@@ -262,6 +298,11 @@
         request.onsuccess = (e) => { db = e.target.result; resolve(); };
         request.onerror = (e) => reject(e);
       });
+    }
+
+    /* ========== UTIL ========== */
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     }
 
     function triggerVibration(pattern = [50]) {
@@ -290,18 +331,92 @@
       notes.forEach((freq, i) => setTimeout(() => playBeep(freq, 'triangle', 0.18), i * 90));
     }
 
-    let winnersList = [];
+    /* ========== TTS VOICE ANNOUNCER ========== */
+    function speak(text) {
+      if (!('speechSynthesis' in window)) return;
+      const toggle = document.getElementById('ttsToggle');
+      if (toggle && !toggle.checked) return;
+      try {
+        speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'id-ID';
+        u.rate = 1; u.pitch = 1; u.volume = 1;
+        const voices = speechSynthesis.getVoices();
+        const idVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('id'));
+        if (idVoice) u.voice = idVoice;
+        speechSynthesis.speak(u);
+      } catch (e) {}
+    }
+    if ('speechSynthesis' in window) {
+      speechSynthesis.onvoiceschanged = () => {};
+      speechSynthesis.getVoices();
+    }
+
+    /* ========== DATA LIST & STATS ========== */
+    function getAllLines() {
+      return document.getElementById('dataInput').value
+        .split('\n').map(s => s.trim()).filter(s => s.length > 0);
+    }
 
     function getDataList() {
-      const text = document.getElementById('dataInput').value;
-      return text.split('\n').map(s => s.trim()).filter(s => s.length > 0 && !s.startsWith('-'));
+      return getAllLines().filter(s => !s.startsWith('-'));
+    }
+
+    function getStats() {
+      const all = getAllLines();
+      const hadir = all.filter(s => !s.startsWith('-')).length;
+      const absen = all.filter(s => s.startsWith('-')).length;
+      return { hadir, absen };
     }
 
     function updateItemCount() {
-      const count = getDataList().length;
-      document.getElementById('itemCount').innerText = `Total: ${count} Peserta`;
+      const { hadir, absen } = getStats();
+      const el = document.getElementById('itemCount');
+      if (absen > 0) {
+        el.innerText = `Hadir: ${hadir} | Absen: ${absen}`;
+      } else {
+        el.innerText = `Total: ${hadir} Peserta`;
+      }
     }
 
+    /* ========== UNDO STACK ========== */
+    function pushUndo() {
+      undoStack.push({
+        dataInput: document.getElementById('dataInput').value,
+        winnersList: JSON.parse(JSON.stringify(winnersList)),
+        doorprizeCounter: doorprizeCounter
+      });
+      if (undoStack.length > 30) undoStack.shift();
+      updateUndoButton();
+    }
+
+    function updateUndoButton() {
+      const btn = document.getElementById('undoBtn');
+      if (!btn) return;
+      btn.disabled = undoStack.length === 0;
+    }
+
+    function undoLast() {
+      if (undoStack.length === 0) return alert("Tidak ada aksi untuk dibatalkan");
+      const snap = undoStack.pop();
+      document.getElementById('dataInput').value = snap.dataInput;
+      winnersList = snap.winnersList;
+      doorprizeCounter = snap.doorprizeCounter;
+      localStorage.setItem('randomizer_doorprize_counter', doorprizeCounter);
+      const ci = document.getElementById('doorprizeCounterInput');
+      if (ci) ci.value = doorprizeCounter;
+      updateItemCount();
+      renderWinnersUI();
+      saveCurrentSession();
+      const db = document.getElementById('displayBox');
+      db.className = 'display-box';
+      document.getElementById('winnerText').innerText = "Undo berhasil";
+      document.getElementById('winnerSub').innerText = "Aksi terakhir dibatalkan";
+      triggerVibration([40, 40]);
+      updateUndoButton();
+    }
+
+    /* ========== PICK WINNER ========== */
     function pickWinner() {
       const items = getDataList();
       if (items.length === 0) {
@@ -311,7 +426,18 @@
         return;
       }
 
-      if(!backupOriginalData) backupOriginalData = document.getElementById('dataInput').value;
+      // Simpan snapshot untuk undo
+      pushUndo();
+
+      if (!backupOriginalData) backupOriginalData = document.getElementById('dataInput').value;
+
+      const doorprize = document.getElementById('doorprizeMode').checked;
+      const removeOnPickEl = document.getElementById('removeOnPick');
+      const removeOnPick = removeOnPickEl.checked || doorprize;
+
+      let nWinners = parseInt(document.getElementById('winnerCount').value) || 1;
+      if (nWinners < 1) nWinners = 1;
+      if (nWinners > items.length) nWinners = items.length;
 
       const duration = parseFloat(document.getElementById('rollDuration').value) * 1000 || 2500;
       const intervalTime = 60;
@@ -322,7 +448,7 @@
       const wSub = document.getElementById('winnerSub');
 
       displayBox.className = 'display-box rolling';
-      wSub.innerText = "Mengacak nama...";
+      wSub.innerText = nWinners > 1 ? `Mengacak ${nWinners} pemenang...` : "Mengacak nama...";
       triggerVibration([30]);
 
       const timer = setInterval(() => {
@@ -333,27 +459,69 @@
 
         if (elapsed >= duration) {
           clearInterval(timer);
-          const winnerIndex = Math.floor(Math.random() * items.length);
-          const winner = items[winnerIndex];
 
-          displayBox.className = 'display-box winner-found';
-          wText.innerText = winner;
-          wSub.innerText = "🎉 Terpilih!";
+          // Ambil N pemenang unik
+          const pool = [...items];
+          const winners = [];
+          for (let i = 0; i < nWinners; i++) {
+            const idx = Math.floor(Math.random() * pool.length);
+            winners.push(pool.splice(idx, 1)[0]);
+          }
+
+          displayBox.className = nWinners > 1 ? 'display-box winner-found multi' : 'display-box winner-found';
+
+          if (nWinners === 1) {
+            wText.innerText = winners[0];
+          } else {
+            wText.innerHTML = winners.map((w, i) =>
+              `<div class="winner-line">${i + 1}. ${escapeHtml(w)}</div>`
+            ).join('');
+          }
+          wSub.innerText = nWinners > 1 ? `🎉 ${nWinners} Pemenang Terpilih!` : "🎉 Terpilih!";
 
           playFanfare();
           triggerVibration([100, 50, 200]);
 
-          addWinnerRecord(winner);
-          if (document.getElementById('removeOnPick').checked) removePickedItem(winner);
+          // TTS bacakan
+          let speechText = '';
+          if (winners.length === 1) {
+            speechText = `Pemenangnya adalah, ${winners[0]}`;
+          } else {
+            speechText = `Pemenangnya adalah, ${winners.slice(0, -1).join(', ')}, dan ${winners[winners.length - 1]}`;
+          }
+          speak(speechText);
 
-          if (typeof confetti === 'function') confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+          // Catat ke riwayat
+          winners.forEach((w) => {
+            let prizeNum = null;
+            if (doorprize) {
+              prizeNum = doorprizeCounter++;
+            }
+            addWinnerRecord(w, prizeNum);
+          });
+          if (doorprize) {
+            localStorage.setItem('randomizer_doorprize_counter', doorprizeCounter);
+            const ci = document.getElementById('doorprizeCounterInput');
+            if (ci) ci.value = doorprizeCounter;
+          }
+
+          // Hapus nama terpilih dari daftar
+          if (removeOnPick) {
+            winners.forEach(w => removePickedItem(w));
+          }
+
+          if (typeof confetti === 'function') {
+            confetti({ particleCount: nWinners > 1 ? 200 : 120, spread: 80, origin: { y: 0.6 } });
+          }
+
+          updateUndoButton();
         }
       }, intervalTime);
     }
 
     function removePickedItem(item) {
-      let lines = document.getElementById('dataInput').value.split('\n');
-      let idx = lines.findIndex(l => l.trim() === item);
+      const lines = document.getElementById('dataInput').value.split('\n');
+      const idx = lines.findIndex(l => l.trim() === item);
       if (idx !== -1) {
         lines.splice(idx, 1);
         document.getElementById('dataInput').value = lines.join('\n');
@@ -364,44 +532,73 @@
 
     function resetOriginalData() {
       if (backupOriginalData) {
+        if (!confirm("Kembalikan daftar nama ke kondisi awal?")) return;
+        pushUndo();
         document.getElementById('dataInput').value = backupOriginalData;
         updateItemCount();
         saveCurrentSession();
         triggerVibration([50, 50]);
-        alert("Daftar nama dikembalikan!");
+      } else {
+        alert("Belum ada backup. Backup otomatis dibuat saat pengacakan pertama.");
       }
     }
 
-    function addWinnerRecord(name) {
-      const record = { name, time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) };
+    /* ========== WINNERS LIST ========== */
+    function addWinnerRecord(name, prizeNum) {
+      const record = {
+        name,
+        time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+        prize: prizeNum || null
+      };
       winnersList.unshift(record);
       renderWinnersUI();
     }
 
     function renderWinnersUI() {
       const container = document.getElementById('winnersList');
-      container.innerHTML = winnersList.map((w, i) => `
-        <li class="list-item">
-          <span><strong>#${winnersList.length - i}</strong> ${w.name}</span>
-          <small style="color:var(--text-muted);">${w.time}</small>
-        </li>
-      `).join('');
+      if (winnersList.length === 0) {
+        container.innerHTML = '<li class="list-item" style="justify-content:center;color:var(--text-muted);font-size:0.78rem;">Belum ada pemenang. Tekan tombol ACAK.</li>';
+        return;
+      }
+      container.innerHTML = winnersList.map((w, i) => {
+        const badge = w.prize
+          ? `🎟️ <strong style="color:var(--gold);">Hadiah #${w.prize}</strong> — `
+          : `<strong>#${winnersList.length - i}</strong> `;
+        const cls = w.prize ? 'list-item prize' : 'list-item';
+        return `
+          <li class="${cls}">
+            <span>${badge}${escapeHtml(w.name)}</span>
+            <small style="color:var(--text-muted);">${w.time}</small>
+          </li>`;
+      }).join('');
     }
 
-    function clearWinnersHistory() { winnersList = []; renderWinnersUI(); }
+    function clearWinnersHistory() {
+      if (winnersList.length === 0) return;
+      if (!confirm("Hapus semua riwayat pemenang?")) return;
+      pushUndo();
+      winnersList = [];
+      renderWinnersUI();
+    }
 
     function shareToWhatsApp() {
       if (winnersList.length === 0) return alert("Belum ada pemenang yang terpilih!");
       let text = "*🏆 DAFTAR PEMENANG TERPILIH 🏆*\n\n";
-      winnersList.forEach((w, i) => { text += `${i+1}. ${w.name} (${w.time})\n`; });
-
+      winnersList.forEach((w) => {
+        if (w.prize) {
+          text += `🎟️ Hadiah #${w.prize}: ${w.name} (${w.time})\n`;
+        } else {
+          text += `• ${w.name} (${w.time})\n`;
+        }
+      });
       if (navigator.share) {
-        navigator.share({ title: 'Hasil Pengacak', text: text });
+        navigator.share({ title: 'Hasil Pengacak', text });
       } else {
         window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
       }
     }
 
+    /* ========== FULLSCREEN ========== */
     function toggleFullScreen() {
       if (!document.fullscreenElement) {
         document.documentElement.requestFullscreen().catch(() => {});
@@ -410,6 +607,7 @@
       }
     }
 
+    /* ========== KELOLA KELAS ========== */
     function loadClassesList() {
       const tx = db.transaction('classes', 'readonly');
       const store = tx.objectStore('classes');
@@ -418,7 +616,10 @@
         const select = document.getElementById('classSelect');
         select.innerHTML = '<option value="">-- Pilih Kelas --</option>';
         req.result.forEach(c => {
-          select.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+          const opt = document.createElement('option');
+          opt.value = c.id;
+          opt.textContent = c.name;
+          select.appendChild(opt);
         });
       };
     }
@@ -441,15 +642,10 @@
     function loadClassStudents() {
       const id = document.getElementById('classSelect').value;
       const editor = document.getElementById('classEditor');
-      if (!id) {
-        editor.style.display = 'none';
-        return;
-      }
+      if (!id) { editor.style.display = 'none'; return; }
       editor.style.display = 'block';
-
       const tx = db.transaction('classes', 'readonly');
-      const store = tx.objectStore('classes');
-      const req = store.get(id);
+      const req = tx.objectStore('classes').get(id);
       req.onsuccess = () => {
         if (req.result) {
           document.getElementById('classStudentsInput').value = req.result.students || "";
@@ -462,10 +658,8 @@
       const id = document.getElementById('classSelect').value;
       if (!id) return;
       const students = document.getElementById('classStudentsInput').value;
-
       const tx = db.transaction('classes', 'readonly');
-      const store = tx.objectStore('classes');
-      const req = store.get(id);
+      const req = tx.objectStore('classes').get(id);
       req.onsuccess = () => {
         if (req.result) {
           const item = req.result;
@@ -499,6 +693,7 @@
     function applyClassToMain() {
       const students = document.getElementById('classStudentsInput').value;
       if (!students.trim()) return alert("Daftar siswa kelas ini masih kosong!");
+      pushUndo();
       document.getElementById('dataInput').value = students;
       backupOriginalData = students;
       updateItemCount();
@@ -515,18 +710,21 @@
       el.classList.add('active');
     }
 
+    /* ========== KELOMPOK / SHUFFLE / EXCEL ========== */
     function shuffleData() {
       let items = getDataList();
       for (let i = items.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [items[i], items[j]] = [items[j], items[i]];
       }
+      pushUndo();
       document.getElementById('dataInput').value = items.join('\n');
       saveCurrentSession();
     }
 
     function sortData() {
       let items = getDataList().sort((a, b) => a.localeCompare(b));
+      pushUndo();
       document.getElementById('dataInput').value = items.join('\n');
       saveCurrentSession();
     }
@@ -537,6 +735,7 @@
       if (isNaN(start) || isNaN(end) || start >= end) return;
       let list = [];
       for (let i = start; i <= end; i++) list.push(`Kupon #${i}`);
+      pushUndo();
       document.getElementById('dataInput').value = list.join('\n');
       updateItemCount();
       saveCurrentSession();
@@ -546,16 +745,14 @@
       const items = getDataList();
       const numGroups = parseInt(document.getElementById('groupCount').value);
       if (items.length === 0 || isNaN(numGroups) || numGroups < 1) return;
-
-      let shuffled = [...items].sort(() => 0.5 - Math.random());
-      let groups = Array.from({ length: numGroups }, () => []);
+      const shuffled = [...items].sort(() => 0.5 - Math.random());
+      const groups = Array.from({ length: numGroups }, () => []);
       shuffled.forEach((item, index) => groups[index % numGroups].push(item));
-
       const grid = document.getElementById('groupsGrid');
       grid.innerHTML = groups.map((g, i) => `
         <div class="group-card">
           <h4>Kelompok ${i + 1} (${g.length})</h4>
-          <ul>${g.map(name => `<li>• ${name}</li>`).join('')}</ul>
+          <ul>${g.map(name => `<li>• ${escapeHtml(name)}</li>`).join('')}</ul>
         </div>
       `).join('');
     }
@@ -571,8 +768,9 @@
         const workbook = XLSX.read(data, { type: 'array' });
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
         const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-        let names = [];
+        const names = [];
         json.forEach(row => { row.forEach(cell => { if (cell) names.push(cell.toString().trim()); }); });
+        pushUndo();
         document.getElementById('dataInput').value = names.join('\n');
         updateItemCount();
         saveCurrentSession();
@@ -582,14 +780,22 @@
 
     function exportWinnersExcel() {
       if (winnersList.length === 0) return alert("Belum ada riwayat pemenang!");
-      const data = winnersList.map((w, i) => ({ No: i + 1, Nama: w.name, Waktu: w.time }));
+      const data = winnersList.slice().reverse().map((w, i) => ({
+        No: i + 1,
+        Hadiah: w.prize ? `#${w.prize}` : '',
+        Nama: w.name,
+        Waktu: w.time
+      }));
       const ws = XLSX.utils.json_to_sheet(data);
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "Pemenang");
       XLSX.writeFile(wb, "Riwayat_Pemenang.xlsx");
     }
 
-    function saveCurrentSession() { localStorage.setItem('randomizer_last_session', document.getElementById('dataInput').value); }
+    /* ========== SESI ========== */
+    function saveCurrentSession() {
+      localStorage.setItem('randomizer_last_session', document.getElementById('dataInput').value);
+    }
 
     function loadLastSession() {
       const saved = localStorage.getItem('randomizer_last_session');
@@ -598,8 +804,19 @@
         backupOriginalData = saved;
         updateItemCount();
       }
+      const ci = document.getElementById('doorprizeCounterInput');
+      if (ci) ci.value = doorprizeCounter;
     }
 
+    function resetDoorprizeCounter() {
+      if (!confirm("Reset nomor hadiah ke 1?")) return;
+      doorprizeCounter = 1;
+      localStorage.setItem('randomizer_doorprize_counter', 1);
+      const ci = document.getElementById('doorprizeCounterInput');
+      if (ci) ci.value = 1;
+    }
+
+    /* ========== TABS ========== */
     function switchTab(tabId, el) {
       document.getElementById('tabWinners').style.display = tabId === 'tabWinners' ? 'block' : 'none';
       document.getElementById('tabGroups').style.display = tabId === 'tabGroups' ? 'block' : 'none';
@@ -607,13 +824,37 @@
       el.classList.add('active');
     }
 
-    function openSettings() { document.getElementById('settingsModal').classList.add('open'); }
-    function closeSettings() { document.getElementById('settingsModal').classList.remove('open'); }
+    /* ========== MODAL ========== */
+    function openSettings() {
+      const ci = document.getElementById('doorprizeCounterInput');
+      if (ci) ci.value = doorprizeCounter;
+      document.getElementById('settingsModal').classList.add('open');
+    }
+    function closeSettings() {
+      document.getElementById('settingsModal').classList.remove('open');
+    }
 
+    /* ========== INIT ========== */
     window.addEventListener('DOMContentLoaded', async () => {
+      // Saat doorprize dicentang, auto-centang no-repeat
+      document.getElementById('doorprizeMode').addEventListener('change', function() {
+        if (this.checked) document.getElementById('removeOnPick').checked = true;
+      });
+
+      // Simpan perubahan nomor hadiah dari settings
+      document.getElementById('doorprizeCounterInput').addEventListener('change', function() {
+        const v = parseInt(this.value);
+        if (!isNaN(v) && v >= 1) {
+          doorprizeCounter = v;
+          localStorage.setItem('randomizer_doorprize_counter', v);
+        }
+      });
+
       await initDB();
       loadClassesList();
       loadLastSession();
+      renderWinnersUI();
+      updateUndoButton();
       if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
     });
   </script>
