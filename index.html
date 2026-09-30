@@ -1916,79 +1916,7 @@ html.lite-mode canvas[style*="pointer-events"] {
 
 </style>
 
-<style id="responsive-patch">
-  /* Base Responsive & Layout Controls */
-  *, *::before, *::after {
-    box-sizing: border-box;
-  }
 
-  body {
-    overflow-x: hidden;
-    margin: 0;
-  }
-
-  /* Desktop Optimization */
-  @media (min-width: 769px) {
-    .container, .app-layout, main {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    .display-box {
-      min-height: 250px;
-      font-size: 2.2rem;
-    }
-    .btn-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 10px;
-    }
-  }
-
-  /* Mobile Optimization */
-  @media (max-width: 768px) {
-    .container, .app-layout, main {
-      width: 100%;
-      padding: 12px;
-    }
-
-    /* Ukuran Teks & Display Pemenang di HP */
-    .display-box {
-      min-height: 180px;
-      padding: 15px;
-      font-size: 1.5rem;
-      word-break: break-word;
-    }
-
-    /* Tombol & Elemen Interaktif (Touch Friendly) */
-    button, input, select, .btn {
-      min-height: 44px;
-      font-size: 1rem;
-    }
-
-    .btn-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-    }
-
-    /* Modal / Pop-up Adjustment */
-    .modal-content, .dialog-box {
-      width: 92% !important;
-      max-width: none !important;
-      padding: 16px;
-      margin: 10px auto;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-
-    /* Multi Winner Scrollable di HP */
-    .winner-line {
-      font-size: 1.1rem;
-      padding: 6px 0;
-    }
-  }
-</style>
 
 
   
@@ -1998,60 +1926,110 @@ html.lite-mode canvas[style*="pointer-events"] {
 
 
 
-<style id="tablet-scroll-fix">
-  /* Fix Scroll Issue for Mobile & Tablet Browsers */
-  html, body {
-    height: 100% !important;
-    min-height: 100dvh !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch;
-  }
 
-  /* Berikan padding bawah agar konten terbawah tidak tertutup bar browser */
+
+
+<style id="final-responsive-fix">
+/* Fix root scroll — jangan pakai height:100% yang bikin scroll macet di tablet */
+html, body {
+  height: auto !important;
+  min-height: 100dvh !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+body {
+  padding: calc(12px + env(safe-area-inset-top,0px)) calc(12px + env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) calc(12px + env(safe-area-inset-left,0px)) !important;
+}
+.shell { max-width: 560px; }
+
+/* ---------- TABLET (640–1023px) ---------- */
+@media (min-width: 640px) and (max-width: 1023px) {
+  body { padding: calc(16px + env(safe-area-inset-top,0px)) calc(20px + env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) calc(20px + env(safe-area-inset-left,0px)) !important; }
+  .shell { max-width: 720px !important; gap: 14px; }
+  .card { padding: 20px; }
+  .display-box { min-height: 200px; padding: 28px; }
+  .winner-text { font-size: 2rem; }
+  .winner-text.idle { font-size: 1.25rem; }
+  .btn-main { min-height: 70px; font-size: 1.15rem; }
+  .list { max-height: 320px; }
+  .list-item { padding: 14px 16px; font-size: 0.92rem; }
+  .groups-grid { max-height: 360px; }
+  textarea { height: 150px; }
+  .sheet { max-width: 620px; }
+  /* Tablet = touch, matikan hover biar tidak "nyangkut" */
+  .list-item:hover, .group:hover, button:hover:not(:disabled),
+  .icon-btn:hover, .btn-main:hover { transform: none !important; }
+}
+
+/* ---------- DESKTOP (≥1024px) — grid 2 kolom ---------- */
+@media (min-width: 1024px) {
   body {
-    padding-bottom: 80px !important;
+    padding: calc(24px + env(safe-area-inset-top,0px)) calc(28px + env(safe-area-inset-right,0px)) calc(28px + env(safe-area-inset-bottom,0px)) calc(28px + env(safe-area-inset-left,0px)) !important;
+    background:
+      radial-gradient(circle at 12% 18%, rgba(43,168,162,0.08), transparent 42%),
+      radial-gradient(circle at 88% 82%, rgba(255,210,63,0.06), transparent 42%),
+      var(--surface-base) !important;
+    background-attachment: fixed !important;
   }
+  .shell {
+    max-width: 1180px !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr) !important;
+    grid-template-areas: "header header" "stage side" !important;
+    gap: 20px !important;
+    align-items: start !important;
+  }
+  header { grid-area: header !important; padding: 16px 24px !important; }
+  .shell > .card:nth-of-type(1) {
+    grid-area: stage !important; padding: 26px;
+    display: flex; flex-direction: column;
+    min-height: calc(100vh - 180px);
+  }
+  .shell > .card:nth-of-type(2) {
+    grid-area: side !important; padding: 26px;
+    position: sticky; top: 24px;
+    max-height: calc(100vh - 180px);
+    display: flex; flex-direction: column;
+  }
+  .display-box { min-height: 320px; flex: 1; padding: 40px 32px; margin-bottom: 20px; }
+  .winner-text { font-size: 2.6rem; }
+  .winner-text.idle { font-size: 1.5rem; }
+  .btn-main { min-height: 78px; font-size: 1.25rem; letter-spacing: 2px; }
+  .btn-main svg { width: 24px; height: 24px; }
+  .opt { padding: 10px 16px; font-size: 0.84rem; min-height: 42px; }
+  .quick-actions button { min-height: 50px; }
+  .tab { padding: 12px 18px; font-size: 0.9rem; }
+  .list { flex: 1; min-height: 0; max-height: calc(100vh - 420px); }
+  .list-item { padding: 15px 18px; font-size: 0.95rem; }
+  .list-item:hover { transform: translateX(4px) !important; box-shadow: 0 4px 16px rgba(43,168,162,0.14); }
+  .groups-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; }
+  .sheet { max-width: 680px; }
+  .overlay { padding: 40px; }
+  .sheet-head { padding: 20px 26px; }
+  .sheet-body { padding: 26px; }
+  textarea { height: 160px; }
+  .winners-actions button { min-height: 50px; }
+}
 
-  /* Pastikan modal/pop-up di tablet bisa di-scroll penuh */
-  .modal, .modal-content, .dialog-box {
-    max-height: 85dvh !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch;
-  }
+@media (min-width: 1280px) {
+  .shell { max-width: 1280px !important; gap: 24px; }
+  .card { padding: 30px; }
+  .display-box { min-height: 380px; }
+  .winner-text { font-size: 3rem; }
+}
 
-  /* Kontainer utama aplikasi */
-  .container, .app-layout, main {
-    min-height: auto !important;
-    height: auto !important;
-    padding-bottom: 40px !important;
-  }
-</style>
+/* ---------- HP KECIL (<380px) ---------- */
+@media (max-width: 380px) {
+  .card { padding: 12px; }
+  .winner-text { font-size: 1.25rem; }
+  .btn-main { min-height: 56px; font-size: 0.95rem; letter-spacing: 0.5px; }
+  .opt { font-size: 0.72rem; padding: 7px 10px; }
+}
 
-<style>
-  * { box-sizing: border-box; }
-  html, body {
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  }
-  img, svg, video, canvas {
-    max-width: 100%;
-    height: auto;
-  }
-  @media (max-width: 600px) {
-    body { padding: 8px; font-size: 14px; }
-    .container, .wrapper, main, header, footer { width: 100% !important; max-width: 100% !important; padding: 10px !important; }
-    .grid, .row, .flex, [class*="col-"] { display: flex !important; flex-direction: column !important; width: 100% !important; }
-  }
-  @media (min-width: 601px) and (max-width: 1024px) {
-    body { padding: 16px; font-size: 15px; }
-    .container, .wrapper, main { width: 100% !important; max-width: 90% !important; margin: 0 auto; }
-  }
-  @media (min-width: 1025px) {
-    .container, .wrapper, main { max-width: 1200px; margin: 0 auto; }
-  }
+/* Matikan hover di semua perangkat sentuh */
+@media (hover: none) {
+  .list-item:hover, .group:hover, button:hover:not(:disabled) { transform: none !important; }
+}
 </style>
 </head>
   <script>
