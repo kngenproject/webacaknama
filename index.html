@@ -1375,7 +1375,7 @@
           </div>
           <div class="row">
             <div class="row-label">Randomizer Pro</div>
-            <div style="font-size:0.78rem; color:var(--text-muted); font-weight:700;">v2.1 · PWA Offline</div>
+            <div style="font-size:0.78rem; color:var(--text-muted); font-weight:700;">v2.2 · Auto-Update</div>
           </div>
         </div>
       </div>
@@ -2085,8 +2085,9 @@ window.addEventListener('DOMContentLoaded', async () => {
   renderWinnersUI();
   updateUndoButton();
 
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
+  
 });
 </script>
+<script src="auto-update.js" defer></script>
 </body>
 </html>
