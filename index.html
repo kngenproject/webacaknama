@@ -3,16 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Randomizer Pro - Ultra UI/UX</title>
+  <title>Randomizer Pro - Ultra Mobile UX</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#6366f1">
-  <meta name="description" content="Aplikasi pengacak profesional offline-first dengan UI/UX animasi tingkat tinggi.">
   <style>
     :root {
       --bg: #0b0f19;
-      --surface: rgba(30, 41, 59, 0.7);
+      --surface: rgba(30, 41, 59, 0.75);
       --surface-solid: #1e293b;
-      --surface-border: rgba(255, 255, 255, 0.1);
+      --surface-border: rgba(255, 255, 255, 0.12);
       --primary: #6366f1;
       --primary-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
       --accent: #10b981;
@@ -25,211 +24,62 @@
       --radius: 16px;
     }
 
-    * { 
-      box-sizing: border-box; 
-      margin: 0; 
-      padding: 0; 
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-      -webkit-tap-highlight-color: transparent; 
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
 
     body { 
       background: var(--bg); 
       background-image: 
-        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+        radial-gradient(at 50% 0%, rgba(99, 102, 241, 0.2) 0px, transparent 60%),
         radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
       background-attachment: fixed;
       color: var(--text); 
       padding: 12px; 
       min-height: 100vh; 
-      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    /* HEADER ANIMATED */
     header {
       width: 100%;
-      max-width: 1280px;
-      margin: 0 auto 16px;
+      max-width: 600px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 16px;
+      padding: 10px 14px;
       background: var(--surface);
       backdrop-filter: blur(12px);
       border: 1px solid var(--surface-border);
       border-radius: var(--radius);
-      animation: fadeInDown 0.6s ease-out;
+      margin-bottom: 12px;
     }
 
-    .brand { display: flex; align-items: center; gap: 8px; font-size: 1.05rem; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
-    .brand span.logo { font-size: 1.4rem; animation: float 3s ease-in-out infinite; }
-    .status-badge { 
-      font-size: 0.65rem; 
-      padding: 3px 8px; 
-      border-radius: 20px; 
-      background: rgba(16, 185, 129, 0.15); 
-      color: var(--accent); 
-      border: 1px solid rgba(16, 185, 129, 0.3); 
-      font-weight: 600;
-      letter-spacing: 0.5px;
-    }
+    .brand { display: flex; align-items: center; gap: 8px; font-size: 1rem; font-weight: 800; color: #fff; }
+    .status-badge { font-size: 0.65rem; padding: 3px 8px; border-radius: 20px; background: rgba(16, 185, 129, 0.15); color: var(--accent); border: 1px solid rgba(16, 185, 129, 0.3); font-weight: 600; }
 
-    /* GRID & CARDS */
-    .app-grid {
-      width: 100%;
-      max-width: 1280px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
+    main { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 12px; }
 
-    @media (min-width: 768px) {
-      body { padding: 20px; }
-      header { margin-bottom: 20px; }
-      .app-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-        align-items: start;
-      }
-    }
-
-    @media (min-width: 1024px) {
-      .app-grid { grid-template-columns: 5fr 7fr; gap: 24px; }
-    }
-
-    .card {
+    .display-card {
       background: var(--surface);
       backdrop-filter: blur(16px);
       border: 1px solid var(--surface-border);
       border-radius: var(--radius);
       padding: 16px;
+      text-align: center;
       box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      animation: fadeInUp 0.5s ease-out;
     }
 
-    .card-title { 
-      font-size: 0.95rem; 
-      font-weight: 700; 
-      margin-bottom: 12px; 
-      color: var(--text); 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-    }
-
-    textarea {
-      width: 100%;
-      height: 125px;
-      background: rgba(11, 15, 25, 0.7);
-      border: 1px solid var(--surface-border);
-      border-radius: 12px;
-      color: var(--text);
-      padding: 12px;
-      font-size: 0.9rem;
-      resize: vertical;
-      outline: none;
-      transition: all 0.3s ease;
-    }
-    textarea:focus { 
-      border-color: var(--primary); 
-      box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
-    }
-
-    .control-panel { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; }
-
-    .options-row { 
-      display: flex; 
-      gap: 10px; 
-      flex-wrap: wrap; 
-      font-size: 0.8rem; 
-      color: var(--text-muted); 
-      background: rgba(11, 15, 25, 0.5);
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid var(--surface-border);
-    }
-    .options-row label { display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--text); width: 100%; }
-    @media (min-width: 400px) { .options-row label { width: auto; } }
-
-    /* TOMBOL ANIMASI BUTTONS */
-    .btn-group { 
-      display: grid; 
-      grid-template-columns: repeat(2, 1fr); 
-      gap: 8px; 
-    }
-    @media (min-width: 480px) { .btn-group { grid-template-columns: repeat(3, 1fr); } }
-
-    button {
-      background: var(--primary-gradient);
-      color: #fff;
-      border: none;
-      min-height: 44px;
-      padding: 8px 12px;
-      border-radius: 10px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      font-size: 0.82rem;
-      width: 100%;
-      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
-    }
-    button:active { transform: scale(0.95); }
-    button:hover { 
-      transform: translateY(-2px); 
-      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
-    }
-
-    button.btn-accent { 
-      background: var(--accent-gradient); 
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
-    }
-    button.btn-accent:hover { box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4); }
-
-    button.btn-danger { 
-      background: var(--danger-gradient); 
-      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
-    }
-    button.btn-danger:hover { box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4); }
-
-    button.btn-secondary { 
-      background: rgba(255, 255, 255, 0.08); 
-      color: var(--text); 
-      box-shadow: none;
-      border: 1px solid var(--surface-border);
-    }
-    button.btn-secondary:hover { background: rgba(255, 255, 255, 0.15); }
-
-    .preset-selector { display: flex; gap: 8px; margin-bottom: 10px; }
-    select {
-      background: rgba(11, 15, 25, 0.7); color: var(--text); border: 1px solid var(--surface-border);
-      padding: 8px 12px; border-radius: 10px; flex-grow: 1; outline: none; font-size: 0.85rem;
-      min-height: 40px; transition: border 0.3s;
-    }
-    select:focus { border-color: var(--primary); }
-
-    /* PAPAN HASIL BERANIMASI ELEGAN */
     .display-box {
       background: linear-gradient(180deg, rgba(15, 23, 42, 0.8) 0%, rgba(11, 15, 25, 0.9) 100%);
       border: 2px dashed rgba(99, 102, 241, 0.4);
       border-radius: var(--radius);
-      min-height: 130px;
-      max-height: 200px;
+      min-height: 140px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      text-align: center;
       padding: 16px;
       margin-bottom: 12px;
-      position: relative;
-      overflow-y: auto;
       transition: all 0.3s ease;
     }
 
@@ -245,32 +95,59 @@
       animation: victoryShake 0.4s ease-in-out;
     }
 
-    .winner-text { 
-      font-size: 1.6rem; 
-      font-weight: 800; 
-      color: #fff; 
-      word-break: break-word; 
-      line-height: 1.2;
-      transition: transform 0.1s;
+    .winner-text { font-size: 1.8rem; font-weight: 800; color: #fff; word-break: break-word; line-height: 1.2; }
+    .winner-sub { font-size: 0.85rem; color: var(--text-muted); margin-top: 6px; }
+
+    .btn-main {
+      background: var(--accent-gradient);
+      color: #fff;
+      border: none;
+      min-height: 56px;
+      padding: 12px;
+      border-radius: 14px;
+      font-weight: 800;
+      font-size: 1.15rem;
+      cursor: pointer;
+      width: 100%;
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-main:active { transform: scale(0.96); }
+
+    .quick-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(11, 15, 25, 0.6);
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--surface-border);
+      font-size: 0.8rem;
+      margin-top: 10px;
+    }
+    .quick-options label { display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--text); }
+
+    .card {
+      background: var(--surface);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius);
+      padding: 14px;
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
     }
 
-    .winner-sub { font-size: 0.8rem; color: var(--text-muted); margin-top: 6px; }
-
-    @media (min-width: 768px) {
-      .display-box { min-height: 170px; }
-      .winner-text { font-size: 2.4rem; }
-    }
-
-    /* TABS & RIWAYAT LIST */
     .tabs { display: flex; border-bottom: 1px solid var(--surface-border); margin-bottom: 12px; }
     .tab-item {
       padding: 8px 12px; cursor: pointer; border-bottom: 2px solid transparent;
-      color: var(--text-muted); font-weight: 700; font-size: 0.82rem; flex: 1; text-align: center;
-      transition: all 0.3s;
+      color: var(--text-muted); font-weight: 700; font-size: 0.85rem; flex: 1; text-align: center;
     }
     .tab-item.active { border-color: var(--primary); color: #fff; }
 
-    .list-container { max-height: 180px; overflow-y: auto; list-style: none; }
+    .list-container { max-height: 200px; overflow-y: auto; list-style: none; }
     .list-item {
       background: rgba(11, 15, 25, 0.6); 
       padding: 10px 12px; 
@@ -279,71 +156,43 @@
       display: flex; 
       justify-content: space-between; 
       align-items: center; 
-      font-size: 0.82rem;
+      font-size: 0.85rem;
       border: 1px solid rgba(255, 255, 255, 0.05);
-      animation: slideInRight 0.3s ease-out;
     }
 
-    .groups-grid { 
-      display: grid; 
-      grid-template-columns: 1fr; 
-      gap: 8px; 
-      max-height: 220px; 
-      overflow-y: auto; 
+    button {
+      background: var(--primary-gradient);
+      color: #fff; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 600; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; gap: 4px; font-size: 0.82rem;
     }
-    @media (min-width: 480px) {
-      .groups-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
-    }
+    button.btn-secondary { background: rgba(255, 255, 255, 0.08); border: 1px solid var(--surface-border); color: var(--text); }
+    button.btn-danger { background: var(--danger-gradient); }
 
-    .group-box { 
-      background: rgba(11, 15, 25, 0.6); 
-      border: 1px solid var(--surface-border); 
-      border-radius: 10px; 
-      padding: 10px; 
-      animation: zoomIn 0.3s ease-out;
-    }
-    .group-box h4 { border-bottom: 1px solid var(--surface-border); padding-bottom: 4px; margin-bottom: 6px; font-size: 0.8rem; color: var(--accent); }
-    .group-box ul { list-style: none; font-size: 0.78rem; }
-
-    /* MODAL ANIMASI */
     .modal-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.8); 
-      backdrop-filter: blur(8px);
-      display: none; 
-      align-items: center; 
-      justify-content: center; 
-      z-index: 1000;
-      padding: 16px;
-      opacity: 0;
-      transition: opacity 0.3s ease;
+      background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px);
+      display: none; align-items: center; justify-content: center; z-index: 1000; padding: 12px;
+      opacity: 0; transition: opacity 0.3s ease;
     }
     .modal-overlay.open { display: flex; opacity: 1; }
     .modal { 
-      background: var(--surface-solid); 
-      border: 1px solid var(--surface-border); 
-      border-radius: var(--radius); 
-      width: 100%; 
-      max-width: 360px; 
-      padding: 20px; 
-      transform: scale(0.9);
-      transition: transform 0.3s ease;
+      background: var(--surface-solid); border: 1px solid var(--surface-border); border-radius: var(--radius);
+      width: 100%; max-width: 480px; padding: 16px; max-height: 92vh; overflow-y: auto;
+      transform: scale(0.95); transition: transform 0.3s ease;
     }
     .modal-overlay.open .modal { transform: scale(1); }
 
-    /* KEYFRAMES ANIMASI */
-    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes slideInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-    @keyframes zoomIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
-    @keyframes pulseGlow { from { box-shadow: 0 0 10px rgba(16, 185, 129, 0.2); } to { box-shadow: 0 0 25px rgba(16, 185, 129, 0.5); } }
-    @keyframes victoryShake { 
-      0%, 100% { transform: scale(1); } 
-      20% { transform: scale(1.05) rotate(-2deg); } 
-      40% { transform: scale(1.05) rotate(2deg); } 
-      60% { transform: scale(1.03) rotate(-1deg); } 
+    textarea {
+      width: 100%; height: 130px; background: rgba(11, 15, 25, 0.7); border: 1px solid var(--surface-border);
+      border-radius: 10px; color: var(--text); padding: 10px; font-size: 0.88rem; outline: none; margin: 6px 0;
+      resize: vertical;
     }
+    textarea:focus { border-color: var(--primary); }
+
+    .btn-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 8px; }
+
+    @keyframes pulseGlow { from { box-shadow: 0 0 10px rgba(16, 185, 129, 0.2); } to { box-shadow: 0 0 25px rgba(16, 185, 129, 0.5); } }
+    @keyframes victoryShake { 0%, 100% { transform: scale(1); } 20% { transform: scale(1.05) rotate(-2deg); } 40% { transform: scale(1.05) rotate(2deg); } }
   </style>
   <script src="xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -352,102 +201,101 @@
 
   <header>
     <div class="brand">
-      <span class="logo">🎲</span>
-      <span>Randomizer Pro</span>
+      <span>🎲 Randomizer Pro</span>
       <span class="status-badge">⚡ Offline</span>
     </div>
-    <button onclick="openSettings()" class="btn-secondary" style="width: auto; min-height: 32px; padding: 4px 10px; font-size: 0.8rem;">⚙️ Opsi</button>
+    <div style="display:flex; gap:6px;">
+      <button onclick="toggleFullScreen()" class="btn-secondary" style="padding:6px 10px;">📺</button>
+      <button onclick="openSettings()" class="btn-secondary">⚙️ Kelola Data</button>
+    </div>
   </header>
 
-  <main class="app-grid">
-    <!-- PANEL INPUT & KONTROL -->
-    <div class="left-col">
-      <div class="card">
-        <div class="card-title">
-          <span>Daftar Peserta / Items</span>
-        </div>
-
-        <div class="preset-selector">
-          <select id="presetSelect" onchange="loadSelectedPreset()">
-            <option value="default">Sesi Utama</option>
-          </select>
-          <button onclick="saveNewPreset()" class="btn-secondary" style="width: auto; white-space:nowrap; min-height:40px;">💾 Simpan</button>
-        </div>
-
-        <textarea id="dataInput" placeholder="Ketik nama/angka di sini (1 per baris)&#10;Ahmad&#10;Budi&#10;Siti&#10;-Joko (Awalan - = Skip/Absen)"></textarea>
-
-        <div class="control-panel">
-          <div class="options-row">
-            <label><input type="checkbox" id="removeOnPick"> Hapus jika terpilih (Undian)</label>
-            <label><input type="checkbox" id="soundToggle" checked> Suara</label>
-          </div>
-
-          <div class="btn-group">
-            <button onclick="pickWinner()" class="btn-accent">🎯 Acak 1 Nama</button>
-            <button onclick="pickMultiWinner()">🎲 Acak Multi</button>
-            <button onclick="shuffleData()">🔀 Kocok Baris</button>
-            <button onclick="sortData()">🔤 Urut A-Z</button>
-            <button onclick="genKupon()">🔢 Buat Kupon</button>
-            <button onclick="triggerExcel()" class="btn-secondary">📂 Import Excel</button>
-          </div>
-          <input type="file" id="excelInput" accept=".xlsx, .xls" style="display:none" onchange="importExcelData(event)">
-        </div>
+  <main>
+    <section class="display-card">
+      <div class="display-box" id="displayBox">
+        <div class="winner-text" id="winnerText">Siap Mengacak</div>
+        <div class="winner-sub" id="winnerSub">Tekan tombol di bawah untuk memilih nama</div>
       </div>
-    </div>
 
-    <!-- PANEL HASIL & RIWAYAT -->
-    <div class="right-col">
-      <div class="card">
-        <div class="card-title">Papan Hasil</div>
-        <div class="display-box" id="displayBox">
-          <div class="winner-text" id="winnerText">Ready</div>
-          <div class="winner-sub" id="winnerSub">Tekan tombol acak untuk memulai</div>
+      <button onclick="pickWinner()" class="btn-main">🎯 ACAK NAMA NOW</button>
+
+      <div class="quick-options">
+        <label><input type="checkbox" id="removeOnPick"> 🚫 Jangan ulangi nama terpilih</label>
+        <button onclick="resetOriginalData()" class="btn-secondary" style="font-size: 0.75rem; padding: 4px 8px;">🔄 Restore Data</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="tabs">
+        <div class="tab-item active" onclick="switchTab('tabWinners', this)">🏆 Terpilih</div>
+        <div class="tab-item" onclick="switchTab('tabGroups', this)">👥 Bagi Kelompok</div>
+      </div>
+
+      <div id="tabWinners">
+        <ul class="list-container" id="winnersList"></ul>
+        <div style="display: flex; gap: 8px; margin-top: 10px;">
+          <button onclick="shareToWhatsApp()" class="btn-secondary" style="flex:1;">💬 Share WA</button>
+          <button onclick="exportWinnersExcel()" class="btn-secondary">📊 Excel</button>
+          <button onclick="clearWinnersHistory()" class="btn-danger">🗑️ Hapus</button>
         </div>
       </div>
 
-      <div class="card">
-        <div class="tabs">
-          <div class="tab-item active" onclick="switchTab('tabWinners', this)">🏆 Terpilih</div>
-          <div class="tab-item" onclick="switchTab('tabGroups', this)">👥 Kelompok</div>
+      <div id="tabGroups" style="display:none;">
+        <div style="display:flex; gap:6px; align-items:center; margin-bottom:10px;">
+          <label style="font-size:0.8rem; white-space:nowrap;">Jumlah Kelompok:</label>
+          <input type="number" id="groupCount" min="2" value="3" style="width:50px; padding:6px; background:rgba(11,15,25,0.7); border:1px solid var(--surface-border); color:#fff; border-radius:6px; font-size:0.85rem;">
+          <button onclick="generateGroups()" class="btn-main" style="width:auto; min-height:36px; font-size:0.85rem;">Bagi</button>
         </div>
-
-        <div id="tabWinners">
-          <ul class="list-container" id="winnersList"></ul>
-          <div style="display: flex; gap: 8px; margin-top: 10px;">
-            <button onclick="exportWinnersExcel()" class="btn-secondary">📊 Ekspor Excel</button>
-            <button onclick="clearWinnersHistory()" class="btn-danger">🗑️ Hapus</button>
-          </div>
-        </div>
-
-        <div id="tabGroups" style="display:none;">
-          <div style="display:flex; gap:6px; align-items:center; margin-bottom:10px;">
-            <label style="font-size:0.8rem; white-space:nowrap;">Jml Kelompok:</label>
-            <input type="number" id="groupCount" min="2" value="3" style="width:50px; padding:6px; background:rgba(11,15,25,0.7); border:1px solid var(--surface-border); color:#fff; border-radius:6px; font-size:0.85rem;">
-            <button onclick="generateGroups()" class="btn-accent" style="width:auto; min-height:36px;">Bagi</button>
-          </div>
-          <div class="groups-grid" id="groupsGrid"></div>
-        </div>
+        <div id="groupsGrid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap:8px; max-height:200px; overflow-y:auto;"></div>
       </div>
-    </div>
+    </section>
   </main>
 
-  <!-- MODAL SETTINGS -->
+  <!-- MODAL PENGATURAN DATA -->
   <div class="modal-overlay" id="settingsModal">
     <div class="modal">
-      <h3 style="margin-bottom:12px; font-size:1rem;">⚙️ Pengaturan</h3>
-      <div style="margin-bottom:14px;">
-        <label style="font-size:0.82rem; color:var(--text-muted);">Durasi Roll (Detik):</label>
-        <input type="number" id="rollDuration" value="2.5" step="0.5" min="1" style="width:100%; padding:8px; margin-top:4px; background:rgba(11,15,25,0.7); border:1px solid var(--surface-border); color:#fff; border-radius:6px; font-size:0.9rem;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <h3 style="font-size:1rem;">⚙️ Kelola Peserta</h3>
+        <button onclick="closeSettings()" class="btn-secondary" style="padding:4px 8px;">✕ Tutup</button>
       </div>
-      <button onclick="closeSettings()" class="btn-secondary">Tutup</button>
+
+      <div style="display:flex; gap:6px; margin-bottom:8px;">
+        <select id="presetSelect" onchange="loadSelectedPreset()" style="flex:1; padding:8px; background:rgba(11,15,25,0.7); color:#fff; border:1px solid var(--surface-border); border-radius:8px;">
+          <option value="default">Sesi Utama</option>
+        </select>
+        <button onclick="saveNewPreset()" class="btn-secondary">💾 Simpan Preset</button>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; color:var(--text-muted);">
+        <span>Daftar Peserta (1 baris 1 data):</span>
+        <strong id="itemCount" style="color:var(--accent);">Total: 0 Peserta</strong>
+      </div>
+      <textarea id="dataInput" oninput="updateItemCount(); saveCurrentSession();" placeholder="Ahmad&#10;Budi&#10;Siti&#10;-Joko (Awalan - = Skip/Absen)"></textarea>
+
+      <div class="btn-grid">
+        <button onclick="shuffleData()" class="btn-secondary">🔀 Kocok Baris</button>
+        <button onclick="sortData()" class="btn-secondary">🔤 Urut A-Z</button>
+        <button onclick="genKupon()" class="btn-secondary">🔢 Buat Kupon</button>
+        <button onclick="triggerExcel()" class="btn-secondary">📂 Import Excel</button>
+      </div>
+      <input type="file" id="excelInput" accept=".xlsx, .xls" style="display:none" onchange="importExcelData(event)">
+
+      <hr style="border:0; border-top:1px solid var(--surface-border); margin:12px 0;">
+
+      <div style="display:flex; flex-direction:column; gap:10px; font-size:0.85rem;">
+        <label><input type="checkbox" id="soundToggle" checked> Aktifkan Suara Beep & Fanfare</label>
+        <div>
+          <label style="color:var(--text-muted);">Durasi Roll Animasi (Detik):</label>
+          <input type="number" id="rollDuration" value="2.5" step="0.5" min="1" style="width:100%; padding:6px; margin-top:4px; background:rgba(11,15,25,0.7); border:1px solid var(--surface-border); color:#fff; border-radius:6px;">
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
-    /* ================= INDEXED DB ENGINE ================= */
     const DB_NAME = 'RandomizerProDB';
     const DB_VERSION = 1;
-    let db;
+    let db, backupOriginalData = "";
 
     function initDB() {
       return new Promise((resolve, reject) => {
@@ -461,17 +309,18 @@
       });
     }
 
-    /* ================= SOUND ENGINE ================= */
+    function triggerVibration(pattern = [50]) {
+      if (navigator.vibrate) navigator.vibrate(pattern);
+    }
+
     function playBeep(freq = 400, type = 'sine', duration = 0.05) {
       if (!document.getElementById('soundToggle').checked) return;
       try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-        osc.type = type;
-        osc.frequency.value = freq;
-        osc.connect(gain);
-        gain.connect(ctx.destination);
+        osc.type = type; osc.frequency.value = freq;
+        osc.connect(gain); gain.connect(ctx.destination);
         osc.start();
         gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + duration);
         osc.stop(ctx.currentTime + duration);
@@ -481,28 +330,31 @@
     function playFanfare() {
       if (!document.getElementById('soundToggle').checked) return;
       const notes = [261, 329, 392, 523, 659];
-      notes.forEach((freq, i) => {
-        setTimeout(() => playBeep(freq, 'triangle', 0.18), i * 90);
-      });
+      notes.forEach((freq, i) => setTimeout(() => playBeep(freq, 'triangle', 0.18), i * 90));
     }
 
-    /* ================= LOGIKA PENGACAK ================= */
     let winnersList = [];
 
     function getDataList() {
       const text = document.getElementById('dataInput').value;
-      return text.split('\n')
-        .map(s => s.trim())
-        .filter(s => s.length > 0 && !s.startsWith('-'));
+      return text.split('\n').map(s => s.trim()).filter(s => s.length > 0 && !s.startsWith('-'));
+    }
+
+    function updateItemCount() {
+      const count = getDataList().length;
+      document.getElementById('itemCount').innerText = `Total: ${count} Peserta`;
     }
 
     function pickWinner() {
       const items = getDataList();
       if (items.length === 0) {
         document.getElementById('winnerText').innerText = "Data Kosong!";
-        document.getElementById('winnerSub').innerText = "Isi daftar peserta terlebih dahulu";
+        document.getElementById('winnerSub').innerText = "Buka Kelola Data untuk mengisi peserta";
+        triggerVibration([100, 50, 100]);
         return;
       }
+
+      if(!backupOriginalData) backupOriginalData = document.getElementById('dataInput').value;
 
       const duration = parseFloat(document.getElementById('rollDuration').value) * 1000 || 2500;
       const intervalTime = 60;
@@ -514,6 +366,7 @@
 
       displayBox.className = 'display-box rolling';
       wSub.innerText = "Mengacak nama...";
+      triggerVibration([30]);
 
       const timer = setInterval(() => {
         const randIdx = Math.floor(Math.random() * items.length);
@@ -529,46 +382,16 @@
           displayBox.className = 'display-box winner-found';
           wText.innerText = winner;
           wSub.innerText = "🎉 Terpilih!";
+          
           playFanfare();
+          triggerVibration([100, 50, 200]);
 
           addWinnerRecord(winner);
+          if (document.getElementById('removeOnPick').checked) removePickedItem(winner);
 
-          if (document.getElementById('removeOnPick').checked) {
-            removePickedItem(winner);
-          }
-
-          if (typeof confetti === 'function') {
-            confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
-          }
+          if (typeof confetti === 'function') confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
         }
       }, intervalTime);
-    }
-
-    function pickMultiWinner() {
-      const items = getDataList();
-      const count = parseInt(prompt("Jumlah pemenang:", "3"));
-      if (isNaN(count) || count <= 0) return;
-      if (items.length < count) {
-        alert("Jumlah item kurang dari jumlah pemenang!");
-        return;
-      }
-
-      const displayBox = document.getElementById('displayBox');
-      displayBox.className = 'display-box winner-found';
-
-      const shuffled = [...items].sort(() => 0.5 - Math.random());
-      const selected = shuffled.slice(0, count);
-
-      document.getElementById('winnerText').innerHTML = selected.join("<br>");
-      document.getElementById('winnerSub').innerText = `🎉 ${count} Terpilih!`;
-      playFanfare();
-
-      selected.forEach(w => {
-        addWinnerRecord(w);
-        if (document.getElementById('removeOnPick').checked) removePickedItem(w);
-      });
-
-      if (typeof confetti === 'function') confetti({ particleCount: 140 });
     }
 
     function removePickedItem(item) {
@@ -577,7 +400,18 @@
       if (idx !== -1) {
         lines.splice(idx, 1);
         document.getElementById('dataInput').value = lines.join('\n');
+        updateItemCount();
         saveCurrentSession();
+      }
+    }
+
+    function resetOriginalData() {
+      if (backupOriginalData) {
+        document.getElementById('dataInput').value = backupOriginalData;
+        updateItemCount();
+        saveCurrentSession();
+        triggerVibration([50, 50]);
+        alert("Daftar nama berhasil dikembalikan!");
       }
     }
 
@@ -597,12 +431,28 @@
       `).join('');
     }
 
-    function clearWinnersHistory() {
-      winnersList = [];
-      renderWinnersUI();
+    function clearWinnersHistory() { winnersList = []; renderWinnersUI(); }
+
+    function shareToWhatsApp() {
+      if (winnersList.length === 0) return alert("Belum ada pemenang yang terpilih!");
+      let text = "*🏆 DAFTAR PEMENANG TERPILIH 🏆*\n\n";
+      winnersList.forEach((w, i) => { text += `${i+1}. ${w.name} (${w.time})\n`; });
+      
+      if (navigator.share) {
+        navigator.share({ title: 'Hasil Pengacak', text: text });
+      } else {
+        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+      }
     }
 
-    /* ================= KELOMPOK, SHUFFLE & KUPON ================= */
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+      }
+    }
+
     function shuffleData() {
       let items = getDataList();
       for (let i = items.length - 1; i > 0; i--) {
@@ -626,6 +476,7 @@
       let list = [];
       for (let i = start; i <= end; i++) list.push(`Kupon #${i}`);
       document.getElementById('dataInput').value = list.join('\n');
+      updateItemCount();
       saveCurrentSession();
     }
 
@@ -637,20 +488,17 @@
       let shuffled = [...items].sort(() => 0.5 - Math.random());
       let groups = Array.from({ length: numGroups }, () => []);
 
-      shuffled.forEach((item, index) => {
-        groups[index % numGroups].push(item);
-      });
+      shuffled.forEach((item, index) => groups[index % numGroups].push(item));
 
       const grid = document.getElementById('groupsGrid');
       grid.innerHTML = groups.map((g, i) => `
-        <div class="group-box">
-          <h4>Kelompok ${i + 1} (${g.length})</h4>
-          <ul>${g.map(name => `<li>• ${name}</li>`).join('')}</ul>
+        <div style="background:rgba(11,15,25,0.6); border:1px solid var(--surface-border); border-radius:8px; padding:8px;">
+          <h4 style="border-bottom:1px solid var(--surface-border); padding-bottom:2px; font-size:0.8rem; color:var(--accent);">Kelompok ${i + 1} (${g.length})</h4>
+          <ul style="list-style:none; font-size:0.78rem; margin-top:4px;">${g.map(name => `<li>• ${name}</li>`).join('')}</ul>
         </div>
       `).join('');
     }
 
-    /* ================= EXCEL EXPORT & IMPORT ================= */
     function triggerExcel() { document.getElementById('excelInput').click(); }
 
     function importExcelData(e) {
@@ -663,10 +511,9 @@
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
         const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
         let names = [];
-        json.forEach(row => {
-          row.forEach(cell => { if (cell) names.push(cell.toString().trim()); });
-        });
+        json.forEach(row => { row.forEach(cell => { if (cell) names.push(cell.toString().trim()); }); });
         document.getElementById('dataInput').value = names.join('\n');
+        updateItemCount();
         saveCurrentSession();
       };
       reader.readAsArrayBuffer(file);
@@ -681,14 +528,15 @@
       XLSX.writeFile(wb, "Riwayat_Pemenang.xlsx");
     }
 
-    /* ================= PRESET & SESSION ================= */
-    function saveCurrentSession() {
-      localStorage.setItem('randomizer_last_session', document.getElementById('dataInput').value);
-    }
+    function saveCurrentSession() { localStorage.setItem('randomizer_last_session', document.getElementById('dataInput').value); }
 
     function loadLastSession() {
       const saved = localStorage.getItem('randomizer_last_session');
-      if (saved !== null) document.getElementById('dataInput').value = saved;
+      if (saved !== null) {
+        document.getElementById('dataInput').value = saved;
+        backupOriginalData = saved;
+        updateItemCount();
+      }
     }
 
     function saveNewPreset() {
@@ -709,27 +557,25 @@
       request.onsuccess = () => {
         const select = document.getElementById('presetSelect');
         select.innerHTML = '<option value="default">Sesi Utama</option>';
-        request.result.forEach(p => {
-          select.innerHTML += `<option value="${p.id}">${p.name}</option>`;
-        });
+        request.result.forEach(p => { select.innerHTML += `<option value="${p.id}">${p.name}</option>`; });
       };
     }
 
     function loadSelectedPreset() {
       const val = document.getElementById('presetSelect').value;
-      if (val === 'default') {
-        loadLastSession();
-        return;
-      }
+      if (val === 'default') { loadLastSession(); return; }
       const tx = db.transaction('presets', 'readonly');
       const store = tx.objectStore('presets');
       const request = store.get(val);
       request.onsuccess = () => {
-        if (request.result) document.getElementById('dataInput').value = request.result.content;
+        if (request.result) {
+          document.getElementById('dataInput').value = request.result.content;
+          backupOriginalData = request.result.content;
+          updateItemCount();
+        }
       };
     }
 
-    /* ================= TAB & MODAL UI ================= */
     function switchTab(tabId, el) {
       document.getElementById('tabWinners').style.display = tabId === 'tabWinners' ? 'block' : 'none';
       document.getElementById('tabGroups').style.display = tabId === 'tabGroups' ? 'block' : 'none';
@@ -740,16 +586,11 @@
     function openSettings() { document.getElementById('settingsModal').classList.add('open'); }
     function closeSettings() { document.getElementById('settingsModal').classList.remove('open'); }
 
-    // Init App
     window.addEventListener('DOMContentLoaded', async () => {
       await initDB();
       loadPresetsUI();
       loadLastSession();
-      document.getElementById('dataInput').addEventListener('input', saveCurrentSession);
-
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js').catch(() => {});
-      }
+      if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
     });
   </script>
 </body>
