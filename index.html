@@ -31,6 +31,20 @@
   })();
   </script>
   <meta charset="UTF-8">
+  <script>
+(function(){
+  function detectView(){
+    var w = window.innerWidth;
+    var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    var isMobile = (w < 768) || (isTouch && w < 1024);
+    document.documentElement.setAttribute('data-view', isMobile ? 'mobile' : 'desktop');
+  }
+  detectView();
+  var t;
+  window.addEventListener('resize', function(){ clearTimeout(t); t = setTimeout(detectView, 150); });
+  window.addEventListener('orientationchange', function(){ setTimeout(detectView, 200); });
+})();
+</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#2BA8A2">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1929,327 +1943,347 @@ html.lite-mode canvas[style*="pointer-events"] {
 
 
 
-<style id="final-responsive-fix">
-/* Fix root scroll — jangan pakai height:100% yang bikin scroll macet di tablet */
-html, body {
-  height: auto !important;
-  min-height: 100dvh !important;
-  overflow-x: hidden !important;
-  overflow-y: auto !important;
-}
-body {
-  padding: calc(12px + env(safe-area-inset-top,0px)) calc(12px + env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) calc(12px + env(safe-area-inset-left,0px)) !important;
-}
-.shell { max-width: 560px; }
 
-/* ---------- TABLET (640–1023px) ---------- */
-@media (min-width: 640px) and (max-width: 1023px) {
-  body { padding: calc(16px + env(safe-area-inset-top,0px)) calc(20px + env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) calc(20px + env(safe-area-inset-left,0px)) !important; }
-  .shell { max-width: 720px !important; gap: 14px; }
-  .card { padding: 20px; }
-  .display-box { min-height: 200px; padding: 28px; }
-  .winner-text { font-size: 2rem; }
-  .winner-text.idle { font-size: 1.25rem; }
-  .btn-main { min-height: 70px; font-size: 1.15rem; }
-  .list { max-height: 320px; }
-  .list-item { padding: 14px 16px; font-size: 0.92rem; }
-  .groups-grid { max-height: 360px; }
-  textarea { height: 150px; }
-  .sheet { max-width: 620px; }
-  /* Tablet = touch, matikan hover biar tidak "nyangkut" */
-  .list-item:hover, .group:hover, button:hover:not(:disabled),
-  .icon-btn:hover, .btn-main:hover { transform: none !important; }
-}
 
-/* ---------- DESKTOP (≥1024px) — grid 2 kolom ---------- */
-@media (min-width: 1024px) {
-  body {
-    padding: calc(24px + env(safe-area-inset-top,0px)) calc(28px + env(safe-area-inset-right,0px)) calc(28px + env(safe-area-inset-bottom,0px)) calc(28px + env(safe-area-inset-left,0px)) !important;
-    background:
-      radial-gradient(circle at 12% 18%, rgba(43,168,162,0.08), transparent 42%),
-      radial-gradient(circle at 88% 82%, rgba(255,210,63,0.06), transparent 42%),
-      var(--surface-base) !important;
-    background-attachment: fixed !important;
-  }
-  .shell {
-    max-width: 1180px !important;
-    display: grid !important;
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr) !important;
-    grid-template-areas: "header header" "stage side" !important;
-    gap: 20px !important;
-    align-items: start !important;
-  }
-  header { grid-area: header !important; padding: 16px 24px !important; }
-  .shell > .card:nth-of-type(1) {
-    grid-area: stage !important; padding: 26px;
-    display: flex; flex-direction: column;
-    min-height: calc(100vh - 180px);
-  }
-  .shell > .card:nth-of-type(2) {
-    grid-area: side !important; padding: 26px;
-    position: sticky; top: 24px;
-    max-height: calc(100vh - 180px);
-    display: flex; flex-direction: column;
-  }
-  .display-box { min-height: 320px; flex: 1; padding: 40px 32px; margin-bottom: 20px; }
-  .winner-text { font-size: 2.6rem; }
-  .winner-text.idle { font-size: 1.5rem; }
-  .btn-main { min-height: 78px; font-size: 1.25rem; letter-spacing: 2px; }
-  .btn-main svg { width: 24px; height: 24px; }
-  .opt { padding: 10px 16px; font-size: 0.84rem; min-height: 42px; }
-  .quick-actions button { min-height: 50px; }
-  .tab { padding: 12px 18px; font-size: 0.9rem; }
-  .list { flex: 1; min-height: 0; max-height: calc(100vh - 420px); }
-  .list-item { padding: 15px 18px; font-size: 0.95rem; }
-  .list-item:hover { transform: translateX(4px) !important; box-shadow: 0 4px 16px rgba(43,168,162,0.14); }
-  .groups-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; }
-  .sheet { max-width: 680px; }
-  .overlay { padding: 40px; }
-  .sheet-head { padding: 20px 26px; }
-  .sheet-body { padding: 26px; }
-  textarea { height: 160px; }
-  .winners-actions button { min-height: 50px; }
-}
-
-@media (min-width: 1280px) {
-  .shell { max-width: 1280px !important; gap: 24px; }
-  .card { padding: 30px; }
-  .display-box { min-height: 380px; }
-  .winner-text { font-size: 3rem; }
-}
-
-/* ---------- HP KECIL (<380px) ---------- */
-@media (max-width: 380px) {
-  .card { padding: 12px; }
-  .winner-text { font-size: 1.25rem; }
-  .btn-main { min-height: 56px; font-size: 0.95rem; letter-spacing: 0.5px; }
-  .opt { font-size: 0.72rem; padding: 7px 10px; }
-}
-
-/* Matikan hover di semua perangkat sentuh */
-@media (hover: none) {
-  .list-item:hover, .group:hover, button:hover:not(:disabled) { transform: none !important; }
-}
-</style>
-<style id="mobile-fit">
+<style id="view-modes">
 /* ============================================================
-   MOBILE FIT — semua elemen pas dalam 1 layar HP
-   Header + Tombol utama + List pemenang tanpa scroll ke luar
+   [hidden] baseline
    ============================================================ */
-@media (max-width: 639px) {
-  html {
-    height: 100dvh !important;
-    overflow: hidden !important;
-  }
-  body {
-    height: 100dvh !important;
-    max-height: 100dvh !important;
-    overflow: hidden !important;
-    padding: calc(6px + env(safe-area-inset-top,0px)) calc(6px + env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) calc(6px + env(safe-area-inset-left,0px)) !important;
-    align-items: stretch !important;
-    font-size: 14px;
-  }
-  .shell {
-    height: 100% !important;
-    max-width: 100% !important;
-    gap: 6px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    min-height: 0 !important;
-  }
+[hidden] { display: none !important; }
 
-  /* HEADER — compact */
-  header {
-    padding: 6px 10px !important;
-    border-radius: 14px !important;
-    gap: 8px !important;
-    flex: 0 0 auto !important;
-  }
-  .brand { gap: 8px !important; }
-  .brand-mark { width: 30px !important; height: 30px !important; }
-  .brand-mark .fan { width: 11px !important; height: 17px !important; border-radius: 3px !important; }
-  .brand-text { font-size: 0.82rem !important; letter-spacing: 0.3px !important; }
-  .brand-text em { font-size: 1.1em !important; }
-  .brand-sub { font-size: 0.5rem !important; letter-spacing: 1.2px !important; }
-  .header-actions { gap: 4px !important; }
-  .icon-btn { width: 30px !important; height: 30px !important; border-radius: 9px !important; }
-  .icon-btn svg { width: 14px !important; height: 14px !important; }
-
-  /* CARD 1 (stage) — tinggi otomatis */
-  .card {
-    padding: 8px !important;
-    border-radius: 14px !important;
-    border-width: 2px !important;
-  }
-  .shell > .card:nth-of-type(1) { flex: 0 0 auto !important; }
-
-  .display-box {
-    min-height: 82px !important;
-    padding: 8px 10px !important;
-    margin-bottom: 6px !important;
-    border-width: 2px !important;
-    border-radius: 12px !important;
-  }
-  .winner-text { font-size: 1.15rem !important; line-height: 1.15 !important; }
-  .winner-text.idle { font-size: 0.9rem !important; }
-  .winner-sub { font-size: 0.66rem !important; margin-top: 3px !important; }
-  .display-box.multi { max-height: 140px !important; padding: 6px 10px !important; }
-  .winner-line { font-size: 0.85rem !important; padding: 5px 0 !important; gap: 6px !important; }
-  .winner-line .idx { width: 20px !important; height: 20px !important; font-size: 0.65rem !important; }
-
-  /* TOMBOL UTAMA */
-  .btn-main {
-    min-height: 46px !important;
-    padding: 10px !important;
-    font-size: 0.88rem !important;
-    letter-spacing: 0.8px !important;
-    border-width: 2px !important;
-    gap: 6px !important;
-  }
-  .btn-main::before { display: none !important; }
-  .btn-main svg { width: 16px !important; height: 16px !important; }
-
-  /* OPTIONS — 1 baris, kecil */
-  .options {
-    margin-top: 6px !important;
-    padding-top: 6px !important;
-    gap: 4px !important;
-    border-top-width: 2px !important;
-  }
-  .opt {
-    padding: 4px 7px !important;
-    font-size: 0.64rem !important;
-    min-height: 26px !important;
-    gap: 3px !important;
-    border-width: 1.5px !important;
-    letter-spacing: 0.1px !important;
-  }
-  .opt input[type="checkbox"] { width: 12px !important; height: 12px !important; }
-  .opt input[type="number"] { width: 32px !important; font-size: 0.68rem !important; padding: 1px 3px !important; }
-
-  /* QUICK ACTIONS */
-  .quick-actions { margin-top: 5px !important; gap: 5px !important; }
-  .quick-actions button {
-    min-height: 34px !important;
-    padding: 6px !important;
-    font-size: 0.68rem !important;
-    gap: 4px !important;
-    border-width: 1.5px !important;
-  }
-  .quick-actions button svg { width: 12px !important; height: 12px !important; }
-  .kbd-hint { display: none !important; }
-
-  /* CARD 2 (list) — flex column supaya list bisa scroll internal */
-  .shell > .card:nth-of-type(2) {
-    flex: 1 1 auto !important;
-    min-height: 0 !important;
-    display: flex !important;
-    flex-direction: column !important;
-  }
-  #tabWinners, #tabGroups {
-    display: flex !important;
-    flex-direction: column !important;
-    flex: 1 !important;
-    min-height: 0 !important;
-  }
-  #tabGroups { display: none; }
-  #tabGroups[style*="block"] { display: flex !important; }
-
-  .tabs { margin-bottom: 6px !important; padding: 0 !important; border-bottom-width: 2px !important; }
-  .tab { padding: 6px 10px !important; font-size: 0.72rem !important; letter-spacing: 0.2px !important; }
-
-  .list {
-    flex: 1 !important;
-    min-height: 0 !important;
-    max-height: none !important;
-    overflow-y: auto !important;
-  }
-  .list-item {
-    padding: 7px 9px 7px 12px !important;
-    font-size: 0.78rem !important;
-    margin-bottom: 4px !important;
-    border-left-width: 4px !important;
-    border-width: 1.5px !important;
-    border-radius: 9px !important;
-    gap: 6px !important;
-  }
-  .list-item .name { gap: 5px !important; }
-  .list-item .num { width: 18px !important; height: 18px !important; font-size: 0.62rem !important; border-width: 1.2px !important; }
-  .list-item .meta { font-size: 0.62rem !important; }
-  .prize-badge { font-size: 0.58rem !important; padding: 2px 6px !important; border-width: 1px !important; }
-  .empty-state { padding: 20px 10px !important; font-size: 0.72rem !important; line-height: 1.5 !important; }
-
-  .winners-actions { margin-top: 6px !important; gap: 4px !important; }
-  .winners-actions button {
-    min-height: 34px !important;
-    padding: 6px 4px !important;
-    font-size: 0.64rem !important;
-    gap: 3px !important;
-    border-width: 1.5px !important;
-  }
-  .winners-actions button svg { width: 11px !important; height: 11px !important; }
-
-  /* GROUPS */
-  .groups-bar { margin-bottom: 6px !important; gap: 6px !important; }
-  .groups-bar label { font-size: 0.72rem !important; }
-  .groups-bar input[type="number"] { width: 46px !important; padding: 5px 4px !important; font-size: 0.76rem !important; }
-  .groups-bar button { padding: 6px 12px !important; min-height: 32px !important; font-size: 0.7rem !important; }
-  .groups-grid {
-    flex: 1 !important;
-    min-height: 0 !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 5px !important;
-    max-height: none !important;
-    overflow-y: auto !important;
-  }
-  .group { padding: 7px 8px !important; border-left-width: 4px !important; border-radius: 9px !important; }
-  .group h4 { font-size: 0.68rem !important; padding-bottom: 4px !important; margin-bottom: 4px !important; letter-spacing: 0.2px !important; }
-  .group h4 .count { font-size: 0.6rem !important; padding: 1px 5px !important; }
-  .group ul { font-size: 0.7rem !important; }
-  .group li { padding: 1.5px 0 !important; }
-
-  /* MODAL — pakai safe area penuh */
-  .overlay { padding: calc(8px + env(safe-area-inset-top,0px)) 8px calc(8px + env(safe-area-inset-bottom,0px)) 8px !important; }
-  .sheet { max-height: calc(100dvh - 16px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)) !important; border-radius: 18px !important; }
-  .sheet-head { padding: 10px 14px !important; border-radius: 18px 18px 0 0 !important; }
-  .sheet-title { font-size: 0.85rem !important; }
-  .sheet-body { padding: 12px !important; }
-  .section { margin-bottom: 16px !important; }
-  .section-title { font-size: 0.68rem !important; margin-bottom: 8px !important; padding-bottom: 6px !important; letter-spacing: 1.4px !important; }
-  .row { padding: 8px 0 !important; gap: 8px !important; }
-  .row-label { font-size: 0.8rem !important; }
-  .row-hint { font-size: 0.66rem !important; margin-top: 2px !important; }
-  .switch { width: 42px !important; height: 24px !important; }
-  .switch-track::before { width: 16px !important; height: 16px !important; top: 2px !important; left: 2px !important; }
-  .switch input:checked + .switch-track::before { transform: translateX(18px) !important; }
-  textarea { height: 90px !important; padding: 8px 10px !important; font-size: 16px !important; }
-  input[type="text"], input[type="number"], select { padding: 8px 10px !important; font-size: 16px !important; }
-  .input-label { font-size: 0.7rem !important; }
-  .btn-grid { gap: 6px !important; margin-top: 8px !important; }
-  .btn-grid button { min-height: 38px !important; padding: 8px 6px !important; font-size: 0.7rem !important; }
-  .class-block { padding: 10px !important; margin-bottom: 8px !important; }
-  .class-block .toolbar { gap: 5px !important; margin-top: 8px !important; }
-  .class-block .toolbar button { padding: 8px 10px !important; min-height: 36px !important; font-size: 0.72rem !important; }
-  .divider { margin: 12px 0 !important; }
-  .hint { font-size: 0.68rem !important; padding: 8px 10px !important; margin-top: 8px !important; }
-  .range-val { font-size: 0.72rem !important; }
+/* ============================================================
+   ██ MOBILE VIEW  (html[data-view="mobile"])
+   App-style: full screen, no outer scroll, list scroll internal
+   ============================================================ */
+html[data-view="mobile"],
+html[data-view="mobile"] body {
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  overflow: hidden !important;
+}
+html[data-view="mobile"] body {
+  padding: calc(6px + env(safe-area-inset-top,0px)) calc(6px + env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) calc(6px + env(safe-area-inset-left,0px)) !important;
+  align-items: stretch !important;
+  font-size: 14px;
+  background: var(--surface-base);
+}
+html[data-view="mobile"] .shell {
+  height: 100% !important;
+  max-width: 100% !important;
+  gap: 6px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
 }
 
-/* HP sangat kecil (misal 320–359px) — ekstra compact */
-@media (max-width: 359px) {
-  .display-box { min-height: 70px !important; }
-  .winner-text { font-size: 1rem !important; }
-  .btn-main { min-height: 42px !important; font-size: 0.82rem !important; }
-  .opt { font-size: 0.6rem !important; padding: 3px 6px !important; }
-  .groups-grid { grid-template-columns: 1fr !important; }
+/* Header compact */
+html[data-view="mobile"] header { padding: 6px 10px !important; border-radius: 14px !important; gap: 8px !important; flex: 0 0 auto !important; }
+html[data-view="mobile"] .brand { gap: 8px !important; }
+html[data-view="mobile"] .brand-mark { width: 30px !important; height: 30px !important; }
+html[data-view="mobile"] .brand-mark .fan { width: 11px !important; height: 17px !important; border-radius: 3px !important; }
+html[data-view="mobile"] .brand-text { font-size: 0.82rem !important; letter-spacing: 0.3px !important; }
+html[data-view="mobile"] .brand-text em { font-size: 1.1em !important; }
+html[data-view="mobile"] .brand-sub { font-size: 0.5rem !important; letter-spacing: 1.2px !important; }
+html[data-view="mobile"] .header-actions { gap: 4px !important; }
+html[data-view="mobile"] .icon-btn { width: 30px !important; height: 30px !important; border-radius: 9px !important; }
+html[data-view="mobile"] .icon-btn svg { width: 14px !important; height: 14px !important; }
+
+/* Cards */
+html[data-view="mobile"] .card {
+  padding: 8px !important; border-radius: 14px !important;
+  border-width: 2px !important;
+  box-shadow: 0 2px 8px rgba(43,168,162,0.08) !important;
+}
+html[data-view="mobile"] .shell > .card:nth-of-type(1) { flex: 0 0 auto !important; }
+
+/* Display box */
+html[data-view="mobile"] .display-box {
+  min-height: 82px !important; padding: 8px 10px !important;
+  margin-bottom: 6px !important; border-width: 2px !important; border-radius: 12px !important;
+}
+html[data-view="mobile"] .winner-text { font-size: 1.15rem !important; line-height: 1.15 !important; }
+html[data-view="mobile"] .winner-text.idle { font-size: 0.9rem !important; }
+html[data-view="mobile"] .winner-sub { font-size: 0.66rem !important; margin-top: 3px !important; }
+html[data-view="mobile"] .display-box.multi { max-height: 140px !important; padding: 6px 10px !important; }
+html[data-view="mobile"] .winner-line { font-size: 0.85rem !important; padding: 5px 0 !important; gap: 6px !important; }
+html[data-view="mobile"] .winner-line .idx { width: 20px !important; height: 20px !important; font-size: 0.65rem !important; }
+
+/* Main button */
+html[data-view="mobile"] .btn-main {
+  min-height: 46px !important; padding: 10px !important;
+  font-size: 0.88rem !important; letter-spacing: 0.8px !important;
+  border-width: 2px !important; gap: 6px !important;
+}
+html[data-view="mobile"] .btn-main::before { display: none !important; }
+html[data-view="mobile"] .btn-main svg { width: 16px !important; height: 16px !important; }
+
+/* Options */
+html[data-view="mobile"] .options { margin-top: 6px !important; padding-top: 6px !important; gap: 4px !important; border-top-width: 2px !important; }
+html[data-view="mobile"] .opt { padding: 4px 7px !important; font-size: 0.64rem !important; min-height: 26px !important; gap: 3px !important; border-width: 1.5px !important; }
+html[data-view="mobile"] .opt input[type="checkbox"] { width: 12px !important; height: 12px !important; }
+html[data-view="mobile"] .opt input[type="number"] { width: 32px !important; font-size: 0.68rem !important; padding: 1px 3px !important; }
+
+/* Quick actions */
+html[data-view="mobile"] .quick-actions { margin-top: 5px !important; gap: 5px !important; }
+html[data-view="mobile"] .quick-actions button {
+  min-height: 34px !important; padding: 6px !important;
+  font-size: 0.68rem !important; gap: 4px !important; border-width: 1.5px !important;
+}
+html[data-view="mobile"] .quick-actions button svg { width: 12px !important; height: 12px !important; }
+html[data-view="mobile"] .kbd-hint { display: none !important; }
+
+/* Card 2: flex column supaya .list scroll internal */
+html[data-view="mobile"] .shell > .card:nth-of-type(2) {
+  flex: 1 1 auto !important; min-height: 0 !important;
+  display: flex !important; flex-direction: column !important;
+}
+html[data-view="mobile"] #tabWinners:not([hidden]),
+html[data-view="mobile"] #tabGroups:not([hidden]) {
+  display: flex !important; flex-direction: column !important;
+  flex: 1 !important; min-height: 0 !important;
+}
+html[data-view="mobile"] .tabs { margin-bottom: 6px !important; padding: 0 !important; border-bottom-width: 2px !important; flex-shrink: 0 !important; }
+html[data-view="mobile"] .tab { padding: 6px 10px !important; font-size: 0.72rem !important; letter-spacing: 0.2px !important; }
+
+/* List */
+html[data-view="mobile"] .list { flex: 1 !important; min-height: 0 !important; max-height: none !important; overflow-y: auto !important; }
+html[data-view="mobile"] .list-item {
+  padding: 7px 9px 7px 12px !important; font-size: 0.78rem !important;
+  margin-bottom: 4px !important; border-left-width: 4px !important;
+  border-width: 1.5px !important; border-radius: 9px !important; gap: 6px !important;
+}
+html[data-view="mobile"] .list-item .name { gap: 5px !important; }
+html[data-view="mobile"] .list-item .num { width: 18px !important; height: 18px !important; font-size: 0.62rem !important; border-width: 1.2px !important; }
+html[data-view="mobile"] .list-item .meta { font-size: 0.62rem !important; }
+html[data-view="mobile"] .prize-badge { font-size: 0.58rem !important; padding: 2px 6px !important; border-width: 1px !important; }
+html[data-view="mobile"] .empty-state { padding: 20px 10px !important; font-size: 0.72rem !important; line-height: 1.5 !important; }
+html[data-view="mobile"] .winners-actions { margin-top: 6px !important; gap: 4px !important; flex-shrink: 0 !important; }
+html[data-view="mobile"] .winners-actions button {
+  min-height: 34px !important; padding: 6px 4px !important;
+  font-size: 0.64rem !important; gap: 3px !important; border-width: 1.5px !important;
+}
+html[data-view="mobile"] .winners-actions button svg { width: 11px !important; height: 11px !important; }
+
+/* Groups */
+html[data-view="mobile"] .groups-bar { margin-bottom: 6px !important; gap: 6px !important; flex-shrink: 0 !important; }
+html[data-view="mobile"] .groups-bar label { font-size: 0.72rem !important; }
+html[data-view="mobile"] .groups-bar input[type="number"] { width: 46px !important; padding: 5px 4px !important; font-size: 0.76rem !important; }
+html[data-view="mobile"] .groups-bar button { padding: 6px 12px !important; min-height: 32px !important; font-size: 0.7rem !important; }
+html[data-view="mobile"] .groups-grid {
+  flex: 1 !important; min-height: 0 !important;
+  grid-template-columns: 1fr 1fr !important; gap: 5px !important;
+  max-height: none !important; overflow-y: auto !important;
+}
+html[data-view="mobile"] .group { padding: 7px 8px !important; border-left-width: 4px !important; border-radius: 9px !important; }
+html[data-view="mobile"] .group h4 { font-size: 0.68rem !important; padding-bottom: 4px !important; margin-bottom: 4px !important; }
+html[data-view="mobile"] .group h4 .count { font-size: 0.6rem !important; padding: 1px 5px !important; }
+html[data-view="mobile"] .group ul { font-size: 0.7rem !important; }
+html[data-view="mobile"] .group li { padding: 1.5px 0 !important; }
+
+/* Modal: bottom sheet */
+html[data-view="mobile"] .overlay {
+  padding: calc(8px + env(safe-area-inset-top,0px)) 8px 0 8px !important;
+  align-items: flex-end !important;
+}
+html[data-view="mobile"] .sheet {
+  max-height: calc(100dvh - 16px - env(safe-area-inset-top,0px)) !important;
+  border-radius: 20px 20px 0 0 !important;
+}
+html[data-view="mobile"] .sheet-head { padding: 10px 14px !important; border-radius: 20px 20px 0 0 !important; }
+html[data-view="mobile"] .sheet-title { font-size: 0.85rem !important; }
+html[data-view="mobile"] .sheet-body { padding: 12px !important; padding-bottom: calc(16px + env(safe-area-inset-bottom,0px)) !important; }
+html[data-view="mobile"] .section { margin-bottom: 16px !important; }
+html[data-view="mobile"] .section-title { font-size: 0.68rem !important; margin-bottom: 8px !important; padding-bottom: 6px !important; letter-spacing: 1.4px !important; }
+html[data-view="mobile"] .row { padding: 8px 0 !important; gap: 8px !important; }
+html[data-view="mobile"] .row-label { font-size: 0.8rem !important; }
+html[data-view="mobile"] .row-hint { font-size: 0.66rem !important; margin-top: 2px !important; }
+html[data-view="mobile"] .switch { width: 42px !important; height: 24px !important; }
+html[data-view="mobile"] .switch-track::before { width: 16px !important; height: 16px !important; top: 2px !important; left: 2px !important; }
+html[data-view="mobile"] .switch input:checked + .switch-track::before { transform: translateX(18px) !important; }
+html[data-view="mobile"] textarea { height: 90px !important; padding: 8px 10px !important; font-size: 16px !important; }
+html[data-view="mobile"] input[type="text"],
+html[data-view="mobile"] input[type="number"],
+html[data-view="mobile"] select { padding: 8px 10px !important; font-size: 16px !important; }
+html[data-view="mobile"] .input-label { font-size: 0.7rem !important; }
+html[data-view="mobile"] .btn-grid { gap: 6px !important; margin-top: 8px !important; }
+html[data-view="mobile"] .btn-grid button { min-height: 38px !important; padding: 8px 6px !important; font-size: 0.7rem !important; }
+html[data-view="mobile"] .class-block { padding: 10px !important; margin-bottom: 8px !important; }
+html[data-view="mobile"] .class-block .toolbar { gap: 5px !important; margin-top: 8px !important; }
+html[data-view="mobile"] .class-block .toolbar button { padding: 8px 10px !important; min-height: 36px !important; font-size: 0.72rem !important; }
+html[data-view="mobile"] .divider { margin: 12px 0 !important; }
+html[data-view="mobile"] .hint { font-size: 0.68rem !important; padding: 8px 10px !important; margin-top: 8px !important; }
+html[data-view="mobile"] .range-val { font-size: 0.72rem !important; }
+
+/* No hover pada mobile */
+html[data-view="mobile"] .list-item:hover,
+html[data-view="mobile"] .group:hover,
+html[data-view="mobile"] button:hover:not(:disabled),
+html[data-view="mobile"] .icon-btn:hover,
+html[data-view="mobile"] .btn-main:hover { transform: none !important; }
+
+/* ============================================================
+   ██ DESKTOP VIEW  (html[data-view="desktop"])
+   Web dashboard: 2-kolom, sidebar sticky, generous spacing
+   ============================================================ */
+html[data-view="desktop"] body {
+  padding: calc(28px + env(safe-area-inset-top,0px)) calc(36px + env(safe-area-inset-right,0px)) calc(28px + env(safe-area-inset-bottom,0px)) calc(36px + env(safe-area-inset-left,0px)) !important;
+  font-size: 15px;
+  background:
+    radial-gradient(circle at 10% 15%, rgba(43,168,162,0.10), transparent 45%),
+    radial-gradient(circle at 90% 85%, rgba(255,210,63,0.08), transparent 42%),
+    radial-gradient(circle at 50% 50%, rgba(93,173,226,0.04), transparent 60%),
+    var(--surface-base) !important;
+  background-attachment: fixed !important;
+  min-height: 100vh;
+}
+html[data-view="desktop"] .shell {
+  max-width: 1280px !important;
+  width: 100% !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.9fr) !important;
+  grid-template-areas: "header header" "stage side" !important;
+  gap: 24px !important;
+  align-items: start !important;
+}
+html[data-view="desktop"] header { grid-area: header !important; padding: 20px 28px !important; }
+html[data-view="desktop"] .brand-mark { width: 52px !important; height: 52px !important; }
+html[data-view="desktop"] .brand-mark .fan { width: 18px !important; height: 30px !important; border-radius: 5px !important; }
+html[data-view="desktop"] .brand-text { font-size: 1.25rem !important; letter-spacing: 1px !important; }
+html[data-view="desktop"] .brand-text em { font-size: 1.35em !important; }
+html[data-view="desktop"] .brand-sub { font-size: 0.7rem !important; letter-spacing: 3px !important; }
+html[data-view="desktop"] .icon-btn { width: 46px !important; height: 46px !important; }
+html[data-view="desktop"] .icon-btn svg { width: 20px !important; height: 20px !important; }
+
+html[data-view="desktop"] .card { padding: 32px !important; border-radius: 24px !important; }
+html[data-view="desktop"] .shell > .card:nth-of-type(1) {
+  grid-area: stage !important;
+  display: flex !important; flex-direction: column !important;
+  min-height: calc(100vh - 220px) !important;
+}
+html[data-view="desktop"] .shell > .card:nth-of-type(2) {
+  grid-area: side !important;
+  display: flex !important; flex-direction: column !important;
+  position: sticky !important; top: 28px !important;
+  max-height: calc(100vh - 220px) !important;
 }
 
-/* HP layar pendek (misal landscape atau HP kecil) */
-@media (max-width: 639px) and (max-height: 620px) {
-  .display-box { min-height: 60px !important; padding: 6px !important; }
-  .winner-text { font-size: 1rem !important; }
-  .btn-main { min-height: 40px !important; font-size: 0.82rem !important; }
-  .options { margin-top: 5px !important; padding-top: 5px !important; }
+html[data-view="desktop"] .display-box {
+  min-height: 360px !important; flex: 1 !important;
+  padding: 48px 40px !important; margin-bottom: 24px !important;
+  border-width: 3px !important; border-radius: 20px !important;
+}
+html[data-view="desktop"] .winner-text { font-size: 3rem !important; line-height: 1.1 !important; }
+html[data-view="desktop"] .winner-text.idle { font-size: 1.6rem !important; }
+html[data-view="desktop"] .winner-line { font-size: 1.4rem !important; padding: 14px 0 !important; }
+html[data-view="desktop"] .winner-line .idx { width: 36px !important; height: 36px !important; font-size: 0.95rem !important; }
+html[data-view="desktop"] .winner-sub { font-size: 0.9rem !important; margin-top: 16px !important; }
+
+html[data-view="desktop"] .btn-main { min-height: 84px !important; font-size: 1.3rem !important; letter-spacing: 2px !important; flex: 0 0 auto !important; }
+html[data-view="desktop"] .btn-main svg { width: 26px !important; height: 26px !important; }
+
+html[data-view="desktop"] .options { gap: 10px !important; padding-top: 22px !important; margin-top: 22px !important; }
+html[data-view="desktop"] .opt { padding: 12px 20px !important; min-height: 46px !important; font-size: 0.88rem !important; gap: 8px !important; }
+html[data-view="desktop"] .opt input[type="checkbox"] { width: 18px !important; height: 18px !important; }
+html[data-view="desktop"] .opt input[type="number"] { width: 52px !important; font-size: 0.88rem !important; }
+html[data-view="desktop"] .quick-actions { gap: 12px !important; margin-top: 18px !important; }
+html[data-view="desktop"] .quick-actions button { padding: 15px 20px !important; font-size: 0.92rem !important; min-height: 54px !important; }
+
+html[data-view="desktop"] .tabs { padding: 0 !important; margin-bottom: 20px !important; gap: 4px !important; }
+html[data-view="desktop"] .tab { padding: 14px 22px !important; font-size: 0.94rem !important; border-radius: 14px 14px 0 0 !important; }
+html[data-view="desktop"] .tab:hover { background: var(--surface-base) !important; color: var(--teal) !important; }
+html[data-view="desktop"] .tab.active { background: linear-gradient(180deg, var(--teal-bg), transparent) !important; }
+
+html[data-view="desktop"] #tabWinners:not([hidden]),
+html[data-view="desktop"] #tabGroups:not([hidden]) {
+  display: flex !important; flex-direction: column !important;
+  flex: 1 !important; min-height: 0 !important;
+}
+html[data-view="desktop"] .list { flex: 1 !important; min-height: 0 !important; max-height: none !important; overflow-y: auto !important; padding-right: 8px !important; }
+html[data-view="desktop"] .list-item {
+  padding: 18px 20px !important; font-size: 1rem !important;
+  margin-bottom: 10px !important; border-left-width: 6px !important;
+  box-shadow: 0 2px 8px rgba(43,168,162,0.06) !important;
+}
+html[data-view="desktop"] .list-item:hover { transform: translateX(6px) !important; border-left-color: var(--gold) !important; box-shadow: 0 6px 20px rgba(43,168,162,0.15) !important; }
+html[data-view="desktop"] .list-item .num { width: 28px !important; height: 28px !important; font-size: 0.82rem !important; }
+html[data-view="desktop"] .list-item .meta { font-size: 0.82rem !important; }
+html[data-view="desktop"] .prize-badge { font-size: 0.75rem !important; padding: 4px 12px !important; }
+html[data-view="desktop"] .empty-state { padding: 70px 24px !important; font-size: 0.98rem !important; }
+html[data-view="desktop"] .winners-actions { margin-top: 20px !important; gap: 10px !important; flex-shrink: 0 !important; }
+html[data-view="desktop"] .winners-actions button { padding: 14px 16px !important; font-size: 0.88rem !important; min-height: 52px !important; }
+
+html[data-view="desktop"] .groups-bar { margin-bottom: 16px !important; gap: 12px !important; flex-shrink: 0 !important; }
+html[data-view="desktop"] .groups-bar label { font-size: 0.94rem !important; }
+html[data-view="desktop"] .groups-bar input[type="number"] { width: 80px !important; padding: 12px !important; font-size: 1.05rem !important; }
+html[data-view="desktop"] .groups-bar button { padding: 14px 32px !important; font-size: 0.98rem !important; min-height: 50px !important; }
+html[data-view="desktop"] .groups-grid { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)) !important; gap: 14px !important; max-height: none !important; flex: 1 !important; min-height: 0 !important; overflow-y: auto !important; }
+html[data-view="desktop"] .group { padding: 18px !important; border-left-width: 6px !important; transition: transform 0.2s ease, box-shadow 0.2s ease !important; }
+html[data-view="desktop"] .group:hover { transform: translateY(-3px) !important; box-shadow: 0 8px 24px rgba(93,173,226,0.18) !important; }
+html[data-view="desktop"] .group h4 { font-size: 0.88rem !important; padding-bottom: 10px !important; margin-bottom: 10px !important; }
+html[data-view="desktop"] .group h4 .count { font-size: 0.75rem !important; padding: 3px 10px !important; }
+html[data-view="desktop"] .group ul { font-size: 0.9rem !important; }
+html[data-view="desktop"] .group li { padding: 5px 0 !important; }
+
+html[data-view="desktop"] .overlay { padding: 48px !important; }
+html[data-view="desktop"] .sheet { max-width: 720px !important; max-height: calc(100vh - 96px) !important; border-radius: 24px !important; box-shadow: 0 24px 80px rgba(0,0,0,0.35) !important; }
+html[data-view="desktop"] .sheet-head { padding: 22px 28px !important; }
+html[data-view="desktop"] .sheet-title { font-size: 1.08rem !important; letter-spacing: 1px !important; }
+html[data-view="desktop"] .sheet-body { padding: 28px !important; }
+html[data-view="desktop"] .section { margin-bottom: 30px !important; }
+html[data-view="desktop"] .section-title { font-size: 0.82rem !important; letter-spacing: 2.5px !important; padding-bottom: 12px !important; margin-bottom: 18px !important; }
+html[data-view="desktop"] .row { padding: 16px 0 !important; gap: 24px !important; }
+html[data-view="desktop"] .row-label { font-size: 0.96rem !important; }
+html[data-view="desktop"] .row-hint { font-size: 0.8rem !important; }
+html[data-view="desktop"] .switch { width: 54px !important; height: 30px !important; }
+html[data-view="desktop"] .switch-track::before { width: 20px !important; height: 20px !important; top: 3px !important; left: 3px !important; }
+html[data-view="desktop"] .switch input:checked + .switch-track::before { transform: translateX(24px) !important; }
+html[data-view="desktop"] textarea { height: 170px !important; padding: 14px 16px !important; font-size: 15px !important; }
+html[data-view="desktop"] input[type="text"],
+html[data-view="desktop"] input[type="number"],
+html[data-view="desktop"] select { padding: 13px 16px !important; font-size: 15px !important; }
+html[data-view="desktop"] .input-label { font-size: 0.82rem !important; }
+html[data-view="desktop"] .class-block { padding: 20px !important; }
+html[data-view="desktop"] .class-block .toolbar button { padding: 12px 20px !important; min-height: 48px !important; font-size: 0.86rem !important; }
+html[data-view="desktop"] .btn-grid { gap: 12px !important; margin-top: 18px !important; }
+html[data-view="desktop"] .btn-grid button { padding: 14px 16px !important; font-size: 0.88rem !important; min-height: 52px !important; }
+html[data-view="desktop"] .hint { font-size: 0.8rem !important; padding: 12px 16px !important; margin-top: 16px !important; }
+html[data-view="desktop"] .range-val { font-size: 0.9rem !important; }
+html[data-view="desktop"] .divider { margin: 24px 0 !important; }
+
+html[data-view="desktop"] button:focus-visible,
+html[data-view="desktop"] .opt:focus-visible,
+html[data-view="desktop"] .tab:focus-visible,
+html[data-view="desktop"] .icon-btn:focus-visible { outline: 3px solid var(--gold) !important; outline-offset: 3px !important; }
+
+html[data-view="desktop"] .list::-webkit-scrollbar,
+html[data-view="desktop"] .sheet-body::-webkit-scrollbar,
+html[data-view="desktop"] .groups-grid::-webkit-scrollbar { width: 10px !important; }
+html[data-view="desktop"] .list::-webkit-scrollbar-track,
+html[data-view="desktop"] .sheet-body::-webkit-scrollbar-track,
+html[data-view="desktop"] .groups-grid::-webkit-scrollbar-track { background: transparent !important; }
+html[data-view="desktop"] .list::-webkit-scrollbar-thumb,
+html[data-view="desktop"] .sheet-body::-webkit-scrollbar-thumb,
+html[data-view="desktop"] .groups-grid::-webkit-scrollbar-thumb {
+  background: var(--border-strong) !important;
+  border-radius: 999px !important;
+  border: 3px solid var(--surface-card) !important;
+}
+html[data-view="desktop"] .list::-webkit-scrollbar-thumb:hover,
+html[data-view="desktop"] .sheet-body::-webkit-scrollbar-thumb:hover,
+html[data-view="desktop"] .groups-grid::-webkit-scrollbar-thumb:hover { background: var(--teal) !important; }
+
+@media (min-width: 1600px) {
+  html[data-view="desktop"] .shell { max-width: 1440px !important; gap: 28px !important; }
+  html[data-view="desktop"] .display-box { min-height: 440px !important; }
+  html[data-view="desktop"] .winner-text { font-size: 3.4rem !important; }
+}
+@media (max-height: 780px) {
+  html[data-view="desktop"] .display-box { min-height: 260px !important; padding: 32px !important; margin-bottom: 18px !important; }
+  html[data-view="desktop"] .winner-text { font-size: 2.2rem !important; }
+  html[data-view="desktop"] .btn-main { min-height: 68px !important; font-size: 1.15rem !important; }
+  html[data-view="desktop"] .shell > .card:nth-of-type(1) { min-height: auto !important; }
+  html[data-view="desktop"] .shell > .card:nth-of-type(2) { position: static !important; max-height: none !important; }
+  html[data-view="desktop"] .list { max-height: 380px !important; }
 }
 </style>
 </head>
@@ -2404,7 +2438,7 @@ body {
       </div>
     </div>
 
-    <div id="tabGroups" style="display:none;">
+    <div id="tabGroups" hidden>
       <div class="groups-bar">
         <label>Jumlah kelompok</label>
         <input type="number" id="groupCount" min="2" value="3">
@@ -2490,7 +2524,7 @@ body {
         </div>
       </div>
 
-      <div id="stabPrefs" style="display:none;">
+      <div id="stabPrefs" hidden>
 
         <div class="section">
           <div class="section-title">
@@ -3215,16 +3249,16 @@ function resetDoorprizeCounter() {
 /* TABS */
 function switchTab(id, el) {
   const showW = id === 'winners';
-  document.getElementById('tabWinners').style.display = showW ? 'block' : 'none';
-  document.getElementById('tabGroups').style.display = showW ? 'none' : 'block';
+  document.getElementById('tabWinners').hidden = !showW;
+  document.getElementById('tabGroups').hidden = showW;
   el.parentElement.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
   Sound.click();
 }
 function switchSettingsTab(id, el) {
   const isData = id === 'data';
-  document.getElementById('stabData').style.display = isData ? 'block' : 'none';
-  document.getElementById('stabPrefs').style.display = isData ? 'none' : 'block';
+  document.getElementById('stabData').hidden = !isData;
+  document.getElementById('stabPrefs').hidden = isData;
   el.parentElement.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
   Sound.click();
