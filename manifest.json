@@ -1,12 +1,12 @@
 {
-  "name": "Acak Siswa",
-  "short_name": "Acak",
-  "description": "Pengacak & urutan siswa untuk kelas",
+  "name": "Acak Universal & Siswa",
+  "short_name": "Pengacak",
+  "description": "Aplikasi PWA Pengacak Nama Siswa, Undian Doorprize, dan Generator Acak Universal",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#0a0e1a",
-  "theme_color": "#0a0e1a",
+  "background_color": "#0f172a",
+  "theme_color": "#4f46e5",
   "lang": "id",
   "dir": "ltr",
   "categories": [

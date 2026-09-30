@@ -1,29 +1,13 @@
-# 🎓 Acak Siswa
+# 🎲 Acak Universal & Siswa
 
-PWA untuk mengacak nama siswa & mengurutkan urutan maju di kelas.
+Aplikasi Progressive Web App (PWA) lengkap untuk mengacak nama siswa, melakukan undian doorprize, membagi kelompok, dan mengacak urutan secara universal.
 
-## Fitur
-- 🎲 Acak satu nama (dengan animasi)
-- 🔁 Tanpa ulang (progress di-reset otomatis tiap hari)
-- 👥 Bagi kelompok acak
-- 🎲 Acak N nama sekaligus
-- 📊 Statistik siapa paling sering keluar
-- ⏱️ Timer maju presentasi
-- 📈 Urutkan A-Z
-- 📂 Impor Excel (multi-sheet)
-- 💾 Backup / Restore data
-- 📤 Bagikan hasil ke WA/Telegram
-- 🌞 Mode terang / gelap
-- 🔊 Suara saat nama muncul
-- 🚫 Tandai siswa absen (prefix `-`)
-- 📜 Riwayat 30 nama terakhir
-- 🔀 Kocok urutan daftar + Undo
-- 💾 Auto-save (localStorage)
-- 📱 Bisa diinstal jadi app (PWA)
-
-## Pakai
-Buka [link GitHub Pages], lalu di Chrome:
-**Menu ⋮ → Instal aplikasi**
-
-## Lisensi
-MIT — bebas dipakai & dimodifikasi.
+## 🚀 Fitur Utama
+- 🎯 **Acak 1 atau N Nama/Item**: Dilengkapi animasi acak roll dan audio beep sintetis.
+- 🎟️ **Modus Undian Doorprize**: Opsi otomatis menghapus pemenang dari daftar peserta setelah terpilih.
+- 🎆 **Confetti Animation**: Efek perayaan kembang api visual saat pemenang terpilih.
+- 👥 **Generator Kelompok**: Mengacak dan membagi peserta secara otomatis ke dalam N kelompok secara merata.
+- 🔢 **Generator Kupon**: Fitur otomatis pembuat deret nomor kupon undian acak.
+- 📂 **Impor Excel (.xlsx/.xls)**: Unggah file Excel untuk mengambil seluruh kolom berisi data nama.
+- 🚫 **Penanda Absen/Skip**: Sertakan awalan `-` pada nama/item untuk melewati baris tanpa menghapusnya.
+- 📱 **Support Full PWA & Offline**: Bebas diinstal di sistem Android, iOS, maupun Desktop.

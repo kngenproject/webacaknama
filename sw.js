@@ -1,5 +1,4 @@
-/* Acak Siswa — Service Worker v2 */
-const CACHE = 'acak-siswa-v8';
+const CACHE = 'acak-universal-v2';
 const ASSETS = [
   './',
   './index.html',
@@ -31,19 +30,10 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   const req = e.request;
   if (req.method !== 'GET') return;
-  const url = new URL(req.url);
-  if (url.origin !== location.origin) return;   // skip cross-origin
-
+  
   e.respondWith(
     caches.match(req).then((hit) => {
-      if (hit) {
-        // update cache diam-diam
-        fetch(req).then((res) => {
-          if (res && res.ok) caches.open(CACHE).then((c) => c.put(req, res));
-        }).catch(() => {});
-        return hit;
-      }
-      return fetch(req).then((res) => {
+      return hit || fetch(req).then((res) => {
         if (res && res.ok && res.type === 'basic') {
           const copy = res.clone();
           caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {});

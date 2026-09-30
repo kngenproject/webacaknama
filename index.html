@@ -2,407 +2,427 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Acak Siswa - Aplikasi Pengacak & Penilaian Kelas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acak Universal & Siswa - PWA</title>
+  <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#4f46e5">
-  <meta name="description" content="Aplikasi PWA acak siswa interaktif dengan roda putar, kelompok, dan penilaian.">
-  <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkFjYWsgU2lzd2EgUFdBIiwKICAic2hvcnRfbmFtZSI6ICJBY2FrU2lzd2EiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzRmNDZlNSIsCiAgInRoZW1lX2NvbG9yIjogIiM0ZjQ2ZTUiCn0=">
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <style>
     :root {
-      --bg: #f8fafc;
+      --bg-color: #f3f4f6;
       --card-bg: #ffffff;
-      --text: #0f172a;
-      --text-sub: #64748b;
-      --primary: #4f46e5;
+      --text-color: #1f2937;
+      --primary-color: #4f46e5;
       --primary-hover: #4338ca;
-      --accent: #f59e0b;
-      --danger: #ef4444;
-      --success: #10b981;
-      --border: #e2e8f0;
+      --accent-color: #10b981;
+      --border-color: #e5e7eb;
+      --danger-color: #ef4444;
     }
-    .dark-mode {
-      --bg: #0f172a;
+    body.dark-mode {
+      --bg-color: #0f172a;
       --card-bg: #1e293b;
-      --text: #f8fafc;
-      --text-sub: #94a3b8;
-      --primary: #6366f1;
+      --text-color: #f8fafc;
+      --primary-color: #6366f1;
       --primary-hover: #4f46e5;
-      --accent: #fbbf24;
-      --danger: #f87171;
-      --success: #34d399;
-      --border: #334155;
+      --accent-color: #34d399;
+      --border-color: #334155;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-    body { background-color: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 40px; transition: background 0.3s, color 0.3s; }
-    header { background-color: var(--card-bg); border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; sticky: top; top: 0; z-index: 100; }
-    .logo { font-size: 1.25rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 8px; }
-    .nav-tools { display: flex; gap: 10px; align-items: center; }
-    .btn-icon { background: none; border: 1px solid var(--border); color: var(--text); padding: 8px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-    .container { max-width: 1000px; margin: 20px auto; padding: 0 16px; display: grid; grid-template-columns: 1fr; gap: 20px; }
-    @media (min-width: 768px) { .container { grid-template-columns: 320px 1fr; } }
-    .card { background-color: var(--card-bg); border-radius: 12px; padding: 16px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
-    .tabs-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 12px; border-bottom: 1px solid var(--border); }
-    .tab-btn { background: none; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; color: var(--text-sub); cursor: pointer; white-space: nowrap; }
-    .tab-btn.active { background-color: var(--primary); color: white; }
-    textarea { width: 100%; height: 180px; padding: 10px; border-radius: 8px; border: 1px solid var(--border); background-color: var(--bg); color: var(--text); resize: vertical; font-size: 0.9rem; margin-bottom: 10px; }
-    .btn { background-color: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; transition: opacity 0.2s; }
-    .btn:hover { opacity: 0.9; }
-    .btn-secondary { background-color: transparent; border: 1px solid var(--border); color: var(--text); }
-    .btn-success { background-color: var(--success); color: white; }
-    .btn-danger { background-color: var(--danger); color: white; }
-    .wheel-container { position: relative; width: 100%; max-width: 380px; margin: 0 auto; aspect-ratio: 1; display: flex; justify-content: center; align-items: center; }
-    canvas { width: 100%; height: 100%; }
-    .pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid var(--danger); z-index: 10; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
-    .winner-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center; padding: 16px; }
-    .winner-modal.show { display: flex; }
-    .winner-card { background: var(--card-bg); border-radius: 16px; padding: 24px; text-align: center; max-width: 400px; width: 100%; border: 1px solid var(--border); animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-    @keyframes pop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    .score-btn { width: 44px; height: 44px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-weight: bold; font-size: 1.1rem; cursor: pointer; }
-    .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; background: var(--primary); color: white; }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      padding: 16px;
+      max-width: 1200px;
+      margin: 0 auto;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border-color);
+    }
+    
+    /* Responsive Layout Grid */
+    .app-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    @media (min-width: 900px) {
+      .app-layout {
+        grid-template-columns: 1fr 1fr;
+        align-items: start;
+      }
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    }
+    textarea {
+      width: 100%;
+      height: 140px;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: inherit;
+      resize: vertical;
+    }
+    .grid-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin: 12px 0;
+    }
+    .btn-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.2s;
+      flex: 1 1 auto;
+    }
+    button:hover { background-color: var(--primary-hover); }
+    button.btn-accent { background-color: var(--accent-color); }
+    button.btn-danger { background-color: var(--danger-color); }
+    .result-box {
+      font-size: 2.2rem;
+      font-weight: 800;
+      text-align: center;
+      padding: 30px;
+      margin: 16px 0;
+      background-color: var(--bg-color);
+      border: 2px dashed var(--primary-color);
+      border-radius: 12px;
+      color: var(--primary-color);
+      min-height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      word-break: break-word;
+    }
+    .winners-list {
+      list-style: none;
+      padding: 0;
+      max-height: 250px;
+      overflow-y: auto;
+    }
+    .winners-list li {
+      padding: 8px 12px;
+      background: var(--bg-color);
+      margin-bottom: 6px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .group-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .group-card {
+      border: 1px solid var(--border-color);
+      padding: 12px;
+      border-radius: 8px;
+      background-color: var(--bg-color);
+    }
+    .tab-btn {
+      background: none;
+      color: var(--text-color);
+      border-bottom: 3px solid transparent;
+      border-radius: 0;
+      padding: 8px 16px;
+    }
+    .tab-btn.active {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+    }
   </style>
+  <script src="xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
-
   <header>
-    <div class="logo">🎯 Acak Siswa PWA</div>
-    <div class="nav-tools">
-      <button class="btn-icon" onclick="toggleTheme()" title="Mode Gelap/Terang">🌙</button>
-      <button class="btn-icon" onclick="exportData()" title="Ekspor Data">💾</button>
-      <button class="btn-icon" onclick="document.getElementById('file-input').click()" title="Impor File Excel">📁</button>
-      <input type="file" id="file-input" accept=".xlsx, .xls" style="display:none" onchange="importExcel(event)">
+    <h1>🎲 Acak Universal & Siswa</h1>
+    <div>
+      <button onclick="toggleTheme()">🌓 Tema</button>
     </div>
   </header>
 
-  <main class="container">
-    <!-- Panel Samping: Input Kelas & Siswa -->
-    <section class="card">
-      <div class="tabs-bar" id="class-tabs"></div>
-      <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-        <button class="btn btn-secondary" onclick="addClass()" style="font-size: 0.8rem; padding: 6px;">+ Kelas Baru</button>
-        <button class="btn btn-danger" onclick="deleteClass()" style="font-size: 0.8rem; padding: 6px;">Hapus</button>
-      </div>
-
-      <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-sub); display: block; margin-bottom: 6px;">Daftar Nama Siswa (1 per baris):</label>
-      <textarea id="student-list" placeholder="Ahmad&#10;Budi&#10;Siti&#10;-Dewi (Absen)" oninput="updateStudents()"></textarea>
-
-      <div style="font-size: 0.8rem; color: var(--text-sub); margin-bottom: 10px;">
-        *Gunakan tanda minus (<b>-Nama</b>) di depan untuk menandai siswa yang absen.
-      </div>
-
-      <div class="grid-2">
-        <button class="btn btn-secondary" onclick="sortAlphabet()">A-Z</button>
-        <button class="btn btn-secondary" onclick="shuffleList()">Kocok</button>
-      </div>
-    </section>
-
-    <!-- Panel Utama: Roda Putar & Penilaian -->
-    <section class="card" style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
-      
-      <div class="wheel-container">
-        <div class="pointer"></div>
-        <canvas id="wheel-canvas" width="400" height="400"></canvas>
-      </div>
-
-      <button id="spin-btn" class="btn" style="max-width: 280px; font-size: 1.1rem; padding: 12px 24px;" onclick="spinWheel()">🚀 PUTAR RODA</button>
-
-      <div style="width: 100%; border-top: 1px solid var(--border); pt-3; margin-top: 10px; padding-top: 10px;">
-        <h4 style="margin-bottom: 10px; font-size: 0.95rem;">🛠️ Alat Bantu Kelas</h4>
-        <div class="grid-2">
-          <button class="btn btn-secondary" onclick="generateGroups()">👥 Bagi Kelompok</button>
-          <button class="btn btn-secondary" onclick="showStats()">📊 Statistik Nilai</button>
+  <main class="app-layout">
+    <!-- Kolom Kiri: Input & Kontrol -->
+    <div class="column-left">
+      <section class="card">
+        <label for="studentInput"><strong>Daftar Nama / Peserta / Items (1 data per baris):</strong></label>
+        <textarea id="studentInput" placeholder="Ahmad&#10;Budi&#10;Siti&#10;Dewi&#10;-Eko (Tanda - untuk Absen/Skip)"></textarea>
+        
+        <div class="grid-options">
+          <div>
+            <label><input type="checkbox" id="removeOnPick"> Hapus jika terpilih (Undian)</label>
+          </div>
+          <div>
+            <label><input type="checkbox" id="soundEffect" checked> Efek Suara</label>
+          </div>
         </div>
-      </div>
 
-    </section>
+        <div class="btn-group">
+          <button onclick="pickRandom()" class="btn-accent">🎲 Acak 1 Nama</button>
+          <button onclick="pickMultiple()">🎲 Acak N Nama</button>
+          <button onclick="shuffleList()">🔀 Kocok Daftar</button>
+          <button onclick="sortList()">🔤 Urut A-Z</button>
+          <button onclick="generateNumbers()">🔢 Buat Kupon</button>
+          <button onclick="importExcel()">📂 Impor Excel</button>
+        </div>
+        <input type="file" id="excelFile" accept=".xlsx, .xls" style="display:none" onchange="handleExcel(event)">
+      </section>
+    </div>
+
+    <!-- Kolom Kanan: Hasil & Tab Pemenang/Kelompok -->
+    <div class="column-right">
+      <section class="card">
+        <h2>Hasil Acakan</h2>
+        <div class="result-box" id="resultDisplay">Siap Mengacak!</div>
+      </section>
+
+      <section class="card">
+        <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+          <button class="tab-btn active" onclick="switchTab('winnersTab', event)">🏆 Pemenang/Terpilih</button>
+          <button class="tab-btn" onclick="switchTab('groupsTab', event)">👥 Bagi Kelompok</button>
+        </div>
+
+        <div id="winnersTab">
+          <ul id="winnersList" class="winners-list"></ul>
+          <button onclick="clearWinners()" class="btn-danger" style="margin-top: 10px;">Riset Pemenang</button>
+        </div>
+
+        <div id="groupsTab" style="display: none;">
+          <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 12px;">
+            <label for="groupCount">Jumlah Kelompok:</label>
+            <input type="number" id="groupCount" min="2" value="3" style="padding: 6px; width: 60px;">
+            <button onclick="makeGroups()">Bagi Kelompok</button>
+          </div>
+          <div id="groupsContainer" class="group-container"></div>
+        </div>
+      </section>
+    </div>
   </main>
 
-  <!-- Modal Pemenang / Penilaian Cepat -->
-  <div id="winner-modal" class="winner-modal">
-    <div class="winner-card">
-      <span class="badge" style="margin-bottom: 8px;">TERPILIH</span>
-      <h2 id="winner-name" style="font-size: 1.8rem; margin-bottom: 16px; color: var(--primary);">Nama Siswa</h2>
-      
-      <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 8px;">Beri Penilaian Cepat:</p>
-      <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 16px;">
-        <button class="score-btn" onclick="addScore(50)">50</button>
-        <button class="score-btn" onclick="addScore(75)">75</button>
-        <button class="score-btn" onclick="addScore(85)">85</button>
-        <button class="score-btn" onclick="addScore(100)">100</button>
-      </div>
-
-      <div style="display: flex; gap: 8px;">
-        <button class="btn btn-secondary" onclick="closeModal()">Tutup</button>
-        <button class="btn btn-danger" onclick="markAbsent()">Tandai Absen</button>
-      </div>
-    </div>
-  </div>
-
   <script>
-    // System State
-    let classes = JSON.parse(localStorage.getItem('acak_siswa_classes')) || {
-      'Kelas 1A': { students: ['Ahmad', 'Budi', 'Citra', 'Deni', 'Eka', 'Fani'], scores: {} }
-    };
-    let currentClass = Object.keys(classes)[0] || 'Kelas 1A';
-    let currentWinner = '';
+    let winners = [];
 
-    // Audio Synthesis (Web Audio API)
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function playSound(freq, duration) {
+    function playBeep(freq = 440, duration = 0.1) {
+      if (!document.getElementById('soundEffect').checked) return;
       try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
+        osc.frequency.value = freq;
         osc.connect(gain);
         gain.connect(audioCtx.destination);
-        osc.frequency.value = freq;
-        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
         osc.start();
+        gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
         osc.stop(audioCtx.currentTime + duration);
-      } catch(e) {}
+      } catch (e) {}
     }
 
-    // Wheel Canvas Engine
-    const canvas = document.getElementById('wheel-canvas');
-    const ctx = canvas.getContext('2d');
-    let startAngle = 0;
-    let isSpinning = false;
-    const colors = ['#4f46e5', '#f59e0b', '#10b981', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4'];
-
-    function getActiveStudents() {
-      const text = document.getElementById('student-list').value;
+    function getItems() {
+      const text = document.getElementById('studentInput').value;
       return text.split('\n')
         .map(s => s.trim())
         .filter(s => s.length > 0 && !s.startsWith('-'));
     }
 
-    function drawWheel() {
-      const students = getActiveStudents();
-      const numOptions = students.length;
-      const arcSize = (2 * Math.PI) / (numOptions || 1);
-      
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      if (numOptions === 0) {
-        ctx.fillStyle = '#94a3b8';
-        ctx.beginPath();
-        ctx.arc(200, 200, 180, 0, 2 * Math.PI);
-        ctx.fill();
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 16px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('Masukkan Nama Siswa', 200, 205);
+    function pickRandom() {
+      const items = getItems();
+      if (items.length === 0) {
+        document.getElementById('resultDisplay').innerText = "Daftar Kosong!";
         return;
       }
 
-      for (let i = 0; i < numOptions; i++) {
-        const angle = startAngle + i * arcSize;
-        ctx.fillStyle = colors[i % colors.length];
-        ctx.beginPath();
-        ctx.arc(200, 200, 180, angle, angle + arcSize);
-        ctx.lineTo(200, 200);
-        ctx.fill();
+      let count = 0;
+      const display = document.getElementById('resultDisplay');
+      const interval = setInterval(() => {
+        const randIndex = Math.floor(Math.random() * items.length);
+        display.innerText = items[randIndex];
+        playBeep(300 + (count * 20), 0.05);
+        count++;
 
-        ctx.save();
-        ctx.fillStyle = '#ffffff';
-        ctx.translate(200 + Math.cos(angle + arcSize / 2) * 120, 200 + Math.sin(angle + arcSize / 2) * 120);
-        ctx.rotate(angle + arcSize / 2 + Math.PI / 2);
-        ctx.font = 'bold 14px sans-serif';
-        ctx.textAlign = 'center';
-        const name = students[i].length > 12 ? students[i].substring(0, 10) + '..' : students[i];
-        ctx.fillText(name, 0, 0);
-        ctx.restore();
-      }
-    }
+        if (count > 20) {
+          clearInterval(interval);
+          const finalIndex = Math.floor(Math.random() * items.length);
+          const winner = items[finalIndex];
+          display.innerText = "🎉 " + winner;
+          playBeep(880, 0.4);
 
-    function spinWheel() {
-      if (isSpinning) return;
-      const students = getActiveStudents();
-      if (students.length === 0) return alert('Tidak ada siswa aktif untuk diacak!');
+          addWinner(winner);
+          if (document.getElementById('removeOnPick').checked) {
+            removeItemFromInput(winner);
+          }
 
-      isSpinning = true;
-      let spinTime = 0;
-      const spinTimeTotal = 3000 + Math.random() * 2000;
-      let lastSoundTime = 0;
-
-      function rotate() {
-        spinTime += 20;
-        if (spinTime >= spinTimeTotal) {
-          isSpinning = false;
-          determineWinner(students);
-          return;
+          if (typeof confetti === 'function') {
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+          }
         }
+      }, 70);
+    }
 
-        const spinProgress = spinTime / spinTimeTotal;
-        const speed = (1 - Math.pow(spinProgress, 3)) * 0.3;
-        startAngle += speed;
-        
-        if (spinTime - lastSoundTime > (1 - speed * 2) * 100) {
-          playSound(400, 0.05);
-          lastSoundTime = spinTime;
-        }
+    function pickMultiple() {
+      const items = getItems();
+      const num = prompt("Berapa nama/item yang ingin diacak sekaligus?", "3");
+      const count = parseInt(num);
+      if (isNaN(count) || count <= 0) return;
 
-        drawWheel();
-        requestAnimationFrame(rotate);
+      if (items.length < count) {
+        alert("Jumlah item di daftar kurang dari jumlah yang diminta!");
+        return;
       }
-      rotate();
-    }
 
-    function determineWinner(students) {
-      const arcSize = (2 * Math.PI) / students.length;
-      const normalizedAngle = (1.5 * Math.PI - (startAngle % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
-      const winnerIndex = Math.floor(normalizedAngle / arcSize);
-      currentWinner = students[winnerIndex] || students[0];
-
-      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-      playSound(800, 0.3);
-
-      document.getElementById('winner-name').innerText = currentWinner;
-      document.getElementById('winner-modal').classList.add('show');
-    }
-
-    function closeModal() {
-      document.getElementById('winner-modal').classList.remove('show');
-    }
-
-    function addScore(score) {
-      if (!classes[currentClass].scores) classes[currentClass].scores = {};
-      if (!classes[currentClass].scores[currentWinner]) classes[currentClass].scores[currentWinner] = [];
-      classes[currentClass].scores[currentWinner].push(score);
-      saveData();
-      alert(`Nilai ${score} dicatat untuk ${currentWinner}!`);
-      closeModal();
-    }
-
-    function markAbsent() {
-      const textarea = document.getElementById('student-list');
-      const lines = textarea.value.split('\n');
-      const newLines = lines.map(line => line.trim() === currentWinner ? `-${line}` : line);
-      textarea.value = newLines.join('\n');
-      updateStudents();
-      closeModal();
-    }
-
-    // Class Management
-    function renderTabs() {
-      const container = document.getElementById('class-tabs');
-      container.innerHTML = '';
-      Object.keys(classes).forEach(cls => {
-        const btn = document.createElement('button');
-        btn.className = `tab-btn ${cls === currentClass ? 'active' : ''}`;
-        btn.innerText = cls;
-        btn.onclick = () => switchClass(cls);
-        container.appendChild(btn);
+      let shuffled = [...items].sort(() => 0.5 - Math.random());
+      let selected = shuffled.slice(0, count);
+      
+      document.getElementById('resultDisplay').innerHTML = selected.join("<br>");
+      selected.forEach(item => {
+        addWinner(item);
+        if (document.getElementById('removeOnPick').checked) removeItemFromInput(item);
       });
+      
+      if (typeof confetti === 'function') confetti({ particleCount: 100 });
     }
 
-    function switchClass(cls) {
-      currentClass = cls;
-      renderTabs();
-      document.getElementById('student-list').value = (classes[cls].students || []).join('\n');
-      drawWheel();
-    }
-
-    function addClass() {
-      const name = prompt('Nama Kelas Baru:');
-      if (name && !classes[name]) {
-        classes[name] = { students: [], scores: {} };
-        switchClass(name);
-        saveData();
+    function removeItemFromInput(item) {
+      let lines = document.getElementById('studentInput').value.split('\n');
+      let index = lines.findIndex(l => l.trim() === item);
+      if (index !== -1) {
+        lines.splice(index, 1);
+        document.getElementById('studentInput').value = lines.join('\n');
       }
     }
 
-    function deleteClass() {
-      if (Object.keys(classes).length <= 1) return alert('Minimal harus ada 1 kelas!');
-      if (confirm(`Hapus ${currentClass}?`)) {
-        delete classes[currentClass];
-        currentClass = Object.keys(classes)[0];
-        switchClass(currentClass);
-        saveData();
-      }
+    function addWinner(name) {
+      winners.push(name);
+      renderWinners();
     }
 
-    function updateStudents() {
-      const text = document.getElementById('student-list').value;
-      classes[currentClass].students = text.split('\n').map(s => s.trim());
-      saveData();
-      drawWheel();
+    function renderWinners() {
+      const list = document.getElementById('winnersList');
+      list.innerHTML = winners.map((w, i) => `<li><span>#${i+1} ${w}</span></li>`).join('');
     }
 
-    function sortAlphabet() {
-      const list = getActiveStudents().sort((a,b) => a.localeCompare(b));
-      document.getElementById('student-list').value = list.join('\n');
-      updateStudents();
+    function clearWinners() {
+      winners = [];
+      renderWinners();
     }
 
     function shuffleList() {
-      const list = getActiveStudents().sort(() => Math.random() - 0.5);
-      document.getElementById('student-list').value = list.join('\n');
-      updateStudents();
+      const items = getItems();
+      for (let i = items.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [items[i], items[j]] = [items[j], items[i]];
+      }
+      document.getElementById('studentInput').value = items.join('\n');
     }
 
-    function generateGroups() {
-      const students = getActiveStudents();
-      if (students.length < 2) return alert('Siswa aktif terlalu sedikit!');
-      const num = prompt('Jumlah kelompok yang diinginkan:', '2');
-      if (!num || num < 1) return;
-
-      const shuffled = [...students].sort(() => Math.random() - 0.5);
-      let res = '';
-      for (let i = 0; i < num; i++) res += `\n--- Kelompok ${i + 1} ---\n`;
-      shuffled.forEach((st, idx) => {
-        res = res.replace(`--- Kelompok ${(idx % num) + 1} ---`, `--- Kelompok ${(idx % num) + 1} ---\n• ${st}`);
-      });
-      alert(res);
+    function sortList() {
+      const items = getItems().sort((a, b) => a.localeCompare(b));
+      document.getElementById('studentInput').value = items.join('\n');
     }
 
-    function showStats() {
-      const scores = classes[currentClass].scores || {};
-      let msg = `📊 Rekap Nilai (${currentClass}):\n\n`;
-      Object.keys(scores).forEach(st => {
-        const avg = (scores[st].reduce((a,b)=>a+b,0) / scores[st].length).toFixed(1);
-        msg += `• ${st}: ${avg} (dari ${scores[st].length} kali)\n`;
+    function generateNumbers() {
+      const start = parseInt(prompt("Nomor Awal:", "1"));
+      const end = parseInt(prompt("Nomor Akhir:", "50"));
+      if (isNaN(start) || isNaN(end) || start >= end) return;
+
+      let nums = [];
+      for (let i = start; i <= end; i++) nums.push("Kupon #" + i);
+      document.getElementById('studentInput').value = nums.join('\n');
+    }
+
+    function makeGroups() {
+      const items = getItems();
+      const numGroups = parseInt(document.getElementById('groupCount').value);
+      if (items.length === 0 || isNaN(numGroups) || numGroups <= 0) return;
+
+      let shuffled = [...items].sort(() => 0.5 - Math.random());
+      let groups = Array.from({ length: numGroups }, () => []);
+
+      shuffled.forEach((item, index) => {
+        groups[index % numGroups].push(item);
       });
-      if (Object.keys(scores).length === 0) msg += 'Belum ada data nilai.';
-      alert(msg);
+
+      const container = document.getElementById('groupsContainer');
+      container.innerHTML = groups.map((g, i) => `
+        <div class="group-card">
+          <strong>Kelompok ${i + 1} (${g.length})</strong>
+          <ul style="margin-top:8px; padding-left:16px;">
+            ${g.map(name => `<li>${name}</li>`).join('')}
+          </ul>
+        </div>
+      `).join('');
+    }
+
+    function switchTab(tabId, evt) {
+      document.getElementById('winnersTab').style.display = tabId === 'winnersTab' ? 'block' : 'none';
+      document.getElementById('groupsTab').style.display = tabId === 'groupsTab' ? 'block' : 'none';
+      
+      const btns = document.querySelectorAll('.tab-btn');
+      btns.forEach(b => b.classList.remove('active'));
+      if(evt) evt.target.classList.add('active');
+    }
+
+    function importExcel() {
+      document.getElementById('excelFile').click();
+    }
+
+    function handleExcel(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const data = new Uint8Array(evt.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+        const json = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+        
+        let names = [];
+        json.forEach(row => {
+          row.forEach(cell => {
+            if (cell) names.push(cell.toString().trim());
+          });
+        });
+        document.getElementById('studentInput').value = names.join('\n');
+      };
+      reader.readAsArrayBuffer(file);
     }
 
     function toggleTheme() {
       document.body.classList.toggle('dark-mode');
     }
 
-    function saveData() {
-      localStorage.setItem('acak_siswa_classes', JSON.stringify(classes));
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js');
     }
-
-    function exportData() {
-      const blob = new Blob([JSON.stringify(classes, null, 2)], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `backup-acak-siswa-${new Date().toISOString().slice(0,10)}.json`;
-      a.click();
-    }
-
-    function importExcel(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (evt) => {
-        const wb = XLSX.read(evt.target.result, { type: 'binary' });
-        const sheet = wb.Sheets[wb.SheetNames[0]];
-        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-        const names = rows.flat().map(x => String(x).trim()).filter(x => x.length > 0);
-        document.getElementById('student-list').value = names.join('\n');
-        updateStudents();
-      };
-      reader.readAsBinaryString(file);
-    }
-
-    // Initialize
-    renderTabs();
-    switchClass(currentClass);
   </script>
 </body>
 </html>
